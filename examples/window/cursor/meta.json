@@ -1,0 +1,6 @@
+{
+  "title": "Curseur de la souris",
+  "summary": "Change le curseur système (main, croix) ou un curseur à pixels à chaque clic.",
+  "functions": ["sfCursor_createFromPixels", "sfCursor_createFromSystem", "sfRenderWindow_setFramerateLimit", "sfRenderWindow_setMouseCursor", "sfRenderWindow_isOpen", "sfRenderWindow_pollEvent", "sfRenderWindow_close", "sfRenderWindow_clear", "sfRenderWindow_display", "sfRenderWindow_create", "sfRenderWindow_destroy", "sfCursor_destroy"],
+  "assets": []
+}

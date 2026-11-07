@@ -1,0 +1,6 @@
+{
+  "title": "Position de la souris",
+  "summary": "Lit la position de la souris relative à la fenêtre à chaque image et fait suivre un cercle.",
+  "functions": ["sfMouse_getPositionRenderWindow", "sfCircleShape_setPosition", "sfRenderWindow_setFramerateLimit", "sfRenderWindow_isOpen", "sfRenderWindow_pollEvent", "sfRenderWindow_close", "sfRenderWindow_clear", "sfRenderWindow_drawCircleShape", "sfRenderWindow_display", "sfRenderWindow_create", "sfCircleShape_create", "sfCircleShape_setRadius", "sfCircleShape_setFillColor", "sfCircleShape_destroy", "sfRenderWindow_destroy"],
+  "assets": []
+}

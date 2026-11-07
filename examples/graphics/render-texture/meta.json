@@ -1,0 +1,6 @@
+{
+  "title": "Rendu dans une texture",
+  "summary": "Dessine dans une sfRenderTexture puis affiche cette texture sur un sprite, copié trois fois.",
+  "functions": ["sfCircleShape_create", "sfCircleShape_setRadius", "sfCircleShape_setPosition", "sfCircleShape_setFillColor", "sfRenderTexture_clear", "sfRenderTexture_drawCircleShape", "sfRenderTexture_display", "sfCircleShape_destroy", "sfTexture_copyToImage", "sfImage_getPixel", "sfImage_destroy", "sfSprite_setPosition", "sfSprite_setRotation", "sfRenderWindow_drawSprite", "sfRenderWindow_isOpen", "sfRenderWindow_pollEvent", "sfRenderWindow_close", "sfRenderWindow_clear", "sfRenderWindow_display", "sfRenderWindow_create", "sfRenderTexture_create", "sfSprite_create", "sfRenderTexture_getTexture", "sfRenderWindow_setFramerateLimit", "sfSprite_destroy", "sfRenderTexture_destroy", "sfRenderWindow_destroy", "sfSprite_setTexture"],
+  "assets": []
+}

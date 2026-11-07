@@ -1,0 +1,6 @@
+{
+  "title": "Modes vidéo",
+  "summary": "Affiche le mode du bureau et les modes plein écran disponibles, sans ouvrir de fenêtre.",
+  "functions": ["sfVideoMode_getDesktopMode", "sfVideoMode_getFullscreenModes", "sfVideoMode_isValid"],
+  "assets": []
+}

@@ -1,0 +1,6 @@
+{
+  "title": "Clavier en temps réel",
+  "summary": "Déplace un carré avec les flèches en interrogeant l'état du clavier à chaque image (sfKeyboard_isKeyPressed).",
+  "functions": ["sfKeyboard_isKeyPressed", "sfRectangleShape_getPosition", "sfRectangleShape_setPosition", "sfRenderWindow_setFramerateLimit", "sfRenderWindow_isOpen", "sfRenderWindow_pollEvent", "sfRenderWindow_close", "sfRenderWindow_clear", "sfRenderWindow_drawRectangleShape", "sfRenderWindow_display", "sfRenderWindow_create", "sfRectangleShape_create", "sfRectangleShape_setSize", "sfRectangleShape_destroy", "sfRenderWindow_destroy"],
+  "assets": []
+}

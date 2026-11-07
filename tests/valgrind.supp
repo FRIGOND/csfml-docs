@@ -1,0 +1,11 @@
+# Fuite interne connue de SFML/FreeType (pas du code utilisateur) :
+# sf::Font::loadGlyph -> FT_Glyph_To_Bitmap n'est pas libérée à la destruction de la police.
+# Observée en CSFML 3.0.0 (SFML 3.0.2) et 2.6.1 (SFML 2.6.2). Voir tests/RESULTATS.md (A.4 lot 27).
+{
+   sfml-freetype-glyph-to-bitmap
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   fun:FT_Glyph_To_Bitmap
+   ...
+}

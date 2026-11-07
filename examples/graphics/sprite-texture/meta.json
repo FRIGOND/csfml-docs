@@ -1,0 +1,6 @@
+{
+  "title": "Sprite et texture",
+  "summary": "Charge sfml_logo.png dans une texture et affiche un sprite avec origine, position, échelle et rotation.",
+  "functions": ["sfTexture_create", "sfRenderWindow_getSize", "sfTexture_updateFromRenderWindow", "sfTexture_copyToImage", "sfImage_getPixel", "sfImage_destroy", "sfTexture_destroy", "sfSprite_getTransform", "sfTransform_transformPoint", "sfSprite_setOrigin", "sfSprite_setPosition", "sfSprite_setScale", "sfRenderWindow_isOpen", "sfRenderWindow_pollEvent", "sfRenderWindow_close", "sfSprite_rotate", "sfRenderWindow_clear", "sfColor_fromRGB", "sfRenderWindow_drawSprite", "sfRenderWindow_display", "sfRenderWindow_create", "sfTexture_createFromFile", "sfSprite_create", "sfRenderWindow_setFramerateLimit", "sfSprite_destroy", "sfRenderWindow_destroy", "sfSprite_setTexture"],
+  "assets": ["sfml_logo.png"]
+}

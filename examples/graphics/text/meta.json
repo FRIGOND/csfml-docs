@@ -1,0 +1,6 @@
+{
+  "title": "Texte",
+  "summary": "Affiche du texte centré avec tuffy.ttf, dont « été » via sfText_setUnicodeString, et vérifie le centrage.",
+  "functions": ["sfText_getLocalBounds", "sfText_setOrigin", "sfText_setPosition", "sfText_getGlobalBounds", "sfText_setString", "sfText_setCharacterSize", "sfText_setFillColor", "sfText_setUnicodeString", "sfRenderWindow_isOpen", "sfRenderWindow_pollEvent", "sfRenderWindow_close", "sfRenderWindow_clear", "sfRenderWindow_drawText", "sfRenderWindow_display", "sfText_getUnicodeString", "sfRenderWindow_create", "sfFont_createFromFile", "sfText_create", "sfText_destroy", "sfFont_destroy", "sfRenderWindow_destroy", "sfText_setFont"],
+  "assets": ["tuffy.ttf"]
+}

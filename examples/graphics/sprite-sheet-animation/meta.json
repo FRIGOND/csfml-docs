@@ -1,0 +1,6 @@
+{
+  "title": "Animation par feuille de sprites",
+  "summary": "Crée une feuille de 4 images avec sfImage et anime un sprite en changeant son sfIntRect avec une horloge.",
+  "functions": ["sfImage_setPixel", "sfImage_createFromColor", "sfTexture_createFromImage", "sfImage_destroy", "sfTexture_create", "sfRenderWindow_getSize", "sfTexture_updateFromRenderWindow", "sfTexture_copyToImage", "sfImage_getPixel", "sfTexture_destroy", "sfSprite_getTextureRect", "sfSprite_setPosition", "sfSprite_setScale", "sfTime_asSeconds", "sfClock_getElapsedTime", "sfSprite_setTextureRect", "sfRenderWindow_isOpen", "sfRenderWindow_pollEvent", "sfRenderWindow_close", "sfRenderWindow_clear", "sfRenderWindow_drawSprite", "sfRenderWindow_display", "sfRenderWindow_create", "sfSprite_create", "sfClock_create", "sfRenderWindow_setFramerateLimit", "sfClock_destroy", "sfSprite_destroy", "sfRenderWindow_destroy", "sfSprite_setTexture"],
+  "assets": []
+}

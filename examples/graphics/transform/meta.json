@@ -1,0 +1,6 @@
+{
+  "title": "Transformation (sfTransform)",
+  "summary": "Combine translation, rotation et échelle dans un sfTransform, l'applique à un point et à un dessin.",
+  "functions": ["sfTransform_translate", "sfTransform_rotate", "sfTransform_scale", "sfTransform_transformPoint", "sfTexture_create", "sfRenderWindow_getSize", "sfTexture_updateFromRenderWindow", "sfTexture_copyToImage", "sfImage_getPixel", "sfImage_destroy", "sfTexture_destroy", "sfRenderWindow_isOpen", "sfRenderWindow_pollEvent", "sfRenderWindow_close", "sfRenderWindow_clear", "sfRenderWindow_drawRectangleShape", "sfRenderWindow_display", "sfRenderWindow_create", "sfRectangleShape_create", "sfRectangleShape_setSize", "sfRectangleShape_setFillColor", "sfRenderWindow_setFramerateLimit", "sfRectangleShape_destroy", "sfRenderWindow_destroy", "sfRenderStates_default"],
+  "assets": []
+}

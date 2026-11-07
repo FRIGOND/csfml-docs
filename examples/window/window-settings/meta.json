@@ -1,0 +1,6 @@
+{
+  "title": "Réglages de la fenêtre",
+  "summary": "Change le titre, la taille, la position et l'icône d'une fenêtre existante et relit la taille.",
+  "functions": ["sfImage_createFromColor", "sfRenderWindow_setIcon", "sfImage_getSize", "sfImage_getPixelsPtr", "sfImage_destroy", "sfRenderWindow_setTitle", "sfRenderWindow_getSize", "sfRenderWindow_getPosition", "sfRenderWindow_setFramerateLimit", "sfRenderWindow_isOpen", "sfRenderWindow_pollEvent", "sfRenderWindow_close", "sfRenderWindow_clear", "sfRenderWindow_display", "sfRenderWindow_create", "sfRenderWindow_setSize", "sfRenderWindow_setPosition", "sfRenderWindow_destroy"],
+  "assets": []
+}

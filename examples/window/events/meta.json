@@ -1,0 +1,6 @@
+{
+  "title": "Lire les événements",
+  "summary": "Boucle pollEvent qui affiche dans le terminal les champs de Closed, KeyPressed, MouseButtonPressed et Resized.",
+  "functions": ["sfRenderWindow_setFramerateLimit", "sfRenderWindow_isOpen", "sfRenderWindow_pollEvent", "sfRenderWindow_close", "sfRenderWindow_clear", "sfRenderWindow_display", "sfRenderWindow_create", "sfRenderWindow_destroy"],
+  "assets": []
+}

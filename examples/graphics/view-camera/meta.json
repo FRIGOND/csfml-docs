@@ -1,0 +1,6 @@
+{
+  "title": "Caméra (sfView)",
+  "summary": "Déplace, zoome et fait tourner une vue sur un damier, et vérifie la conversion pixel vers monde.",
+  "functions": ["sfView_setCenter", "sfView_setSize", "sfView_zoom", "sfView_setRotation", "sfRectangleShape_setPosition", "sfRectangleShape_setFillColor", "sfColor_fromRGB", "sfRenderWindow_drawRectangleShape", "sfRenderWindow_mapPixelToCoords", "sfRenderWindow_getView", "sfView_getCenter", "sfRenderWindow_isOpen", "sfRenderWindow_pollEvent", "sfRenderWindow_close", "sfRenderWindow_setView", "sfRenderWindow_clear", "sfRenderWindow_getDefaultView", "sfRenderWindow_display", "sfRenderWindow_create", "sfView_createFromRect", "sfRectangleShape_create", "sfRectangleShape_setSize", "sfRenderWindow_setFramerateLimit", "sfRectangleShape_destroy", "sfView_destroy", "sfRenderWindow_destroy"],
+  "assets": []
+}

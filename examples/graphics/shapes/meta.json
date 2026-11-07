@@ -1,0 +1,6 @@
+{
+  "title": "Formes",
+  "summary": "Dessine un rectangle avec contour, un cercle et une forme convexe, puis vérifie des pixels.",
+  "functions": ["sfRectangleShape_setSize", "sfRectangleShape_setPosition", "sfRectangleShape_setFillColor", "sfRectangleShape_setOutlineColor", "sfRectangleShape_setOutlineThickness", "sfCircleShape_setRadius", "sfCircleShape_setPosition", "sfCircleShape_setFillColor", "sfConvexShape_setPointCount", "sfConvexShape_setPoint", "sfConvexShape_setPosition", "sfConvexShape_setFillColor", "sfTexture_create", "sfRenderWindow_getSize", "sfTexture_updateFromRenderWindow", "sfTexture_copyToImage", "sfImage_getPixel", "sfImage_destroy", "sfTexture_destroy", "sfRenderWindow_isOpen", "sfRenderWindow_pollEvent", "sfRenderWindow_close", "sfRenderWindow_clear", "sfRenderWindow_drawRectangleShape", "sfRenderWindow_drawCircleShape", "sfRenderWindow_drawConvexShape", "sfRenderWindow_display", "sfRenderWindow_create", "sfRectangleShape_create", "sfCircleShape_create", "sfConvexShape_create", "sfRenderWindow_setFramerateLimit", "sfRenderWindow_destroy", "sfRectangleShape_destroy", "sfCircleShape_destroy", "sfConvexShape_destroy"],
+  "assets": []
+}

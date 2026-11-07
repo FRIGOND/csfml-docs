@@ -1,0 +1,6 @@
+{
+  "title": "Tableau de sommets",
+  "summary": "Dessine un quad coloré (2 triangles) et un triangle avec sfVertexArray ; sfQuads n'existe plus en 3.0.",
+  "functions": ["sfVertexArray_append", "sfVertexArray_setPrimitiveType", "sfTexture_create", "sfRenderWindow_getSize", "sfTexture_updateFromRenderWindow", "sfTexture_copyToImage", "sfImage_getPixel", "sfVertexArray_getVertexCount", "sfImage_destroy", "sfTexture_destroy", "sfRenderWindow_isOpen", "sfRenderWindow_pollEvent", "sfRenderWindow_close", "sfRenderWindow_clear", "sfRenderWindow_drawVertexArray", "sfRenderWindow_display", "sfRenderWindow_create", "sfVertexArray_create", "sfRenderWindow_setFramerateLimit", "sfVertexArray_destroy", "sfRenderWindow_destroy"],
+  "assets": []
+}

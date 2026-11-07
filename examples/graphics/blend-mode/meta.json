@@ -1,0 +1,6 @@
+{
+  "title": "Modes de fusion",
+  "summary": "Compare sfBlendAlpha et sfBlendAdd sur deux rectangles qui se chevauchent et vérifie les pixels.",
+  "functions": ["sfRectangleShape_setPosition", "sfRenderWindow_drawRectangleShape", "sfTexture_create", "sfRenderWindow_getSize", "sfTexture_updateFromRenderWindow", "sfTexture_copyToImage", "sfImage_getPixel", "sfImage_destroy", "sfTexture_destroy", "sfRenderWindow_isOpen", "sfRenderWindow_pollEvent", "sfRenderWindow_close", "sfRenderWindow_clear", "sfRenderWindow_display", "sfRenderWindow_create", "sfRectangleShape_create", "sfRectangleShape_setSize", "sfRectangleShape_setFillColor", "sfRenderWindow_setFramerateLimit", "sfRectangleShape_destroy", "sfRenderWindow_destroy", "sfRenderStates_default"],
+  "assets": []
+}

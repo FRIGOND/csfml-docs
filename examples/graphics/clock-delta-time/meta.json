@@ -1,0 +1,6 @@
+{
+  "title": "Déplacement indépendant du framerate",
+  "summary": "Avance un carré à vitesse constante grâce au temps écoulé (dt) mesuré avec sfClock_restart.",
+  "functions": ["sfTime_asSeconds", "sfClock_restart", "sfRectangleShape_getPosition", "sfRectangleShape_setPosition", "sfClock_getElapsedTime", "sfRenderWindow_isOpen", "sfRenderWindow_pollEvent", "sfRenderWindow_close", "sfRenderWindow_clear", "sfRenderWindow_drawRectangleShape", "sfRenderWindow_display", "sfRenderWindow_create", "sfRectangleShape_create", "sfClock_create", "sfRectangleShape_setSize", "sfRenderWindow_setFramerateLimit", "sfClock_destroy", "sfRectangleShape_destroy", "sfRenderWindow_destroy"],
+  "assets": []
+}
