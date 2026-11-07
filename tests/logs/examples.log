@@ -2,18 +2,6 @@
 Failed to create input context for window -- TextEntered event won't be able to return unicode
 Setting vertical sync not supported
 pixel(400,300) = 255,0,0
-=== graphics/screenshot [2.6]
-In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
-                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
-                 from ~/csfml-2.6/include/SFML/Window.h:34,
-                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
-                 from 2.6/main.c:1:
-~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
-  133 | } sfMouseWheelEvent;
-      | ^
-~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
-  127 | typedef struct CSFML_DEPRECATED
-      |         ^~~~~~
+=== window/basic-window [3.0]
 Failed to create input context for window -- TextEntered event won't be able to return unicode
 Setting vertical sync not supported
-pixel(400,300) = 255,0,0

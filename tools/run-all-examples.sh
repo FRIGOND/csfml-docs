@@ -8,7 +8,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"; cd "$ROOT"
 VG=0; ONLY=""; VERS="3.0 2.6"
 while [ $# -gt 0 ]; do case $1 in --valgrind) VG=1;; --only) ONLY=$2; shift;; --version) VERS=$2; shift;; esac; shift; done
 if command -v xvfb-run >/dev/null; then RUN=(xvfb-run -a); else source tools/env.sh; start_xvfb; RUN=(); fi
-export LIBGL_ALWAYS_SOFTWARE=1 EXAMPLE_FRAMES=60 LC_ALL=C.UTF-8
+export EXAMPLE_ASSETS="$ROOT/examples/assets" LIBGL_ALWAYS_SOFTWARE=1 EXAMPLE_FRAMES=60 LC_ALL=C.UTF-8
 mkdir -p tests/logs; LOG=tests/logs/examples.log; : > "$LOG"
 pass=0; fail=0; failed=()
 for dir in examples/*/*/; do
