@@ -16,7 +16,7 @@ ifneq ($(CSFML_PREFIX),system)
 CFLAGS += -I$(CSFML_PREFIX)/include
 LDFLAGS += -L$(CSFML_PREFIX)/lib -Wl,-rpath,$(CSFML_PREFIX)/lib
 endif
-LDLIBS += -lcsfml-graphics -lcsfml-window -lcsfml-audio -lcsfml-system -lm
+LDLIBS += -lcsfml-graphics -lcsfml-window -lcsfml-audio -lcsfml-network -lcsfml-system -lm
 
 all: $(BUILD)/$(NAME)
 $(BUILD)/$(NAME): $(CSFML)/main.c

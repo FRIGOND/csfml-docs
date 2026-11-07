@@ -1,0 +1,6 @@
+{
+  "title": "Capturer la fenêtre dans une image",
+  "summary": "Dessine un rectangle, copie la fenêtre dans une texture, relit un pixel et enregistre un PNG.",
+  "functions": ["sfRectangleShape_create", "sfRenderWindow_drawRectangleShape", "sfTexture_create", "sfTexture_updateFromRenderWindow", "sfTexture_copyToImage", "sfImage_getPixel", "sfImage_saveToFile"],
+  "assets": []
+}

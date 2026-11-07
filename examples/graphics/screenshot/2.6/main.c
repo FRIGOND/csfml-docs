@@ -4,15 +4,19 @@
 
 static int check_pixel(const sfRenderWindow *window)
 {
-    sfImage *img = sfRenderWindow_capture(window);
+    sfTexture *tex = sfTexture_create(800, 600);
+    sfImage *img = NULL;
     sfColor px;
 
-    if (img == NULL)
+    if (tex == NULL)
         return 1;
+    sfTexture_updateFromRenderWindow(tex, window, 0, 0);
+    img = sfTexture_copyToImage(tex);
     px = sfImage_getPixel(img, 400, 300);
     sfImage_saveToFile(img, "screenshot.png");
     printf("pixel(400,300) = %d,%d,%d\n", px.r, px.g, px.b);
     sfImage_destroy(img);
+    sfTexture_destroy(tex);
     return !(px.r == 255 && px.g == 0 && px.b == 0);
 }
 

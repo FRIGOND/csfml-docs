@@ -14,31 +14,6 @@ In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
 ~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
   127 | typedef struct CSFML_DEPRECATED
       |         ^~~~~~
-2.6/main.c: In function ‘check_pixel’:
-2.6/main.c:7:5: warning: ‘sfRenderWindow_capture’ is deprecated [-Wdeprecated-declarations]
-    7 |     sfImage *img = sfRenderWindow_capture(window);
-      |     ^~~~~~~
-In file included from ~/csfml-2.6/include/SFML/Graphics.h:46:
-~/csfml-2.6/include/SFML/Graphics/RenderWindow.h:580:46: note: declared here
-  580 | CSFML_GRAPHICS_API CSFML_DEPRECATED sfImage* sfRenderWindow_capture(const sfRenderWindow* renderWindow);
-      |                                              ^~~~~~~~~~~~~~~~~~~~~~
 Failed to create input context for window -- TextEntered event won't be able to return unicode
 Setting vertical sync not supported
 pixel(400,300) = 255,0,0
-=== window/basic-window [3.0]
-Failed to create input context for window -- TextEntered event won't be able to return unicode
-Setting vertical sync not supported
-=== window/basic-window [2.6]
-In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
-                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
-                 from ~/csfml-2.6/include/SFML/Window.h:34,
-                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
-                 from 2.6/main.c:1:
-~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
-  133 | } sfMouseWheelEvent;
-      | ^
-~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
-  127 | typedef struct CSFML_DEPRECATED
-      |         ^~~~~~
-Failed to create input context for window -- TextEntered event won't be able to return unicode
-Setting vertical sync not supported

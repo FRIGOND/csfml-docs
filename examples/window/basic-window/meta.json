@@ -1,0 +1,6 @@
+{
+  "title": "Ouvrir une fenêtre",
+  "summary": "Fenêtre vide avec boucle d'événements, fermeture propre et limite de framerate.",
+  "functions": ["sfRenderWindow_create", "sfRenderWindow_setFramerateLimit", "sfRenderWindow_isOpen", "sfRenderWindow_pollEvent", "sfRenderWindow_close", "sfRenderWindow_clear", "sfRenderWindow_display", "sfRenderWindow_destroy"],
+  "assets": []
+}
