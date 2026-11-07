@@ -1,0 +1,32 @@
+---
+title: "Fenêtre noire ou blanche"
+description: "La fenêtre s'ouvre mais reste noire, ou un rectangle blanc remplace l'image. Les causes à vérifier dans l'ordre."
+sidebar:
+  order: 4
+---
+
+Une fenêtre noire veut dire « la fenêtre existe, mais rien n'a été dessiné dessus ». Une fenêtre qui ne s'ouvre pas du tout est un autre problème (voir [sans écran](/guides/troubleshooting/headless-xvfb/)).
+
+## Checklist, dans l'ordre
+
+1. **`sfRenderWindow_display` est-il appelé à chaque frame ?** Rien n'apparaît sans lui. L'ordre est `clear`, `draw…`, `display` (voir [boucle de jeu](/guides/concepts/game-loop/)).
+2. **Dessines-tu dans la bonne fenêtre, avec le bon objet ?** `sfRenderWindow_drawSprite(window, sprite, NULL)`. Le troisième paramètre `NULL` est l'état de rendu par défaut.
+3. **L'objet est-il dans le champ de vision ?** Position hors de la fenêtre, taille nulle, ou couleur identique au fond. Un `sfSprite` créé avec une texture de taille 0 est invisible.
+4. **La vue (caméra) est-elle la bonne ?** Une `sfView` mal réglée montre une zone vide du monde (voir [coordonnées et vues](/guides/concepts/coordinates-views/)).
+5. **Le chargement a-t-il réussi ?** Si `sfTexture_createFromFile` renvoie `NULL`, lis `stderr`. Exemple vu en test 3.0.0 : `Failed to load image` + `Absolute path: <dossier>/nope.png` + `Reason: No such file or directory`. Ça arrive quand tu lances depuis un autre dossier que prévu (voir [ressources](/guides/concepts/resources/)).
+6. **La texture est-elle encore vivante ?** Une texture détruite avant son sprite donne une lecture invalide (valgrind). Voir [plantages](/guides/troubleshooting/runtime-crashes/).
+7. **Le rectangle de texture est-il bon ?** `sfSprite_setTextureRect` hors de l'image montre du blanc ou rien.
+8. **Boucle bloquée ?** Si tu ne vides pas la file d'événements avec un `while`, la fenêtre ne répond plus.
+
+## Vérifier toi-même
+
+Lis un pixel de ce que tu viens de dessiner, comme le font nos exemples : `sfTexture_updateFromRenderWindow` (en 3.0 et 2.6) puis `sfTexture_copyToImage` et `sfImage_getPixel`. L'exemple [Formes](/3-0/cookbook/graphics/shapes/) (aussi en [2.6](/2-6/cookbook/graphics/shapes/)) vérifie ainsi 4 pixels. Ça marche aussi sous Xvfb.
+
+## Cas particuliers
+
+- **WSL, machine virtuelle, pilote OpenGL absent** : une fenêtre noire peut venir d'un rendu OpenGL qui échoue. Essaie `LIBGL_ALWAYS_SOFTWARE=1 ./app` (rendu logiciel de Mesa).
+- **Xvfb** : le rendu logiciel fonctionne et la lecture de pixels aussi (test n°33).
+
+:::caution[Non vérifié]
+La plupart des causes de cette liste (items 3, 4, 7, 8, WSL) sont des conseils du rapport de recherche, **non reproduits** par des tests dédiés. Les items 1 (ordre des appels), 5 (message de chargement) et 6 (accès invalide) s'appuient sur des tests ou des exemples du dépôt. L'idée d'un « rectangle blanc » à cause d'une texture détruite n'a pas été observée.
+:::

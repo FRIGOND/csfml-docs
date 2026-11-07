@@ -1,0 +1,56 @@
+---
+title: "L'audio sans périphérique"
+description: "Ce qui se passe quand il n'y a ni carte son ni serveur audio (conteneur, SSH, CI), en CSFML 3.0 et 2.6, d'après les tests."
+sidebar:
+  order: 8
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Example from '@/components/Example.astro';
+
+Sur un serveur, dans Docker ou en CI, il n'y a souvent aucun périphérique audio. Ton programme doit alors **ne pas planter**. Voici ce qui a été observé.
+
+## Méthode du test
+
+On rend PulseAudio et ALSA inaccessibles : `PULSE_SERVER=unix:/nonexistent ALSA_CONFIG_PATH=/dev/null XDG_RUNTIME_DIR=/nonexistent`. Tous les exemples audio du dépôt sortent alors avec le code 0 dans les deux versions (tests/logs/examples-system-audio-network.md).
+
+## Résultats
+
+| Observation | CSFML 3.0.0 | CSFML 2.6.1 |
+|---|---|---|
+| Messages sur stderr | `miniaudio ERROR: [PulseAudio] Failed to connect PulseAudio context`, `Failed to get audio playback devices: Resource does not exist`, `Failed to initialize sound: No engine available` | `Failed to open the audio device` (deux fois par objet) |
+| `sfMusic_createFromFile`, `sfSoundBuffer_createFromFile` | pointeur valide | pointeur valide |
+| `sfMusic_getStatus` après `sfMusic_play` | 2 (Playing) | 0 (Stopped) |
+| `sfSoundBuffer_getSampleRate` | correct (44100 Hz, 2 canaux) | **0** |
+| `sfMusic_getVolume` | (non noté) | renvoie 0 au lieu de 40 réglé |
+| Plantage | non, exit 0 | non, exit 0 |
+
+Autres constats de 3.0 : `sfMusic_getPlayingOffset` reste à 0 (`Failed to get sound cursor: Invalid operation`) et `sfSoundRecorder_isAvailable` reste vrai. En 2.6, `sfSoundRecorder_isAvailable` est vrai mais `sfSoundBufferRecorder_start` échoue (« Failed to open the audio capture device »).
+
+:::note
+Le rapport de recherche annonçait en 3.0 le message `Using NULL audio backend`. Il **n'a pas été observé** dans cette configuration (research/CORRECTIONS.md, n°7). Ne le cherche pas.
+:::
+
+## Que faire dans ton programme ?
+
+- **Ne déduis pas** qu'un `create` qui renvoie un pointeur valide signifie qu'on entendra du son. En 3.0, `getStatus` dit « Playing » même sans périphérique.
+- Une valeur `NULL` retournée par `sfMusic_createFromFile` veut dire fichier introuvable ou illisible, pas « pas de carte son ».
+- Pour un test automatique, ne vérifie pas l'état de lecture ni le volume relu : ils diffèrent selon la version.
+- Lis `stderr` quand « rien ne s'entend » : voir [pas de son](/guides/troubleshooting/no-sound/).
+
+## Exemple testé
+
+L'exemple charge un buffer et une musique, joue, puis détruit tout, avec ou sans périphérique.
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 3.0">
+    <Example example="audio/sound-no-device" version="3.0" />
+  </TabItem>
+  <TabItem label="CSFML 2.6">
+    <Example example="audio/sound-no-device" version="2.6" />
+  </TabItem>
+</Tabs>
+
+:::caution[Non vérifié]
+Une machine **réellement dépourvue** de carte son (et non simulée par variables d'environnement) n'a pas été testée. Le comportement avec un backend sans aucun périphérique de lecture (par exemple PipeWire absent) peut différer.
+:::

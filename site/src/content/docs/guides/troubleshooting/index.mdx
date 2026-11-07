@@ -1,0 +1,29 @@
+---
+title: "Dépannage"
+description: "Une page par symptôme : erreur de compilation, de lien, plantage, fenêtre noire, pas de son, pas d'écran. Cause, solution et vérification."
+sidebar:
+  order: 0
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+Cherche d'abord **le message exact** que tu vois (copie-le dans la recherche du site). Les messages cités viennent de tests réels (gcc 15.2, Ubuntu 26.04, `LC_ALL=C.UTF-8` pour avoir les messages en anglais ; en français, `undefined reference` s'écrit « référence indéfinie vers »).
+
+<CardGrid>
+  <LinkCard title="Erreurs de compilation" href="/guides/troubleshooting/compile-errors/" description="Header introuvable, sfBool inconnu, too few arguments, implicit declaration, deprecated." />
+  <LinkCard title="Erreurs de lien" href="/guides/troubleshooting/link-errors/" description="undefined reference, ordre des -l, cannot open shared object file." />
+  <LinkCard title="Plantages à l'exécution" href="/guides/troubleshooting/runtime-crashes/" description="Assertion failed, segfault, abort, use-after-free." />
+  <LinkCard title="Fenêtre noire ou blanche" href="/guides/troubleshooting/black-window/" description="Rien ne s'affiche, ou un rectangle blanc." />
+  <LinkCard title="Pas de son" href="/guides/troubleshooting/no-sound/" description="Silence, fichier introuvable, pas de périphérique audio." />
+  <LinkCard title="Sans écran (Xvfb)" href="/guides/troubleshooting/headless-xvfb/" description="SSH, conteneur, CI : afficher quand même, et messages inoffensifs." />
+</CardGrid>
+
+## Méthode générale
+
+1. **Lis le premier message d'erreur**, pas le dernier. Les suivants en sont souvent la conséquence.
+2. Compile avec `-Wall -Wextra` : beaucoup de bugs sont signalés en avertissement.
+3. Vérifie ta version : [programme de diagnostic](/guides/install/check-your-setup/).
+4. Lis `stderr` : SFML y écrit la cause de la plupart des échecs de chargement.
+5. En cas de doute sur la mémoire : `valgrind` (voir [mémoire](/guides/concepts/memory/)).
+
+Si ton problème n'est pas ici, regarde la [FAQ](/guides/help/faq/) puis [signale-le](/guides/help/about/).

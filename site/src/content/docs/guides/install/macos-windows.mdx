@@ -1,0 +1,50 @@
+---
+title: "Installer sur macOS et Windows"
+description: "Survol honnête de l'installation de CSFML sur macOS et Windows. Rien n'a été testé sur ces systèmes."
+sidebar:
+  order: 4
+---
+
+:::caution[Non vérifié]
+Toute cette page vient de la lecture de sources (rapport `research/01` et `research/02`, pages de paquets). Je n'ai ni Mac ni Windows : **aucune commande ci-dessous n'a été exécutée**. Les tests de ce site ont tous été faits sous Linux (Ubuntu 26.04).
+:::
+
+## macOS
+
+D'après le rapport (formulae.brew.sh, 2026-11-07) :
+
+```sh
+brew install csfml
+```
+
+donne CSFML 3.0.0 avec SFML 3.0.2. MacPorts propose aussi `csfml` en 3.0.0. Il existe aussi des archives officielles pour macOS (`CSFML-macOS-clang-64-bit` et `-arm64`).
+
+Avec Homebrew sur Apple Silicon, les headers sont normalement sous `/opt/homebrew/include`. Il faut donc probablement ajouter à gcc/clang :
+
+```sh
+-I$(brew --prefix)/include -L$(brew --prefix)/lib
+```
+
+Cette déduction des chemins n'est pas vérifiée. Les chemins relatifs d'assets et les applications `.app` ont aussi leurs pièges (le dossier courant d'une `.app` n'est pas celui du projet) : non testé.
+
+## Windows
+
+Trois pistes, toutes non testées :
+
+| Piste | Ce que dit le rapport |
+|---|---|
+| Archives officielles | La release 3.0.0 fournit des `.zip` 32 bits, 64 bits et arm64. Sous Windows, CSFML lie SFML en statique par défaut (option `CSFML_LINK_SFML_STATICALLY`). |
+| MSYS2 | `pacman -S mingw-w64-ucrt-x86_64-csfml` donne une version `3.0.0.rc3-2` (candidate, pas la 3.0.0 finale) au 2026-11-02. |
+| vcpkg | Pas de port `csfml` trouvé. |
+| WSL | Voir [la page WSL](/guides/install/wsl/). |
+
+À l'exécution, les DLL (`csfml-graphics-3.dll` pour la 3.0, `csfml-graphics-2.dll` pour la 2.6, d'après les règles de nommage de CMake) doivent se trouver à côté de l'exécutable ou dans le `PATH`. Les noms exacts ne sont pas vérifiés dans les archives.
+
+## Ce qui est valable partout
+
+Quel que soit le système, ces règles viennent des headers et sont les mêmes :
+
+- 3.0 : `#include <CSFML/Graphics.h>` ; 2.6 : `#include <SFML/Graphics.h>` (voir [conventions](/guides/concepts/api-conventions/)).
+- Lier un `-l` par module utilisé : voir [compiler](/guides/install/compiling/).
+
+Pour un environnement de projet Epitech, le plus sûr reste Linux : voir [Epitech](/guides/epitech/environment/).

@@ -1,0 +1,30 @@
+---
+title: "CSFML dans WSL"
+description: "Utiliser CSFML dans WSL (Windows Subsystem for Linux). Page honnête : non testée."
+sidebar:
+  order: 6
+---
+
+**WSL** (*Windows Subsystem for Linux* = un Linux qui tourne dans Windows) permet de suivre les pages Linux de ce site, par exemple [Ubuntu et Debian](/guides/install/ubuntu-debian/).
+
+:::caution[Non vérifié]
+Je n'ai pas testé WSL. Tout ce qui suit est une hypothèse venant du rapport (`research/05-pieges.md` §5.3, lui-même marqué « déduit, incertain »). Si tu essaies, ton retour est utile : voir [à propos](/guides/help/about/).
+:::
+
+## Ce qu'il faut savoir (non vérifié)
+
+- Pour ouvrir une fenêtre, il faut un serveur d'affichage. **WSLg** (fourni avec WSL2 récent) en fournit un et définit `DISPLAY` tout seul. WSL1 n'a pas WSLg.
+- Le rendu OpenGL peut être logiciel (lent) si le GPU n'est pas exposé. Une fenêtre noire est possible.
+- Le son passe par PulseAudio de WSLg. Si le son échoue, voir [pas de son](/guides/troubleshooting/no-sound/).
+
+## Ce que tu peux tester toi-même
+
+1. Vérifie qu'un affichage existe : `echo $DISPLAY` doit afficher quelque chose comme `:0`.
+2. Compile et lance le [programme de diagnostic](/guides/install/check-your-setup/).
+3. Si tu vois `Failed to open X11 display`, tu n'as pas d'affichage : voir [sans écran](/guides/troubleshooting/headless-xvfb/).
+
+Ce qui est vérifié, sous Linux avec Xvfb (écran virtuel) : la fenêtre s'ouvre et se ferme sans erreur en CSFML 3.0.0 et 2.6.1. Cela ne prouve rien pour WSLg.
+
+## Attention aux fichiers
+
+Garde ton projet dans le système de fichiers Linux (`~/...`) plutôt que dans `/mnt/c/...` : c'est une règle générale de WSL, non testée ici.

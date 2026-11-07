@@ -1,0 +1,59 @@
+---
+title: "Avant de rendre ton projet"
+description: "Une checklist pour ne pas échouer bêtement : compilation propre, valgrind, assets, banana-check-repo, clone vierge et environnement de correction."
+sidebar:
+  order: 4
+---
+
+Le correcteur construit ton projet **depuis zéro**, dans un autre environnement que le tien. Voici ce qu'il faut contrôler.
+
+## 1. Compiler avec les bons flags
+
+Compile avec `-Wall -Wextra` (et `-Werror` si ton sujet le demande). Un code qui passe chez toi avec peu d'avertissements peut échouer ailleurs. Voir [Makefile](/guides/epitech/makefile/).
+
+## 2. Même version de CSFML que le correcteur
+
+L'image actuelle a **CSFML 3.0.0** (voir [environnement](/guides/epitech/environment/)). Si tu développes avec la 2.6, ton code ne compilera pas : `SFML/Graphics.h` introuvable, `sfBool` inconnu… Contrôle avec le [programme de diagnostic](/guides/install/check-your-setup/).
+
+## 3. valgrind
+
+```sh
+valgrind --leak-check=full ./ton_programme
+```
+
+Regarde `definitely lost` et les `Invalid read/write` (voir [mémoire](/guides/concepts/memory/)). Le « still reachable » de plusieurs centaines de Ko vient des bibliothèques graphiques. Si tu affiches du texte, une fuite de FreeType apparaît même dans un programme correct (`tests/valgrind.supp` la masque). Un `destroy` pour chaque `create`.
+
+## 4. Les assets
+
+- Les chemins relatifs sont relatifs au **dossier courant**, pas à l'exécutable. Teste en lançant ton programme depuis un **autre dossier** que celui du projet (voir [ressources](/guides/concepts/resources/)).
+- Les images, sons et polices doivent être **dans le dépôt** (si ton sujet l'autorise). Le correcteur ne les a pas sur sa machine.
+- Une police introuvable : `sfFont_createFromFile` ne cherche pas dans le système.
+
+## 5. banana-check-repo
+
+Cet outil, installé avec le paquet banana, vérifie les **fichiers** du dépôt. Il se lance **depuis la racine** :
+
+```sh
+banana-check-repo .
+```
+
+Vu en test sur un dépôt d'essai : `unwanted file (C-O1)` pour un `.o` et un `.a`, et `invalid file name (C-O4)` pour `Main_File.c` (nom pas en snake_case). Donc : pas de fichiers objets ni de bibliothèques dans le dépôt, et des noms de fichiers en minuscules avec `_`. Son comportement face à un `.gitignore` n'a pas été testé : vérifie sur ta machine.
+
+## 6. Clone vierge
+
+Le plus sûr :
+
+```sh
+git clone <ton-dépôt> /tmp/test_rendu
+cd /tmp/test_rendu && make && ./ton_programme
+```
+
+Ça révèle les fichiers oubliés (non ajoutés à Git), les chemins relatifs et les headers générés qui n'existent que chez toi. Fais-le dans un dossier temporaire, puis supprime-le.
+
+## 7. Pas de fichiers parasites
+
+`git status` ne doit pas montrer de `.o`, de binaires de test, de fichiers `*~`. Un `main` de test ne doit pas être livré si le sujet demande une bibliothèque sans `main`.
+
+:::caution[Non vérifié]
+Je ne connais ni les tests du correcteur, ni les exigences exactes de ton sujet (fonctions autorisées, présence de `pkg-config`, dossier d'exécution des tests). Cette checklist vient de l'expérience générale et des tests locaux, pas d'une documentation officielle d'Epitech.
+:::

@@ -1,0 +1,50 @@
+---
+title: "Le Makefile d'un projet CSFML"
+description: "Les règles attendues (all, clean, fclean, re), les flags usuels, éviter le relink, et ce qui est vérifié ou seulement déduit."
+sidebar:
+  order: 2
+---
+
+Le sujet de ton projet décrit le Makefile attendu. Cette page donne les **principes** ; en cas de différence, **le sujet fait foi**.
+
+:::caution[Non vérifié]
+Les règles ci-dessous (noms des règles, « pas de relink », pas de joker `*`) viennent du rapport `research/06` §2, qui les a lues dans des sujets et dépôts publics et les marque `[DÉDUIT]`. Je n'ai pas le sujet officiel : rien ici n'est une règle officielle d'Epitech. Les comportements de `make` décrits plus bas, eux, ont été testés.
+:::
+
+## Les règles classiques (déduit)
+
+| Règle | Effet attendu |
+|---|---|
+| `all` | construit le binaire (règle par défaut) |
+| `clean` | supprime les fichiers objets `.o` |
+| `fclean` | fait `clean` puis supprime le binaire |
+| `re` | `fclean` puis `all` |
+| `$(NAME)` | la règle qui lie le binaire ; `NAME` est le nom imposé par le sujet |
+
+## Pas de relink
+
+Le « relink » est une reconstruction inutile : si rien n'a changé, `make` ne doit rien refaire. Il suffit que les `.o` dépendent des `.c`, et le binaire des `.o`. Test fait sur un petit projet (une source qui crée une `sfClock`) :
+
+- `make` : compile et lie ;
+- `make` à nouveau : `Rien à faire pour « all ».` (en anglais : `Nothing to be done`) ;
+- après `touch main.c` : seule la source touchée est recompilée ;
+- `make re` : reconstruit tout.
+
+Le Makefile minimal qui a donné ce résultat (`NAME`, `SRC`, `OBJ = $(SRC:.c=.o)`, un `$(NAME): $(OBJ)` qui appelle `$(CC) -o $(NAME) $(OBJ) $(LDLIBS)`, `.PHONY` pour les quatre règles) est le schéma générique ; écris-le toi-même d'après le sujet. Il n'est pas réutilisable tel quel pour un projet noté.
+
+## Flags et bibliothèques
+
+- Avertissements : `-Wall -Wextra` ; souvent `-Werror` ensuite (déduit des sujets publics). C'est aussi ce qu'utilisent les exemples de ce dépôt (`examples/common/example.mk`).
+- Includes : `-I./include` pour tes propres headers (usage courant).
+- Bibliothèques : une par module utilisé, **à la fin** de la commande : `-lcsfml-graphics -lcsfml-window -lcsfml-system`, + `-lcsfml-audio` pour le son, + `-lm` pour les maths. Voir [compiler](/guides/install/compiling/) pour l'ordre et la raison.
+- Le fichier `.pc` de `pkg-config` est une alternative, mais les sujets demandent souvent des `-l` explicites (déduit). Je ne sais pas si `pkg-config` est disponible chez le correcteur : l'image `latest` contient `pkgconf` (voir [environnement](/guides/epitech/environment/)).
+- CSFML 2.6 : avec `-Werror`, ajoute `-Wno-error=deprecated-declarations` (le header `Event.h` déclenche un avertissement à chaque include ; voir [compiler](/guides/install/compiling/)).
+
+## Autres règles probables (déduit, non vérifié)
+
+- Pas de `*` joker (`*.c`) pour lister les sources.
+- Pas de `.o`, de binaire ni de `libmy.a` dans le dépôt Git (`.gitignore`). Cette dernière règle est contrôlée par `banana-check-repo` : voir [avant de rendre](/guides/epitech/before-you-submit/).
+
+## Piège avec `CC`
+
+Dans l'image Epitech, `CC=clang` est défini dans l'environnement. `CC = gcc` écrit dans ton Makefile prend le dessus ; `CC ?= gcc` laisse l'environnement gagner. Les deux compilateurs doivent accepter ton code.

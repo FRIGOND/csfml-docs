@@ -1,0 +1,52 @@
+---
+title: "La mémoire avec CSFML et valgrind"
+description: "Retrouver les fuites avec valgrind, ignorer le bruit de Mesa et de FreeType, et savoir ce que fait destroy(NULL)."
+sidebar:
+  order: 9
+---
+
+## Un destroy par create
+
+CSFML alloue de la mémoire dynamique : chaque `create` a son `destroy`. Les getters qui renvoient un pointeur `const` (par exemple `sfSprite_getTexture`) **empruntent** : ne les détruis pas (voir [qui possède quoi](/guides/concepts/ownership/)).
+
+## Lancer valgrind
+
+```sh
+valgrind --leak-check=full ./app
+```
+
+Pour afficher seulement les vraies fuites :
+
+```sh
+valgrind --leak-check=full --show-leak-kinds=definite --error-exitcode=42 ./app
+```
+
+Résultat mesuré avec un programme qui ouvre et ferme juste une fenêtre (CSFML 3.0.0, build local, Xvfb) : `definitely lost: 0 bytes`, `ERROR SUMMARY: 0 errors`, mais `still reachable: 259,204 bytes in 3,671 blocks`. Ce « still reachable » vient des bibliothèques système (OpenGL, X11), pas de ton code. Ce qui compte, ce sont les lignes **definitely lost** et les erreurs `Invalid read/write`.
+
+## Bruit connu
+
+- **Mesa / amdgpu** : sur certaines machines, des messages comme `amdgpu_device_initialize failed` apparaissent. Observé sous Xvfb avec `LIBGL_ALWAYS_SOFTWARE=1`, inoffensif (RESULTATS n°33). Voir [sans écran](/guides/troubleshooting/headless-xvfb/).
+- **Fuite interne de FreeType** : dès qu'un texte est dessiné, valgrind signale des blocs « definitely lost » (par exemple 1 646 octets en 8 blocs, test n°27) dont **toutes** les piles passent par `FT_Glyph_To_Bitmap` appelé depuis `sf::Font::loadGlyph`. C'est une fuite de SFML/FreeType, pas la tienne (observée en 3.0.0 et en 2.6.1). Le dépôt fournit `tests/valgrind.supp` qui la masque :
+
+```sh
+valgrind --leak-check=full --suppressions=tests/valgrind.supp ./app
+```
+
+Si ton programme n'affiche aucun texte, tu ne devrais pas la voir. Avec le fichier de suppression sur un programme de fenêtre simple : 0 erreur.
+
+## `destroy(NULL)`
+
+| Version | Résultat (test) |
+|---|---|
+| 3.0.0 | les 40 fonctions `*_destroy` appelées avec `NULL` ne plantent pas (paquet Ubuntu et build local, n°62) |
+| 2.6.1 | 41 des 42 fonctions `*_destroy` sont sans danger ; **`sfRenderTexture_destroy(NULL)` plante (SIGSEGV)** (n°91) |
+
+Donc : n'écris pas un code qui compte sur `destroy(NULL)` en 2.6, et mets tes pointeurs à `NULL` seulement après avoir testé qu'ils ne le sont pas déjà. Le double `destroy` (même pointeur détruit deux fois) est une erreur dans tous les cas (rapport, déduit, non testé).
+
+## Les asserts selon le build
+
+Dans le paquet Ubuntu 3.0.0, les `assert` sont actifs : `sfClock_getElapsedTime(NULL)` affiche `Clock.cpp:59: ... Assertion 'clock' failed.` et abandonne (exit 134). Dans un build Release local (`-DNDEBUG`), il n'y a pas d'assert : le même appel peut simplement planter (segfault, exit 139 pour `sfSprite_create(NULL)`). Ne compte donc pas sur l'assert pour trouver tes bugs. Voir [plantages](/guides/troubleshooting/runtime-crashes/).
+
+:::caution[Non vérifié]
+Le chiffre « 259 204 octets » dépend de ta machine et de tes pilotes. Les tests ont été faits sur une seule machine.
+:::

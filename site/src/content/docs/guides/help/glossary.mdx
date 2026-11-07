@@ -1,0 +1,87 @@
+---
+title: "Glossaire"
+description: "Plus de 40 mots du métier expliqués simplement, en français et en anglais, avec des liens vers les pages qui les détaillent."
+sidebar:
+  order: 1
+---
+
+Les mots en anglais sont ceux que tu verras dans les messages d'erreur, les headers et la documentation officielle. Les définitions sont volontairement simples.
+
+## Programmation C
+
+| Terme (EN) | Français | Explication |
+|---|---|---|
+| header | en-tête | Fichier `.h` qui déclare des fonctions et des types. Ex. `CSFML/Graphics.h`. |
+| library | bibliothèque | Code déjà compilé qu'on réutilise (`.so` sous Linux). Ex. `libcsfml-graphics.so`. |
+| linker | éditeur de liens | Programme qui assemble ton code et les bibliothèques. Voir [erreurs de lien](/guides/troubleshooting/link-errors/). |
+| undefined reference | référence indéfinie | L'éditeur de liens ne trouve pas une fonction : `-l` manquant ou mal placé. |
+| opaque type | type opaque | Type dont le contenu est caché : on ne manipule que des pointeurs (`sfSprite*`). Voir [conventions](/guides/concepts/api-conventions/). |
+| pass by value | passage par valeur | Une copie de la structure est donnée à la fonction (`sfVector2f`, `sfColor`). |
+| union | union | Zone mémoire lue de plusieurs façons : `sfEvent` en est une. |
+| NULL pointer | pointeur nul | Pointeur qui ne désigne rien. Un `create` qui échoue renvoie `NULL`. |
+| memory leak | fuite mémoire | Mémoire allouée jamais libérée. Voir [mémoire](/guides/concepts/memory/). |
+| use after free | utilisation après libération | Lire un objet déjà détruit. Voir [plantages](/guides/troubleshooting/runtime-crashes/). |
+| double free | double libération | `destroy` appelé deux fois sur le même pointeur. |
+| segmentation fault | erreur de segmentation | Plantage dû à un accès mémoire interdit. |
+| assert | assertion | Test qui arrête le programme s'il est faux (`Assertion 'texture' failed`). |
+| rpath | chemin d'exécution des bibliothèques | Chemin écrit dans l'exécutable pour retrouver ses `.so`. Voir [compiler](/guides/install/compiling/). |
+| deprecated | obsolète | Fonction ou type à ne plus utiliser. Avertissement `-Wdeprecated-declarations`. |
+| ownership | propriété | Qui doit libérer un objet, et combien de temps il doit vivre. Voir [qui possède quoi](/guides/concepts/ownership/). |
+| compile / build | compiler / construire | Transformer le code source en programme. |
+| Makefile | fichier de construction | Règles lues par `make`. Voir [Makefile](/guides/epitech/makefile/). |
+
+## Fenêtre et événements
+
+| Terme (EN) | Français | Explication |
+|---|---|---|
+| window | fenêtre | La zone de l'écran où tu dessines (`sfRenderWindow`). |
+| render window | fenêtre de rendu | Fenêtre sur laquelle on peut dessiner des objets CSFML. |
+| event | événement | Message de la fenêtre (clic, touche, fermeture). Voir [événements](/guides/concepts/events/). |
+| event polling | consultation des événements | Lire les événements un par un avec `sfRenderWindow_pollEvent`. |
+| event queue | file d'événements | Liste des événements en attente, à vider à chaque frame. |
+| game loop | boucle de jeu | Boucle qui lit, met à jour, dessine. Voir [boucle de jeu](/guides/concepts/game-loop/). |
+| frame | image | Un tour de la boucle de jeu. |
+| framerate / FPS | cadence / images par seconde | Nombre de frames par seconde. |
+| vsync | synchronisation verticale | Cale l'affichage sur la fréquence de l'écran. |
+| display / screen | écran | Matériel d'affichage (ou serveur X11). |
+| Xvfb | écran virtuel | Serveur X sans écran réel, pour les tests. Voir [sans écran](/guides/troubleshooting/headless-xvfb/). |
+| video mode | mode vidéo | Taille de fenêtre et profondeur de couleur (`sfVideoMode`). |
+
+## Dessin
+
+| Terme (EN) | Français | Explication |
+|---|---|---|
+| sprite | sprite | Image affichée à l'écran, avec position, rotation, échelle (`sfSprite`). |
+| texture | texture | Image chargée en mémoire graphique (`sfTexture`). Le sprite en garde un pointeur. |
+| texture rect | rectangle de texture | Partie de la texture affichée par un sprite. |
+| sprite sheet | planche de sprites | Une image contenant plusieurs images d'animation. |
+| vertex (pl. vertices) | sommet | Point d'une forme avec position, couleur et coordonnées de texture. |
+| vertex array | tableau de sommets | Liste de sommets dessinés d'un coup (`sfVertexArray`). |
+| shape | forme | Rectangle, cercle ou polygone prêt à dessiner. |
+| view | vue | Caméra 2D : quelle partie du monde est montrée. Voir [coordonnées et vues](/guides/concepts/coordinates-views/). |
+| transform | transformation | Déplacement, rotation, échelle combinés (`sfTransform`). |
+| origin | origine | Point pivot d'un objet. |
+| blend mode | mode de mélange | Façon de combiner un pixel dessiné avec celui déjà présent (transparence, addition). |
+| shader | shader | Petit programme exécuté par la carte graphique pour calculer les pixels. |
+| render texture | texture de rendu | Texture sur laquelle on dessine au lieu de l'écran. |
+| font | police | Fichier de caractères (`.ttf`) : `sfFont`. |
+| glyph | glyphe | Image d'un caractère. |
+| clear / draw / display | effacer / dessiner / afficher | Les trois étapes du rendu d'une frame. |
+| pixel | pixel | Un point de l'image. |
+| alpha | transparence | Quatrième composante de la couleur (`sfColor.a`). |
+
+## Temps, audio, réseau
+
+| Terme (EN) | Français | Explication |
+|---|---|---|
+| delta time | temps entre deux frames | Durée de la dernière frame, pour des mouvements indépendants de la machine. Voir [temps](/guides/concepts/time/). |
+| clock | horloge | Mesure le temps écoulé (`sfClock`). |
+| sound buffer | tampon sonore | Son entièrement chargé en mémoire (`sfSoundBuffer`). |
+| music | musique | Son lu en continu depuis un fichier (`sfMusic`). |
+| streaming | lecture en continu | Lecture par morceaux sans tout charger. |
+| listener | auditeur | Position et orientation de « l'oreille » pour le son 3D. |
+| socket | prise réseau | Point de communication réseau (TCP, UDP). |
+| packet | paquet | Données regroupées pour le réseau (`sfPacket`). |
+| mutex / thread | verrou / fil d'exécution | Absents de CSFML 3.0 (supprimés) ; utilise `<threads.h>` ou pthread. |
+
+Retour à l'[accueil des guides](/guides/) ou à la [FAQ](/guides/help/faq/).

@@ -1,0 +1,58 @@
+---
+title: "Les événements"
+description: "Comment lire un sfEvent, et ce qui change entre CSFML 2.6 et 3.0 (noms, champs, tailles, souris)."
+sidebar:
+  order: 4
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Example from '@/components/Example.astro';
+
+Un **événement** (*event*) est un message de la fenêtre : « l'utilisateur a cliqué », « la fenêtre a changé de taille ». Tu les lis avec `sfRenderWindow_pollEvent` (voir [boucle de jeu](/guides/concepts/game-loop/)).
+
+## Comment `sfEvent` est fait
+
+`sfEvent` est une **union** : une seule zone mémoire, lue de plusieurs façons. Le champ `type` (toujours valable) te dit quelle autre vue utiliser.
+
+- si `event.type == sfEvtClosed` : rien d'autre à lire ;
+- si `event.type == sfEvtKeyPressed` : lis `event.key.code` ;
+- si `event.type == sfEvtMouseButtonPressed` : lis `event.mouseButton`.
+
+Lire `event.key` quand le type est un clic est une erreur : les données n'ont pas de sens.
+
+## Ce qui change entre 2.6 et 3.0
+
+Tout ce tableau est vérifié contre `api/csfml-2.6.1.json` et `api/csfml-3.0.0.json` (types `sfEventType`, `sfSizeEvent`, `sfMouseButtonEvent`, `sfMouseMoveEvent`…).
+
+| Sujet | CSFML 2.6.1 | CSFML 3.0.0 |
+|---|---|---|
+| Focus perdu / gagné | `sfEvtLostFocus`, `sfEvtGainedFocus` | `sfEvtFocusLost`, `sfEvtFocusGained` |
+| Taille de la fenêtre | `event.size.width`, `event.size.height` | `event.size.size.x`, `event.size.size.y` (champ `size` de type `sfVector2u`) |
+| Position du clic | `event.mouseButton.x`, `.y` | `event.mouseButton.position.x`, `.y` |
+| Position de la souris | `event.mouseMove.x`, `.y` | `event.mouseMove.position.x`, `.y` |
+| Molette | `sfEvtMouseWheelMoved` (déprécié) et `sfEvtMouseWheelScrolled` | seulement `sfEvtMouseWheelScrolled` (`event.mouseWheelScroll`) |
+| Mouvement brut | absent | `sfEvtMouseMovedRaw`, champ `event.mouseMoveRaw` |
+| Booléens (`event.key.shift`…) | `sfBool` | `bool` |
+| `waitEvent` | `sfRenderWindow_waitEvent(window, &event)` | `sfRenderWindow_waitEvent(window, timeout, &event)` |
+
+La 2.6 marque `sfMouseWheelEvent` comme obsolète : c'est l'origine de l'avertissement `deprecated` à chaque include (voir [compiler](/guides/install/compiling/)).
+
+Valeurs numériques de `sfEventType` : elles sont décalées entre les versions (la liste des noms n'est pas la même). N'utilise jamais un chiffre en dur.
+
+## Vérifié par test
+
+- `waitEvent` (3.0) : après avoir vidé la file, `sfRenderWindow_waitEvent(w, 200 ms, &e)` renvoie `false` après environ 207 ms ; avec `sfTime_Zero` il attend sans limite (RESULTATS n°17).
+- À la création d'une fenêtre sous Xvfb, deux événements arrivent d'office : `sfEvtResized` puis `sfEvtFocusGained` (n°17). Ne crois pas qu'un événement `Resized` signifie que l'utilisateur a agi.
+
+## Exemple
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 3.0">
+    <Example example="window/events" version="3.0" />
+  </TabItem>
+  <TabItem label="CSFML 2.6">
+    <Example example="window/events" version="2.6" />
+  </TabItem>
+</Tabs>
+
+Pour les touches maintenues (pas besoin d'événement) : [clavier en temps réel](/3-0/cookbook/window/keyboard-realtime/). Pour la souris : [position de la souris](/3-0/cookbook/window/mouse-position/). Référence : [Event.h](/3-0/reference/window/event/).

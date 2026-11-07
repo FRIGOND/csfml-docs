@@ -1,0 +1,55 @@
+---
+title: "Le coding style et le code CSFML"
+description: "Les règles de la norme Epitech (banana, epiclang) qui touchent le plus le code CSFML, avec les avertissements réels et les astuces pour les respecter."
+sidebar:
+  order: 3
+---
+
+La **norme** (*coding style*) est vérifiée par l'outil `epiclang` (greffon « Banana »). Le code C de CSFML est long (appels à rallonge, nombreux pointeurs) et dépasse vite les limites.
+
+:::caution[Non vérifié]
+Les règles de ton projet peuvent différer de ce que fait la version de `epiclang` installée ici (`banana-coding-style-checker` 20261006101948). Je n'ai pas le document officiel de la norme : le **sens** de chaque règle ci-dessous vient des avertissements que l'outil a affichés sur mes fichiers de test, rien d'autre. Le correcteur d'Epitech peut utiliser une autre version.
+:::
+
+## Comment le lancer
+
+```sh
+epiclang -c fichier.c -o /dev/null
+```
+
+Il affiche des `warning: [Banana] [Major|Minor|Info] ... (C-XX)`. Ajoute tes `-I` si ton fichier inclut CSFML. Dans nos essais, les headers de CSFML eux-mêmes produisaient aussi des avertissements (par exemple C-F3 et C-H2 dans `CSFML/Graphics.h`) : regarde seulement les lignes qui pointent **vers tes fichiers**.
+
+## Les règles vues en test
+
+Chaque ligne a été provoquée volontairement et a produit l'avertissement indiqué.
+
+| Règle | Message de l'outil | Ce que ça veut dire pour toi |
+|---|---|---|
+| C-F3 | `101-character line (C-F3)` | ligne trop longue (limite visible : 80 colonnes). Coupe les appels CSFML sur plusieurs lignes. |
+| C-F4 | `21st line in the function (C-F4)` | fonction de plus de 20 lignes (la 21e est signalée). Découpe en petites fonctions. |
+| C-F5 | `5th parameter in function (C-F5)` | plus de 4 paramètres. Regroupe dans une `struct`. |
+| C-F6 | `function without parameter (C-F6)` | écris `int main(void)`, pas `int main()`. |
+| C-F2 | `non-snake-case function name`, `function name too short` | `snake_case`, et un nom d'au moins quelques lettres (`f1` est refusé). |
+| C-F8 | `comment inside function (C-F8)` | pas de commentaire dans le corps d'une fonction. |
+| C-C1 | `nested if statement at depth 3 (C-C1)` | pas plus de 2 niveaux d'imbrication. |
+| C-O3 | `6th non-static function in the file (C-O3)` | au plus 5 fonctions non `static` par fichier. |
+| C-G1 | `file not starting with standard Epitech header (C-G1)` | en-tête Epitech au début du fichier. |
+| C-G2 | `no blank line between function declarations` | une ligne vide entre deux fonctions. |
+| C-G4 | `global variable (C-G4)` | pas de variable globale non constante. |
+| C-L1 | `multiple statements on the same line (C-L1)` | une instruction par ligne. |
+| C-L2 | `tab used for indentation (C-L2)` | espaces, pas de tabulations. |
+| C-L3 | `missing space after comma`, `multiple spaces used for spacing` | espaces corrects. |
+| C-L4 | `function body opening brace not alone on its line (C-L4)` | l'accolade `{` d'une fonction seule sur sa ligne. |
+| C-L6 | `missing blank line after variable declaration section (C-L6)` | une ligne vide après les déclarations de variables. |
+| C-A3 | `file not ending with a newline (C-A3)` | termine le fichier par un retour à la ligne. |
+| C-H2 | `file not protected against double inclusion (C-H2)` | un `.h` doit avoir une garde d'inclusion. Dans nos essais, `#pragma once` des headers CSFML a été signalé. |
+
+Les mêmes règles se retrouvent dans le rapport (research/06 §3) avec les mêmes numéros ; pour C-F3, C-F5, C-F6 et C-G1, le sens du rapport est confirmé par ces tests.
+
+## Astuces pour le code CSFML
+
+- **Struct d'état** : regroupe `window`, `texture`, `sprite`, `clock` dans une `struct` passée par pointeur, au lieu de 8 paramètres.
+- **Fonctions courtes** : `init_window`, `handle_events`, `update`, `draw`, `cleanup`. C'est aussi ce que font les exemples de ce site (voir [Événements](/3-0/cookbook/window/events/)).
+- **Appels longs** : coupe après une virgule et indente, comme dans l'exemple `sfRenderWindow_create(mode, "x",` puis `sfDefaultStyle, sfWindowed, NULL);` sur la ligne suivante.
+- Les exemples du dépôt respectent « lignes de 80 colonnes ou moins et fonctions de 20 lignes ou moins » (vérifié par script, tests/logs/examples-graphics-window.md) ; ils n'ont **pas** l'en-tête Epitech, donc ils déclenchent C-G1.
+- `banana-check-repo` vérifie un autre jeu de règles (fichiers du dépôt) : voir [avant de rendre](/guides/epitech/before-you-submit/).

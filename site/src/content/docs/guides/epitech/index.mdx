@@ -1,0 +1,29 @@
+---
+title: "CSFML et Epitech"
+description: "Ce que couvre la section Epitech de ces guides, et le cadre éthique : doc non officielle, ton projet doit être ton travail, aucune solution de projet noté."
+sidebar:
+  order: 0
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+:::danger[À lire d'abord]
+Cette documentation est **communautaire et non officielle**. Elle n'est liée ni à Epitech ni à l'équipe SFML. Ton projet doit rester **ton travail** : ici, tu ne trouveras ni solution, ni architecture de projet noté (my_hunter, my_runner…). Seulement des **notions**, des explications et des liens vers la référence. Le sujet du projet fait toujours foi, pas cette page.
+:::
+
+## Ce que couvre cette section
+
+<CardGrid>
+  <LinkCard title="L'environnement" href="/guides/epitech/environment/" description="Quelle version de CSFML chez le correcteur, et comment le vérifier chez toi." />
+  <LinkCard title="Le Makefile" href="/guides/epitech/makefile/" description="Règles all/clean/fclean/re, flags, pas de relink." />
+  <LinkCard title="Le coding style" href="/guides/epitech/coding-style/" description="Les règles de la norme les plus fréquentes avec CSFML, testées avec epiclang." />
+  <LinkCard title="Avant de rendre" href="/guides/epitech/before-you-submit/" description="Checklist : valgrind, assets, clone vierge, environnement de correction." />
+  <LinkCard title="Notions par projet" href="/guides/epitech/project-notions/" description="Quelles pages lire pour quelle notion, sans solution." />
+</CardGrid>
+
+## Ce qui est vérifié, ce qui ne l'est pas
+
+- **Vérifié** : la version de CSFML dans les deux images Docker d'Epitech (lue dans leurs couches), le comportement des outils `epiclang` et `banana-check-repo` installés sur la machine de test, les messages de compilation.
+- **Non vérifié** : le contenu exact des tests du correcteur, la liste des fonctions autorisées de ton projet, les postes de l'école. Rien de tout cela n'est public ou testable ici. Les pages le rappellent quand c'est le cas.
+
+Si ton sujet contredit une page de ce site, **suis ton sujet** et [signale la différence](/guides/help/about/).

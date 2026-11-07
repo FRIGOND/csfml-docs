@@ -1,0 +1,85 @@
+---
+title: "Questions fréquentes"
+description: "Réponses courtes aux questions les plus fréquentes sur CSFML, avec renvois vers les pages détaillées."
+sidebar:
+  order: 2
+---
+
+## Installation et version
+
+**Quelle version de CSFML dois-je utiliser ?**
+Celle de ton environnement de rendu. L'image Epitech actuelle a la 3.0.0. Voir [environnement](/guides/epitech/environment/) et [quelle version](/guides/install/).
+
+**Comment savoir quelle version j'ai ?**
+Compile le [programme de diagnostic](/guides/install/check-your-setup/) : il affiche `CSFML 3.0.0` ou `CSFML 2.6.1`. Sur Ubuntu : `dpkg -l libcsfml-dev`.
+
+**`SFML/Graphics.h` est introuvable, pourquoi ?**
+En 3.0, les headers sont dans `CSFML/`. Voir [erreurs de compilation](/guides/troubleshooting/compile-errors/).
+
+**Puis-je installer CSFML sans `sudo` ?**
+Oui, en la construisant dans ton dossier personnel : [depuis les sources](/guides/install/from-source/) (recette testée sur Ubuntu).
+
+**Faut-il installer SFML en plus de CSFML ?**
+Oui, CSFML est une couche au-dessus de SFML (C++). Les paquets des distributions l'installent tout seuls. Quand tu construis toi-même, il faut construire SFML d'abord.
+
+## Compilation
+
+**Que veut dire `undefined reference to 'sfClock_create'` ?**
+Il manque `-lcsfml-system` ou les `-l` sont avant le `.c`. Voir [erreurs de lien](/guides/troubleshooting/link-errors/).
+
+**Pourquoi un `-l` par module ?**
+Aucune bibliothèque CSFML n'inclut les autres. Voir [compiler](/guides/install/compiling/).
+
+**Le programme compile mais ne démarre pas (`cannot open shared object file`).**
+Les `.so` ne sont pas trouvés au lancement : `-Wl,-rpath` ou `LD_LIBRARY_PATH`. Voir [erreurs de lien](/guides/troubleshooting/link-errors/).
+
+**Pourquoi l'avertissement `deprecated` sur `sfMouseWheelEvent` ?**
+CSFML 2.6.1 marque ce type obsolète dans son header. Voir [compiler](/guides/install/compiling/).
+
+## Programmation
+
+**Pourquoi `sfSprite_create(NULL)` plante ?**
+En 3.0, il faut une texture valide. Teste le retour de `sfTexture_createFromFile`. Voir [plantages](/guides/troubleshooting/runtime-crashes/).
+
+**Qui doit appeler `destroy` ?**
+Toi, pour chaque `create`, dans l'ordre inverse. Voir [qui possède quoi](/guides/concepts/ownership/).
+
+**Pourquoi ma fenêtre ne répond plus ?**
+Tu ne vides probablement pas la file d'événements avec un `while`. Voir [boucle de jeu](/guides/concepts/game-loop/).
+
+**Comment avoir la même vitesse sur toutes les machines ?**
+Multiplie la vitesse par le delta time. Voir [temps](/guides/concepts/time/).
+
+**Mon texte accentué s'affiche mal.**
+`sfText_setString` décode mal l'UTF-8 (test réel). Utilise `sfText_setUnicodeString`. Voir [ressources](/guides/concepts/resources/).
+
+**La texture ne se charge pas alors que le fichier existe.**
+Le chemin est relatif au dossier **courant**. Lis le message sur stderr (en 3.0 il affiche le chemin absolu). Voir [ressources](/guides/concepts/resources/).
+
+## Exécution
+
+**Ma fenêtre est noire.**
+Voir la checklist [fenêtre noire](/guides/troubleshooting/black-window/).
+
+**Je n'entends rien.**
+Voir [pas de son](/guides/troubleshooting/no-sound/).
+
+**`Failed to open X11 display`, que faire ?**
+Il n'y a pas d'écran. Utilise Xvfb : [sans écran](/guides/troubleshooting/headless-xvfb/).
+
+**valgrind affiche plein de fuites.**
+Une partie vient d'OpenGL/X11 (« still reachable ») et de FreeType quand tu affiches du texte. Regarde `definitely lost` de TON code. Voir [mémoire](/guides/concepts/memory/).
+
+## Autres
+
+**Le code 2.6 fonctionne-t-il en 3.0 ?**
+Non, pas sans changements (includes, booléens, signatures). Voir la [migration](/3-0/migration/overview/).
+
+**CSFML fonctionne-t-elle sous Wayland ?**
+SFML 3.0.2 n'a que le backend X11 (aucune mention de Wayland dans la bibliothèque, vérifié) ; sous Wayland, ça passe par XWayland si `DISPLAY` est défini. Non testé sur un vrai bureau Wayland.
+
+**Cette doc est-elle officielle ?**
+Non. Voir [à propos](/guides/help/about/).
+
+**Où sont les signatures exactes ?**
+Dans la [référence 3.0](/3-0/reference/) ou la [référence 2.6](/2-6/reference/), générées depuis les headers.

@@ -1,0 +1,58 @@
+---
+title: "Coordonnées, transformations et vues"
+description: "Le repère de la fenêtre, pixels contre monde, sfTransform, et la vue (sfView) qui sert de caméra."
+sidebar:
+  order: 6
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Example from '@/components/Example.astro';
+
+## Le repère
+
+Dans une fenêtre CSFML, l'origine `(0, 0)` est le coin **en haut à gauche**. `x` augmente vers la droite, `y` augmente vers le **bas**. Les angles de rotation sont en degrés : dans l'exemple plus bas, `sfTransform_rotate(&t, 90)` fait un quart de tour, et le résultat testé (10,0 devient 100,70) ne s'explique qu'ainsi. Détails : [Transformable.h](/3-0/reference/graphics/transformable/).
+
+## Pixels et coordonnées du monde
+
+Deux espaces coexistent :
+
+- les **pixels de la fenêtre** (là où la souris clique) ;
+- les **coordonnées du monde** (là où tu poses tes sprites).
+
+Sans caméra, ils sont identiques. Dès que tu bouges, zoomes ou tournes la vue, ils diffèrent. `sfRenderWindow_mapPixelToCoords(window, pixel, view)` convertit un pixel en coordonnées du monde, par exemple pour savoir sur quel objet l'utilisateur a cliqué. La signature est la même en 3.0 et en 2.6.
+
+## Transformer : `sfTransform`
+
+Un `sfTransform` est une matrice qui combine **translation** (déplacer), **rotation** et **échelle** (agrandir). Les objets dessinables en ont une, accessible via `setPosition`, `setRotation`, `setScale`, `setOrigin`. L'**origine** est le point de l'objet qui sert de pivot et de point de position.
+
+L'exemple ci-dessous compose une translation, une rotation et une échelle, puis vérifie qu'un point est transformé vers la position calculée (10,0 devient 100,70) ; l'ordre des opérations compte.
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 3.0">
+    <Example example="graphics/transform" version="3.0" />
+  </TabItem>
+  <TabItem label="CSFML 2.6">
+    <Example example="graphics/transform" version="2.6" />
+  </TabItem>
+</Tabs>
+
+## La vue : une caméra 2D
+
+Une `sfView` choisit **quelle partie du monde** est montrée dans la fenêtre : centre, taille, rotation, zoom. Pour suivre un personnage, tu déplaces le centre de la vue, pas tous les objets. Pour afficher une interface fixe, tu repasses à la vue par défaut avec `sfRenderWindow_getDefaultView`, comme dans l'exemple.
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 3.0">
+    <Example example="graphics/view-camera" version="3.0" />
+  </TabItem>
+  <TabItem label="CSFML 2.6">
+    <Example example="graphics/view-camera" version="2.6" />
+  </TabItem>
+</Tabs>
+
+Piège de redimensionnement : si tu agrandis la fenêtre sans mettre à jour la vue, l'image est étirée. Le comportement exact n'a pas été testé ici.
+
+## Différence 2.6 / 3.0
+
+`sfFloatRect` et `sfIntRect` ont changé de forme en 3.0 (champs `position` et `size` au lieu de `left`, `top`, `width`, `height`) : l'exemple 3.0 écrit `sfView_createFromRect((sfFloatRect){{0, 0}, {800, 600}})`. Un ancien `{0, 0, 32, 32}` compile encore mais avec `-Wmissing-braces` (RESULTATS, test 26). Voir [migration](/3-0/migration/overview/).
+
+Références : [View.h](/3-0/reference/graphics/view/), [Transform.h](/3-0/reference/graphics/transform/), [RenderWindow.h](/3-0/reference/graphics/render-window/#sfRenderWindow_mapPixelToCoords).

@@ -15,3 +15,7 @@ Ce qui est testé localement prime sur le rapport. Une entrée par correction.
 | 9 | 08 En bref, A-TESTER n°41 | « Astro 7.4.7 exige Node 24 » | Astro 7.4.7 exige Node ≥ 22.23.4 (`engines`), npm ≥ 9.6.5. Node 22.22.1 est refusé. | tests/RESULTATS.md C n°41 |
 | 10 | 08 §6 | 3.x à la racine, 2.6 sous `/v2.6/` | URLs symétriques `/3-0/` et `/2-6/` (le point est supprimé des slugs) ; poids égal. | DECISIONS.md |
 | 11 | 04 annexe (« modifiées autrement : 51 ») | 51 signatures modifiées (hors sfBool/entiers) | Recalcul depuis les JSON : 92 différences hors types = 47 vraies modifications + 44 où seul `const` change (les `*_destroy` deviennent `const`) + 1 nom de paramètre. 40 supprimées / 116 ajoutées / 140 « types seuls » confirmés. | page générée `3-0/migration/api-changes` |
+
+## 12. research/06 §5 : `__has_include(<CSFML/Graphics.h>)` est un mauvais détecteur de version
+Constaté par l'agent des guides : avec le paquet système 3.0 installé et un préfixe 2.6 passé en `-I`, le test choisit les
+headers 3.0 à tort. Le programme de diagnostic (guides/install/check-your-setup) teste `<SFML/Config.h>` d'abord.

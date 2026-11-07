@@ -1,0 +1,48 @@
+---
+title: "À propos de cette documentation"
+description: "Comment cette doc est écrite et vérifiée, ses limites, ses licences, et comment signaler une erreur."
+sidebar:
+  order: 3
+---
+
+## Ce que c'est
+
+Une documentation **communautaire et non officielle** de CSFML (le binding C de SFML), en français, pour les versions 3.0.0 et 2.6.1. Elle n'est liée ni à l'équipe SFML, ni à Epitech.
+
+## Comment elle est faite
+
+- **Écrite avec une IA** (un assistant de type Claude), puis **vérifiée par des tests réels** : chaque exemple de code du dossier `examples/` est compilé avec `-Wall -Wextra -Werror` et exécuté sous Xvfb avec les deux versions, avec des vérifications (valeurs de pixels, positions, durées). Résultats dans `tests/RESULTATS.md`.
+- **Signatures générées depuis les headers** avec libclang : les fichiers `api/csfml-3.0.0.json` (926 fonctions) et `api/csfml-2.6.1.json` (850 fonctions) sont lus par le site au moment du build. Les signatures ne sont jamais recopiées à la main. Si une fonction citée n'existe pas, le build échoue.
+- **Les exemples sont de vrais fichiers** : le site inclut `examples/<module>/<nom>/<version>/main.c`, jamais une copie.
+- **Intégration continue (CI)** : le site est construit automatiquement et les liens internes et les ancres sont vérifiés (un lien mort fait échouer le build).
+- **Corrections** : quand un test contredit le rapport de recherche initial, le test gagne. Les écarts sont notés dans `research/CORRECTIONS.md`.
+
+## Les encadrés « Non vérifié »
+
+Quand une affirmation n'a pas pu être rattachée à un test, à un header ou à un exemple, elle est marquée par un encadré **Non vérifié** avec une phrase honnête. Ne les ignore pas : ce sont les endroits où il faut te méfier.
+
+## Limites connues
+
+- Tests faits sur **une seule machine** : Ubuntu 26.04, gcc 15.2, clang 21, SFML 3.0.2 (pour CSFML 3.0.0) et SFML 2.6.2 (pour CSFML 2.6.1).
+- **Pas testé** : Windows, macOS, WSL, Fedora, Arch, Debian ; un vrai poste avec carte son et bureau Wayland.
+- Le paquet Ubuntu 24.04 est en **CSFML 2.6.0**, que nous n'avons pas testée directement ; nos tests 2.6 sont en 2.6.1.
+- Le contenu exact des tests du correcteur d'Epitech et les sujets des projets ne sont pas connus ici.
+- Les descriptions des paramètres viennent des headers (en anglais).
+
+## Licences
+
+- **Documentation** : CC BY 4.0 (tu peux la partager et l'adapter en citant la source).
+- **Exemples de code** : licence zlib.
+- Les tutoriels adaptés de sfml-dev.org sont sous CC BY 4.0 avec **attribution** au projet SFML.
+
+:::note
+Ces deux licences sont celles du fichier `LICENSE` à la racine du dépôt. Les assets des exemples (`sfml_logo.png`, `tuffy.ttf`, `doodle_pop.ogg`) viennent de CSFML ; leur licence est notée dans `examples/assets/LICENSE.md` avec la mention « à re-vérifier ».
+:::
+
+## Signaler une erreur
+
+Une erreur, un lien mort, un test qui ne marche pas chez toi ? Ouvre un ticket (*issue*) dans le dépôt du projet. Donne : la page, ta version de CSFML (le [programme de diagnostic](/guides/install/check-your-setup/) l'affiche), ton système, et le **message exact** (copié-collé).
+
+## Ton projet reste ton travail
+
+Cette doc n'est pas là pour faire ton projet à ta place : voir la [section Epitech](/guides/epitech/).

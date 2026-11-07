@@ -1,0 +1,94 @@
+---
+title: "Vérifier ton installation"
+description: "Un petit programme qui affiche la version de CSFML et ouvre une fenêtre, testé avec CSFML 3.0.0 et 2.6.1."
+sidebar:
+  order: 8
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import TestedBadge from '@/components/TestedBadge.astro';
+
+<TestedBadge version="3.0" />
+
+Avant d'écrire ton projet, vérifie que ton installation marche. Le programme ci-dessous affiche la **version de CSFML** et essaie d'**ouvrir une fenêtre**. Il est écrit pour compiler avec les deux versions.
+
+## Le programme
+
+```c
+#if __has_include(<SFML/Config.h>)
+#include <SFML/Graphics.h>
+#define CHECK_IS_V3 0
+#else
+#include <CSFML/Graphics.h>
+#define CHECK_IS_V3 1
+#endif
+#include <stdio.h>
+
+int main(void)
+{
+    sfRenderWindow *win;
+
+    printf("CSFML %d.%d.%d\n", CSFML_VERSION_MAJOR, CSFML_VERSION_MINOR,
+        CSFML_VERSION_PATCH);
+#if CHECK_IS_V3
+    win = sfRenderWindow_create((sfVideoMode){{200, 100}, 32}, "check",
+        sfDefaultStyle, sfWindowed, NULL);
+#else
+    win = sfRenderWindow_create((sfVideoMode){200, 100, 32}, "check",
+        sfDefaultStyle, NULL);
+#endif
+    if (win == NULL) {
+        puts("Fenetre : ECHEC");
+        return 1;
+    }
+    sfRenderWindow_clear(win, sfBlack);
+    sfRenderWindow_display(win);
+    puts("Fenetre : OK");
+    sfRenderWindow_destroy(win);
+    return 0;
+}
+```
+
+## Comment il fonctionne
+
+- `CSFML_VERSION_MAJOR`, `_MINOR` et `_PATCH` sont des macros définies dans le header de config (`CSFML/Config.h` en 3.0, `SFML/Config.h` en 2.6).
+- `__has_include(<SFML/Config.h>)` demande au compilateur « ce fichier existe-t-il ? ». En 2.6, `SFML/Config.h` existe. En 3.0, le dossier `SFML/` ne contient que du C++ (`.hpp`), donc on prend `CSFML/`.
+- L'ordre du test compte : j'ai d'abord essayé `__has_include(<CSFML/Config.h>)`, et sur une machine qui avait **à la fois** le paquet système 3.0 et un préfixe 2.6, il a choisi la 3.0 par erreur (le programme a affiché `CSFML 3.0.0` alors que `-I` visait la 2.6). Le test ci-dessus évite ce piège.
+- Le `sfVideoMode` et `sfRenderWindow_create` diffèrent entre versions : voir [conventions de l'API](/guides/concepts/api-conventions/).
+
+## Compiler et lancer
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 3.0">
+```sh
+gcc -std=c11 -Wall -Wextra -o check check.c \
+    -lcsfml-graphics -lcsfml-window -lcsfml-system
+./check
+```
+Sortie vérifiée (préfixe local 3.0.0 et paquet système) : `CSFML 3.0.0` puis `Fenetre : OK`.
+  </TabItem>
+  <TabItem label="CSFML 2.6">
+```sh
+gcc -std=c11 -Wall -Wextra -Wno-error=deprecated-declarations -o check check.c \
+    -lcsfml-graphics -lcsfml-window -lcsfml-system
+./check
+```
+Sortie vérifiée (préfixe local 2.6.1) : `CSFML 2.6.1` puis `Fenetre : OK`, avec un avertissement `deprecated` du header (normal, voir [compiler](/guides/install/compiling/)).
+  </TabItem>
+</Tabs>
+
+Avec un préfixe local, ajoute `-I<préfixe>/include -L<préfixe>/lib -Wl,-rpath,<préfixe>/lib`.
+
+## Lire le résultat
+
+| Tu vois | Signification |
+|---|---|
+| `CSFML 3.0.0` / `Fenetre : OK` | Tout fonctionne. |
+| `Failed to open X11 display; make sure the DISPLAY environment variable is set correctly` puis arrêt | Pas d'écran. Voir [sans écran](/guides/troubleshooting/headless-xvfb/). |
+| Erreur de compilation | Voir [erreurs de compilation](/guides/troubleshooting/compile-errors/). |
+| `undefined reference` | Voir [erreurs de lien](/guides/troubleshooting/link-errors/). |
+| `Failed to create input context ...` et `Setting vertical sync not supported` | Messages inoffensifs sous Xvfb (voir [sans écran](/guides/troubleshooting/headless-xvfb/)). |
+
+:::note
+Ce programme n'a été testé que sous Linux (Ubuntu 26.04), avec Xvfb pour l'affichage. Sur macOS, Windows ou WSL, il n'a pas été essayé.
+:::

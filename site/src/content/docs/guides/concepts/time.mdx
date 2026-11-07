@@ -1,0 +1,56 @@
+---
+title: "Le temps et le delta time"
+description: "Utiliser sfClock pour que ton programme avance à la même vitesse quelle que soit la machine."
+sidebar:
+  order: 5
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Example from '@/components/Example.astro';
+
+## Le problème
+
+Si tu déplaces un objet de 5 pixels **par frame**, il ira deux fois plus vite sur un ordinateur qui fait deux fois plus de frames par seconde. La solution : déplacer l'objet d'une **vitesse × temps écoulé**.
+
+Le **delta time** (« dt », *delta* = différence) est le temps écoulé entre deux frames, en secondes.
+
+## Les outils
+
+- `sfClock_create()` crée une horloge qui démarre tout de suite.
+- `sfClock_restart(clock)` renvoie le temps écoulé **et** remet l'horloge à zéro (elle continue de tourner). Vérifié : elle renvoie 0.10 s après 100 ms, puis repart de 0 (RESULTATS n°87).
+- `sfTime_asSeconds(time)` convertit un `sfTime` en `float` (secondes).
+- `sfClock_getElapsedTime(clock)` lit le temps sans remettre à zéro.
+- N'oublie pas `sfClock_destroy`.
+
+Le schéma, tel que dans l'exemple ci-dessous :
+
+```c
+float dt = sfTime_asSeconds(sfClock_restart(clock));
+pos.x += SPEED * dt;
+```
+
+## Différences 2.6 / 3.0
+
+- `sfClock_reset` **n'existe pas en 2.6.1** (absent du fichier `api/csfml-2.6.1.json`). En 3.0 il remet à zéro **et met l'horloge en pause** : ce n'est pas un `restart` (la doc du header le dit ; je n'ai pas testé `sfClock_reset`). Utilise `sfClock_restart` pour le delta time.
+- `sfMilliseconds` prend un `int32_t` en 3.0 et un `sfInt32` en 2.6 ; sans conséquence en pratique.
+
+## Pièges
+
+- Le premier `dt` peut être énorme si tu as chargé des ressources avant la boucle : les objets « sautent ». Certains plafonnent le `dt` ou redémarrent l'horloge juste avant la boucle (conseil du rapport, non testé).
+- `sfSleep(sfMilliseconds(50))` bloque tout le programme, fenêtre comprise : à éviter dans une boucle de jeu (utilise `sfRenderWindow_setFramerateLimit`).
+- `sfTime_asMilliseconds` renvoie un entier, `sfTime_asSeconds` un `float` : ne mélange pas les unités.
+
+## Exemple testé
+
+L'exemple vérifie que la somme des `dt` correspond au temps total mesuré par une seconde horloge (écart moins de 0,1 s).
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 3.0">
+    <Example example="graphics/clock-delta-time" version="3.0" />
+  </TabItem>
+  <TabItem label="CSFML 2.6">
+    <Example example="graphics/clock-delta-time" version="2.6" />
+  </TabItem>
+</Tabs>
+
+Voir aussi l'exemple [Clock et conversions](/3-0/cookbook/system/clock-time/) et la référence [Clock.h](/3-0/reference/system/clock/#sfClock_restart).

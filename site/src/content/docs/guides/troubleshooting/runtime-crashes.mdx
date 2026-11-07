@@ -1,0 +1,57 @@
+---
+title: "Plantages à l'exécution"
+description: "Assertion failed Sprite.cpp:42, segmentation fault avec NULL, abort sans DISPLAY, et accès à une ressource détruite. Messages exacts et vérification avec valgrind."
+sidebar:
+  order: 3
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Un plantage veut presque toujours dire : un pointeur `NULL` ou un objet déjà détruit. Commence par chercher **lequel** avec `gdb` ou `valgrind` (voir [mémoire](/guides/concepts/memory/)).
+
+## `Assertion 'texture' failed` (Sprite.cpp:42) puis abort
+
+Message du paquet Ubuntu 3.0.0 pour `sfSprite_create(NULL)` : `Assertion 'texture' failed` à `./src/CSFML/Graphics/Sprite.cpp:42`, abandon (exit 134).
+
+**Cause** : en 3.0, `sfSprite_create(const sfTexture*)` exige une texture non `NULL`. Le plus souvent le chargement a échoué plus tôt et tu n'as pas testé le retour de `sfTexture_createFromFile`.
+
+**Solution** : teste chaque `create` : `if (tex == NULL) return 1;`. Regarde le message de chargement sur stderr (voir [ressources](/guides/concepts/resources/)). Pareil pour `sfText_create(font)` et `sfSound_create(buffer)`.
+
+Autre exemple, avec le même paquet : `sfClock_getElapsedTime(NULL)` donne `Clock.cpp:59: ... Assertion 'clock' failed.` (exit 134).
+
+## `Segmentation fault` avec un `NULL`
+
+**Cause** : même erreur, mais dans un build **sans assert**. Avec un build Release local (`-DNDEBUG`), `sfSprite_create(NULL)` donne un segfault (exit 139) au lieu d'un message. Le paquet système a des asserts (un `__assert_fail` importé dans `libcsfml-graphics`), pas le build local.
+
+**Conséquence** : ne compte pas sur le message d'assert. Aucun `NULL` ne doit être passé : c'est à toi de tester.
+
+`sfSprite_setTexture(NULL, NULL, true)`, lui, ne fait rien (sans message, exit 0, vérifié en 3.0.0 et 2.6.1) : ne compte pas non plus sur cela.
+
+## `Failed to open X11 display` puis abort
+
+Message : `Failed to open X11 display; make sure the DISPLAY environment variable is set correctly`, puis **abort (exit 134)**. `sfRenderWindow_create` ne renvoie pas `NULL` : le programme s'arrête dans la bibliothèque (paquet système et build local ; 3.0.0 et 2.6.1). Tester le retour ne sert donc à rien ici.
+
+**Solution** : fournir un affichage (Xvfb). Voir [sans écran](/guides/troubleshooting/headless-xvfb/).
+
+## `destroy` sur `NULL` en 2.6
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 3.0">
+Les 40 fonctions `*_destroy` acceptent `NULL` sans planter (n°62).
+  </TabItem>
+  <TabItem label="CSFML 2.6">
+`sfRenderTexture_destroy(NULL)` plante (SIGSEGV) ; les 41 autres fonctions testées sont sans danger (n°91).
+  </TabItem>
+</Tabs>
+
+## Accès à une ressource déjà détruite
+
+**Symptôme** : plantage au hasard, texte qui disparaît, valgrind `Invalid read`. **Cause** : `sfSprite`, `sfText` gardent un pointeur vers leur texture/police. Si la texture est détruite avant (ou est une variable locale d'une fonction terminée), le sprite lit de la mémoire libérée. valgrind (tests n°19 et 20) : `Invalid read of size 1` après `sfTexture_destroy`, `Invalid read of size 8` dans `sfText_getLocalBounds` après `sfFont_destroy`.
+
+**Solution** : détruis dans l'ordre inverse de la création et garde la ressource aussi longtemps que son utilisateur. Voir [qui possède quoi](/guides/concepts/ownership/).
+
+Même problème pour un buffer `…FromMemory` libéré trop tôt (n°22 et 23).
+
+:::caution[Non vérifié]
+Le symptôme visuel exact d'un sprite dont la texture est détruite (rectangle blanc, plantage ou autre) n'a pas été observé : seule l'erreur valgrind l'a été. Pour un `sfSound` dont le buffer est détruit, aucune erreur n'a été observée (n°21) : c'est interdit, mais je n'ai pas démontré de plantage.
+:::

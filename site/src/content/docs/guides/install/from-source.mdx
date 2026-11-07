@@ -1,0 +1,78 @@
+---
+title: "Compiler CSFML depuis les sources, sans sudo"
+description: "Recette vérifiée pour construire SFML puis CSFML dans ton dossier personnel, et les pièges rencontrés (statique par défaut, rpath, SFML_DIR)."
+sidebar:
+  order: 5
+---
+
+import TestedBadge from '@/components/TestedBadge.astro';
+
+<TestedBadge version="3.0" />
+
+Tu veux une autre version que celle de ta distribution, ou tu n'as pas `sudo` ? Tu peux construire **SFML** (en C++) puis **CSFML** (la couche C) dans un dossier à toi. CSFML ne télécharge pas SFML : il faut installer SFML d'abord.
+
+Cette recette est celle du script `tools/build-csfml.sh` du dépôt, qui a **réussi du premier coup** pour les deux versions sous Ubuntu 26.04 (tests/RESULTATS.md, A.3) :
+
+| Dossier | CSFML | SFML |
+|---|---|---|
+| `~/csfml-3.0` | 3.0.0 | 3.0.2 |
+| `~/csfml-2.6` | 2.6.1 | 2.6.2 |
+
+## Prérequis
+
+Un compilateur C et C++, `cmake`, `git`, et les headers de développement de : X11 (Xrandr, Xcursor, Xi), udev, OpenGL, freetype, FLAC, vorbis/ogg. Sur Ubuntu : `libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl-dev libfreetype-dev libflac-dev libvorbis-dev` (liste de la CI de CSFML, relevée dans le rapport). La 2.6 demande aussi OpenAL. CSFML 3.0.0 demande CMake 3.22 ou plus.
+
+:::caution[Non vérifié]
+Les noms de paquets de dépendances viennent du rapport (`research/02` §3.2) ; sur la machine de test ils étaient déjà installés. Sur Fedora ou Arch, les noms ne sont pas vérifiés.
+:::
+
+## La recette (SFML 3.0.2 + CSFML 3.0.0)
+
+```sh
+PREFIX="$HOME/csfml-3.0"
+mkdir -p "$PREFIX/src" && cd "$PREFIX/src"
+git clone --depth 1 --branch 3.0.2 https://github.com/SFML/SFML.git
+git clone --depth 1 --branch 3.0.0 https://github.com/SFML/CSFML.git
+COMMON="-DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON \
+  -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_INSTALL_LIBDIR=lib"
+cmake -S SFML -B SFML/build $COMMON '-DCMAKE_INSTALL_RPATH=$ORIGIN'
+cmake --build SFML/build -j"$(nproc)" && cmake --install SFML/build
+cmake -S CSFML -B CSFML/build $COMMON '-DCMAKE_INSTALL_RPATH=$ORIGIN' \
+  -DSFML_DIR="$PREFIX/lib/cmake/SFML"
+cmake --build CSFML/build -j"$(nproc)" && cmake --install CSFML/build
+```
+
+Pour la 2.6 : tags `2.6.2` (SFML) et `2.6.1` (CSFML), autre préfixe (`~/csfml-2.6`), et ajouter `-DCMAKE_POLICY_VERSION_MINIMUM=3.5` quand CMake est en version 4 (c'est ce que fait le script pour SFML 2.x ; sans cela CMake 4 refuse ce vieux projet).
+
+La recette ci-dessus, telle qu'écrite, a été rejouée dans un dossier temporaire : elle s'est terminée sans erreur, et un programme de diagnostic compilé avec ce préfixe a affiché `CSFML 3.0.0` puis `Fenetre : OK`, avec `libcsfml-graphics.so.3.0` et `libsfml-graphics.so.3.0` résolues dans le préfixe (`ldd`).
+
+Résultat (constaté) : `include/CSFML`, `lib/libcsfml-*.so.3.0.0`, `lib/pkgconfig/*.pc`, `lib/cmake/SFML`. En 2.6 : `include/SFML` (headers C).
+
+## Les pièges, un par un
+
+**1. SFML 3 est statique par défaut.** Si tu oublies `-DBUILD_SHARED_LIBS=ON`, SFML s'installe en `libsfml-*-s.a`. CSFML cherche une SFML *Shared* et échoue (test n°11) :
+
+```text
+Requested SFML configuration (Shared) was not found. Set SFML_STATIC_LIBRARIES to ON for static libraries
+```
+
+Solutions : (a) construire SFML en partagé (la recette ci-dessus), ou (b) garder la SFML statique et passer `-DCSFML_LINK_SFML_STATICALLY=ON` à CSFML. Avec (b), la configuration réussit (testé) ; le build complet n'a pas été lancé.
+
+**2. rpath `$ORIGIN`.** Les `.so` de CSFML doivent retrouver ceux de SFML dans le même dossier. `-DCMAKE_INSTALL_RPATH='$ORIGIN'` l'écrit dans les bibliothèques (garde les apostrophes : le shell ne doit pas remplacer `$ORIGIN`). Constaté avec `ldd` sur un programme compilé : `libcsfml-graphics.so.3.0.0` et `libsfml-graphics.so.3.0.2` sont résolues dans `~/csfml-3.0/lib` (test n°9).
+
+**3. Où est SFML ?** `-DSFML_DIR=<préfixe>/lib/cmake/SFML` a été utilisé pour le build principal. `-DSFML_ROOT=<préfixe>` a aussi marché pour CSFML 3.0.0 (test n°8). Pour CSFML 2.6.1, nous avons utilisé `SFML_DIR` ; `SFML_ROOT` n'a pas été testé avec la 2.6.1.
+
+**4. `CMAKE_INSTALL_LIBDIR=lib`.** Force `lib` (et non `lib64`) pour que les `.pc` pointent au bon endroit. Cette précaution vient de la lecture des fichiers CMake ; le problème `lib64` n'a pas été observé ici (Ubuntu utilise `lib`).
+
+## Utiliser ce préfixe
+
+```sh
+gcc -I"$PREFIX/include" main.c -o app -L"$PREFIX/lib" -Wl,-rpath,"$PREFIX/lib" \
+    -lcsfml-graphics -lcsfml-window -lcsfml-system
+```
+
+Détails dans [compiler un programme](/guides/install/compiling/). Pour tout supprimer : `rm -rf "$PREFIX"`.
+
+:::caution[Non vérifié]
+SFML 3.1.x avec CSFML 3.0.0 n'a pas été construit ici (la 3.1 demande CMake 3.28 et Internet, d'après le rapport). Un build sur Fedora, Arch, macOS ou Windows n'a pas été fait.
+:::

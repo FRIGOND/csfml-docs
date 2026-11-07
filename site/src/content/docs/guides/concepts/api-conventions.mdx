@@ -1,0 +1,73 @@
+---
+title: "Conventions de l'API"
+description: "Préfixe sf, couples create/destroy, types opaques, passage par valeur, bool contre sfBool, NULL, et includes CSFML contre SFML."
+sidebar:
+  order: 1
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+CSFML est écrit pour être **prévisible**. Une fois que tu connais les conventions, tu devines presque le nom des fonctions.
+
+## Le préfixe `sf` et le nom en deux parties
+
+Toutes les fonctions s'écrivent `sfType_action`. Exemples : `sfSprite_setPosition`, `sfClock_restart`. Le premier mot est le type, le second l'action. En C il n'y a pas de méthodes : le **premier paramètre** est l'objet (`sfSprite_setPosition(sprite, position)`).
+
+## `create` et `destroy`
+
+Tout objet a une fonction `sfX_create…` (ou `sfX_createFromFile`, etc.) et une fonction `sfX_destroy`. Chaque `create` doit être suivi d'un `destroy`, sinon c'est une fuite mémoire (voir [mémoire](/guides/concepts/memory/)). Exemple dans les headers : `sfTexture_createFromFile` et `sfTexture_destroy`.
+
+En 3.0, `destroy` prend un pointeur `const` (`void sfTexture_destroy(const sfTexture* texture)`), en 2.6 un pointeur non const (`void sfTexture_destroy(sfTexture* texture)`). Ça n'a aucun effet pour l'usage normal.
+
+## Types opaques
+
+`sfSprite`, `sfTexture`, `sfRenderWindow`, etc. sont des structures **dont le contenu est caché** (*opaque type* = type opaque). Dans `Graphics/Types.h`, `sfSprite` est déclaré sans aucun champ. Tu ne manipules que des pointeurs `sfSprite*` et tu ne fais jamais `sizeof(sfSprite)` ni `sfSprite s;`. Tu passes par `sfSprite_create`.
+
+## Petites structures passées par valeur
+
+À l'inverse, `sfVector2f` (`x`, `y`), `sfColor` (`r`, `g`, `b`, `a`), `sfTime`, `sfIntRect` sont de vraies structures que tu écris toi-même et que tu passes **par valeur** (une copie) :
+
+```c
+sfVector2f pos = {10.f, 20.f};
+```
+
+Les couleurs prédéfinies (`sfBlack`, `sfWhite`, `sfRed`…) sont des variables globales. Le temps nul `sfTime_Zero` aussi.
+
+## Booléens : `bool` ou `sfBool`
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 3.0">
+La 3.0 utilise le `bool` standard du C99 (`<stdbool.h>`, inclus par `CSFML/Config.h`) : `bool sfRenderWindow_pollEvent(...)`. `sfBool`, `sfTrue` et `sfFalse` n'existent plus. Test réel : `unknown type name 'sfBool'` et `'sfTrue' undeclared`.
+  </TabItem>
+  <TabItem label="CSFML 2.6">
+La 2.6 définit `typedef int sfBool;` avec `sfFalse` valant 0 et `sfTrue` valant 1 (dans `SFML/Config.h`). Les fonctions renvoient `sfBool`.
+  </TabItem>
+</Tabs>
+
+De même, les types entiers `sfUint32`, `sfInt64`… de la 2.6 deviennent `uint32_t`, `int64_t` en 3.0 (`sfInt64` n'existe plus, test n°16).
+
+## Includes : `<CSFML/…>` contre `<SFML/…>`
+
+| Version | Include | Dossier |
+|---|---|---|
+| 3.0 | `#include <CSFML/Graphics.h>` | `/usr/include/CSFML/` |
+| 2.6 | `#include <SFML/Graphics.h>` | `/usr/include/SFML/` |
+
+En 3.0, le dossier `SFML/` contient les headers du C++ (`.hpp`) : `#include <SFML/Graphics.h>` échoue avec `fatal error: SFML/Graphics.h: No such file or directory` (test n°4). Les headers « parapluie » (`Graphics.h`, `Audio.h`…) incluent tout un module.
+
+Attention : `sfFree` n'est pas dans les parapluies. Avec seulement `<CSFML/System.h>` : `implicit declaration of function 'sfFree'`. Il faut `<CSFML/System/Alloc.h>` (test n°82). Et `EXIT_FAILURE` marche sans `<stdlib.h>` seulement par inclusion indirecte : ne t'y fie pas (test n°101).
+
+## `NULL` en retour et en paramètre
+
+- Les fonctions `create…` qui lisent un fichier renvoient `NULL` en cas d'échec : **teste toujours** le retour.
+- Passer `NULL` à une fonction qui attend un objet est une erreur de ta part. En 3.0 le paquet Ubuntu déclenche une `assert` (le programme s'arrête, voir [plantages](/guides/troubleshooting/runtime-crashes/)).
+
+## Résumé des différences de forme (vérifiées dans les headers)
+
+| Fonction | 3.0 | 2.6 |
+|---|---|---|
+| `sfRenderWindow_create` | 5 paramètres (ajoute `sfWindowState`) | 4 paramètres |
+| `sfSprite_create` | `(const sfTexture* texture)` | `(void)` puis `sfSprite_setTexture` |
+| `sfVideoMode` | `{{800, 600}, 32}` (champ `size`) | `{800, 600, 32}` (`width`, `height`) |
+
+Détails : [migration 2.6 vers 3.0](/3-0/migration/overview/).

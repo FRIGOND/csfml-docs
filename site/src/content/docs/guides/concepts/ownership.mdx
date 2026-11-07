@@ -1,0 +1,54 @@
+---
+title: "Qui possède quoi"
+description: "Propriété des objets en CSFML : pointeurs gardés par sprite, text et sound, buffers en mémoire, chaînes renvoyées."
+sidebar:
+  order: 2
+---
+
+*Ownership* = « propriété » : qui a la responsabilité de libérer un objet, et combien de temps il doit rester vivant. En C, personne ne le fait à ta place.
+
+## Règle 1 : tu détruis ce que tu crées
+
+Chaque `create` doit avoir son `destroy`. Détruis dans l'**ordre inverse** de la création.
+
+## Règle 2 : sprite, text et sound **gardent un pointeur**
+
+Un `sfSprite` ne copie pas la texture. Il garde seulement son adresse. Pareil pour `sfText` avec `sfFont`, et `sfSound` avec `sfSoundBuffer`. La ressource doit donc **vivre plus longtemps** que l'objet qui s'en sert.
+
+| Objet | Ressource gardée | Test réel (RESULTATS) | Résultat |
+|---|---|---|---|
+| `sfSprite` | `sfTexture` | n°19, valgrind | `Invalid read of size 1` après `sfTexture_destroy` |
+| `sfText` | `sfFont` | n°20, valgrind | `Invalid read of size 8` dans `sfText_getLocalBounds` |
+| `sfSound` | `sfSoundBuffer` | n°21 | `sfSound_getBuffer(s) == b` est vrai (pointeur gardé, pas de copie) ; **aucune erreur valgrind observée** après destruction du buffer |
+
+Pour le son, le comportement est indéfini d'après la conception, mais le crash n'a pas été démontré : ne dis pas « ça plante », dis « c'est interdit ».
+
+Les getters comme `sfSprite_getTexture` ou `sfText_getFont` renvoient un pointeur **emprunté** (type `const`) : ne le détruis pas.
+
+Conséquence pratique : range la texture et le sprite dans la même structure, et détruis le sprite avant la texture.
+
+## Règle 3 : les buffers `…FromMemory` doivent rester vivants
+
+`sfFont_createFromMemory(data, size)` et `sfMusic_createFromMemory(data, size)` ne copient pas toujours les données : la police et la musique les relisent plus tard.
+
+- Police : si tu libères le buffer puis demandes un glyphe, valgrind signale `Invalid read of size 8` (n°22).
+- Musique : `Invalid read of size 1` dans le thread audio (n°23). Sans valgrind, le programme semblait marcher : c'est un comportement indéfini masqué.
+
+Garde donc le buffer en vie tant que la police ou la musique existe. De même, `sfFont_createFromFile` et `sfMusic_createFromFile` relisent le fichier : il doit rester accessible.
+
+## Règle 4 : chaînes renvoyées, à copier ou à libérer
+
+- `sfText_getString` renvoie un pointeur **interne** : deux appels successifs ont donné la même adresse, avec un contenu changé (n°72). Copie la chaîne si tu veux la garder.
+- `sfKeyboard_getDescription` : le header déclare `const char*`, mais la source fait un `strdup` (copie allouée). Sans `free`, valgrind signale `2 bytes in 1 blocks are definitely lost` ; avec `free`, 0 erreur (n°24). Écrire `char *d = ...` donne `-Wdiscarded-qualifiers` : garde un `const char *` et fais `free((void *)d)`.
+
+:::caution[Non vérifié]
+Je n'ai pas contrôlé, une par une, toutes les fonctions qui renvoient des chaînes à libérer. Pour chaque fonction qui te semble douteuse, lis la doc du header dans la [référence](/3-0/reference/) et teste avec valgrind (voir [mémoire](/guides/concepts/memory/)).
+:::
+
+## Règle 5 : certains objets remplissent un `sfBuffer` à toi
+
+`sfBuffer_create()` puis `sfImage_saveToMemory(img, buf, "png")` : le `sfBuffer` appartient à l'appelant (test n°67 : renvoie `true`, 76 octets pour une image 2×2). Détruis-le avec `sfBuffer_destroy`.
+
+## Exemple
+
+L'exemple [Sprite et texture](/3-0/cookbook/graphics/sprite-texture/) (aussi en [2.6](/2-6/cookbook/graphics/sprite-texture/)) montre la création et la destruction dans le bon ordre. Voir aussi [ressources](/guides/concepts/resources/) et [plantages](/guides/troubleshooting/runtime-crashes/).

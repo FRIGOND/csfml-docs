@@ -1,0 +1,57 @@
+---
+title: "Erreurs de compilation"
+description: "fatal error SFML/Graphics.h, unknown type name sfBool, too few arguments to sfRenderWindow_create, implicit declaration, missing braces, deprecated. Causes et solutions vérifiées."
+sidebar:
+  order: 1
+---
+
+Messages reproduits avec gcc 15.2 contre les headers CSFML 3.0.0 ou 2.6.1 (tests/RESULTATS.md, lots 1 et P2, et rejouer en direct pour cette page).
+
+## `fatal error: SFML/Graphics.h: No such file or directory`
+
+**Cause** : tu as écrit `#include <SFML/Graphics.h>` (style CSFML 2.6) mais ta CSFML est la 3.0, dont les headers sont dans `CSFML/`. En 3.0, le dossier `SFML/` ne contient que du C++.
+
+**Solution** : 3.0 : `#include <CSFML/Graphics.h>`. Si tu dois viser la 2.6 : garde `<SFML/…>`.
+
+**Vérifier** : `ls /usr/include/CSFML` existe, ou `dpkg -l libcsfml-dev`. L'erreur inverse (`CSFML/Graphics.h` introuvable) veut dire que tu as la 2.6.
+
+## `unknown type name 'sfBool'` / `'sfTrue' undeclared`
+
+**Cause** : code 2.6 compilé contre la 3.0, où `sfBool`, `sfTrue`, `sfFalse` (et `sfInt64`…) n'existent plus. Message exact : `unknown type name 'sfBool'; did you mean 'bool'?` et `'sfTrue' undeclared (first use in this function)`.
+
+**Solution** : remplace par `bool`, `true`, `false` et `<stdint.h>` (`int64_t`…). Voir [conventions](/guides/concepts/api-conventions/).
+
+## `too few arguments to function 'sfRenderWindow_create'`
+
+**Cause** : en 3.0, `sfRenderWindow_create` prend 5 paramètres (`sfVideoMode`, titre, style, **`sfWindowState`**, paramètres de contexte), la 2.6 en prend 4. Messages : `too few arguments to function 'sfRenderWindow_create'; expected 5, have 4` et `incompatible type for argument 4 of 'sfRenderWindow_create'`.
+
+**Solution** : ajoute `sfWindowed` (ou `sfFullscreen`) en 4e position. Signature : [`sfRenderWindow_create`](/3-0/reference/graphics/render-window/#sfRenderWindow_create). Même cause pour `sfSprite_create` et `sfText_create` (« expected 1, have 0 » : ils attendent maintenant la texture ou la police).
+
+## `implicit declaration of function 'sfSound_setLoop'`
+
+**Cause** : la fonction a été renommée ou supprimée. En 3.0 c'est `sfSound_setLooping` (vérifié dans `api/csfml-3.0.0.json`). Avec gcc 14 et plus, c'est une **erreur** (avant, un simple avertissement) : `error: implicit declaration of function 'sfSound_setLoop'; did you mean 'sfSound_setCone'?`. clang 21 : `error: call to undeclared function`.
+
+**Solution** : cherche le nouveau nom dans la [référence 3.0](/3-0/reference/function-index/) ou la [migration](/3-0/migration/overview/).
+
+**Autre cas** : `implicit declaration of function 'sfFree'` avec seulement `<CSFML/System.h>` : inclus `<CSFML/System/Alloc.h>`.
+
+## `warning: missing braces around initializer [-Wmissing-braces]`
+
+**Cause** : en 3.0, `sfVideoMode` contient une sous-structure : `size` de type `sfVector2u`. `sfVideoMode m = {800, 600, 32};` compile quand même, avec les **bonnes** valeurs (800, 600, 32), mais `-Wall` avertit. (Le rapport de recherche affirmait un mauvais résultat : c'est faux, voir CORRECTIONS n°3.)
+
+**Solution** : `sfVideoMode m = {{800, 600}, 32};`. Même chose pour `sfIntRect` et `sfFloatRect` (`{{0, 0}, {32, 32}}`).
+
+## `type is deprecated [-Wdeprecated-declarations]` (CSFML 2.6)
+
+**Cause** : `Event.h:133` marque `sfMouseWheelEvent` obsolète. L'avertissement apparaît dès l'include, même si tu n'utilises pas ce type. Avec `-Werror` : `error: type is deprecated [-Werror=deprecated-declarations]`.
+
+**Solution** : compile avec `-Wno-error=deprecated-declarations`. Voir [compiler](/guides/install/compiling/).
+
+:::caution[Non vérifié]
+Cet avertissement a été observé avec CSFML 2.6.1 locale. Pas confirmé avec la 2.6.0 d'Ubuntu 24.04.
+:::
+
+## Autres
+
+- `EXIT_FAILURE` : inclus `<stdlib.h>` toi-même. Il compilait sans, mais seulement par inclusion indirecte via les headers CSFML (test n°101).
+- Erreur sur le pointeur de fonction d'un `sfInputStream` (types `size_t` et `int64_t` en 3.0, `sfInt64` en 2.6) : voir l'[exemple input-stream](/3-0/cookbook/system/input-stream/).

@@ -1,0 +1,59 @@
+---
+title: "La boucle de jeu"
+description: "Pourquoi et comment écrire la boucle principale : vider les événements, puis clear, draw, display."
+sidebar:
+  order: 3
+---
+
+import Example from '@/components/Example.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Un programme graphique ne se termine pas tout de suite : il **tourne en boucle** jusqu'à la fermeture. Chaque tour de boucle s'appelle une **frame** (image).
+
+## Les quatre étapes d'une frame
+
+1. **Lire les événements** : clic, touche, fermeture de la fenêtre.
+2. **Mettre à jour** ton programme (positions, animations).
+3. **Dessiner** : `sfRenderWindow_clear`, puis les `sfRenderWindow_draw…`.
+4. **Afficher** : `sfRenderWindow_display` montre l'image dessinée.
+
+L'ordre `clear` puis `draw` puis `display` est obligatoire à chaque frame. Sans `clear`, l'image précédente reste (traînées).
+
+## Vider la file d'événements
+
+La fenêtre stocke les événements dans une **file** (*queue*). `sfRenderWindow_pollEvent` en sort **un seul** à la fois et renvoie `false` (3.0) ou `sfFalse` (2.6) quand elle est vide. Il faut donc une boucle `while`, pas un `if` :
+
+```c
+while (sfRenderWindow_pollEvent(window, &event)) {
+    if (event.type == sfEvtClosed)
+        sfRenderWindow_close(window);
+}
+```
+
+Avec un `if`, il reste des événements non traités à chaque frame, la file grossit et la fenêtre paraît gelée. Ce conseil vient du rapport (`research/05` §2.1, marqué « déduit »), mais l'exemple officiel de la doc utilise exactement ce schéma (voir plus bas).
+
+`sfEvtClosed` ne ferme pas la fenêtre tout seul : c'est à toi d'appeler `sfRenderWindow_close`.
+
+## Combien de frames par seconde ?
+
+Sans limite, ton programme tourne aussi vite que possible (CPU à fond). Deux outils :
+
+- `sfRenderWindow_setFramerateLimit(window, 60)` : dort entre deux frames.
+- `sfRenderWindow_setVerticalSyncEnabled(window, true)` : cale sur la fréquence de l'écran (en 2.6 le paramètre est un `sfBool`).
+
+La doc SFML conseille de ne pas utiliser les deux ensemble (source : rapport, non retestée). Sous Xvfb, la synchro verticale n'est pas supportée (message `Setting vertical sync not supported`) : utilise la limite.
+
+## Exemple complet
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 3.0">
+    <Example example="window/basic-window" version="3.0" />
+  </TabItem>
+  <TabItem label="CSFML 2.6">
+    <Example example="window/basic-window" version="2.6" />
+  </TabItem>
+</Tabs>
+
+`example_frames()` vient d'un petit fichier de test qui arrête la boucle après N frames pour les tests automatiques ; dans ton programme, tu n'en as pas besoin. Autre exemple, qui affiche les événements reçus : [Événements](/3-0/cookbook/window/events/) (ou en [2.6](/2-6/cookbook/window/events/)).
+
+Pour la suite : [les événements](/guides/concepts/events/) et [le temps](/guides/concepts/time/).

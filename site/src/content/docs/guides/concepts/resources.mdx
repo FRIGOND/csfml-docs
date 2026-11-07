@@ -1,0 +1,65 @@
+---
+title: "Les ressources (textures, polices, sons)"
+description: "Charger les ressources une seule fois, gérer les chemins relatifs, et afficher du texte accentué malgré le bug UTF-8 de sfText_setString."
+sidebar:
+  order: 7
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Example from '@/components/Example.astro';
+
+Une **ressource** (*asset*) est un fichier chargé en mémoire : image, police, son, musique.
+
+## Charger une seule fois, avant la boucle
+
+`sfTexture_createFromFile` lit le disque et envoie les pixels à la carte graphique : c'est lent. Fais-le **avant** la boucle de jeu, et détruis après. Ne l'appelle jamais à chaque frame (fuite et lenteur : constat du rapport, non mesuré). Modifier un sprite (`setPosition`, `setTextureRect`) ne recrée rien.
+
+Teste toujours le retour : `NULL` signifie que le chargement a échoué. Lis aussi la sortie d'erreur (`stderr`) : SFML y écrit la cause.
+
+```c
+sfTexture *tex = sfTexture_createFromFile("logo.png", NULL);
+
+if (tex == NULL)
+    return 1;
+```
+
+Le second paramètre `NULL` veut dire « toute l'image » (signature `sfTexture_createFromFile(const char* filename, const sfIntRect* area)`, identique en 3.0 et 2.6).
+
+## Chemins relatifs : relatifs à quoi ?
+
+Un chemin comme `"logo.png"` est relatif au **dossier courant du processus** (celui d'où tu lances), pas à l'endroit de l'exécutable. Si tu lances depuis un autre dossier, le fichier n'est pas trouvé et le message d'erreur le dit. Nos exemples construisent leurs chemins avec une petite fonction `example_asset` : par défaut `../../assets/<nom>`, donc ils se lancent depuis leur dossier. Pour ton projet : lance depuis la racine, ou ne dépends pas du dossier courant.
+
+Messages réels observés avec des fichiers qui n'existent pas (les quatre `create` renvoient `NULL`) :
+
+- CSFML 3.0.0 : `Failed to load image`, puis `Provided path: nope.png` et `Absolute path: <dossier courant>/nope.png`, puis `Reason: No such file or directory`. Pour une police : `Failed to load font (failed to open file): No such file or directory`. Pour un son : `Failed to open sound file (couldn't open stream)`. Le **chemin absolu** affiché te montre où le programme a vraiment cherché.
+- CSFML 2.6.1 : `Failed to load image "nope.png". Reason: Unable to open file`, `Failed to load font "nope.ttf" (failed to create the font face)`, `Failed to open sound file "nope.ogg" (couldn't open stream)`. Pas de chemin absolu.
+
+## Polices : pas de recherche dans le système
+
+`sfFont_createFromFile("arial.ttf")` ne cherche pas dans les polices du système. Fournis un `.ttf` avec ton projet (nos exemples utilisent `tuffy.ttf`).
+
+## Le piège de l'UTF-8 dans `sfText_setString`
+
+Test réel (RESULTATS n°18) : `sfText_setString(text, "été")` (5 octets en UTF-8) donne **5 points de code**, dont quatre valent `U+FFFFFFFF` : la chaîne UTF-8 n'est pas décodée correctement. Pour du texte accentué, utilise `sfText_setUnicodeString` avec des caractères de 32 bits (`sfChar32` en 3.0, `sfUint32` en 2.6) :
+
+```c
+static const uint32_t ETE[] = {0xE9, 't', 0xE9, 0};
+sfText_setUnicodeString(text, ETE);
+```
+
+Le résultat est 3 points de code. En C11, `U"été"` est aussi accepté (test n°81, sans avertissement avec `-std=c11 -Wall -Wextra`). Locale du test : `C.UTF-8`. L'exemple suivant fait exactement cela et vérifie que le premier caractère vaut `0xE9`.
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 3.0">
+    <Example example="graphics/text" version="3.0" />
+  </TabItem>
+  <TabItem label="CSFML 2.6">
+    <Example example="graphics/text" version="2.6" />
+  </TabItem>
+</Tabs>
+
+## Sons
+
+Effets courts : `sfSoundBuffer` (tout en mémoire) + `sfSound`. Longues musiques : `sfMusic` (lue en continu depuis le fichier, donc le fichier doit rester accessible). Détruis le `sfSound` avant son `sfSoundBuffer`. Voir [qui possède quoi](/guides/concepts/ownership/) et [audio sans périphérique](/guides/concepts/audio-without-device/).
+
+Exemples : [Sprite et texture](/3-0/cookbook/graphics/sprite-texture/), [Son avec buffer](/3-0/cookbook/audio/sound-buffer-play/), [Musique en streaming](/3-0/cookbook/audio/music-stream/).

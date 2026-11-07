@@ -1,0 +1,51 @@
+---
+title: "Pas d'écran, Xvfb et messages inoffensifs"
+description: "Lancer un programme CSFML sans écran (SSH, conteneur, CI) avec Xvfb, et reconnaître les messages sans gravité (amdgpu, input context, vertical sync)."
+sidebar:
+  order: 6
+---
+
+## `Failed to open X11 display; make sure the DISPLAY environment variable is set correctly`
+
+**Cause** : une fenêtre a besoin d'un serveur graphique (X11). En SSH sans redirection, dans un conteneur ou en CI, il n'y en a pas : la variable `DISPLAY` est vide.
+
+**Conséquence** : le programme **s'arrête** (abort, exit 134). `sfRenderWindow_create` ne renvoie pas `NULL` (testé : paquet système et build local, 3.0.0 et 2.6.1).
+
+**Solution** : fournir un écran virtuel, **Xvfb** (*X virtual framebuffer*). Méthode utilisée pour tous les tests de ce site :
+
+```sh
+Xvfb :99 -screen 0 1024x768x24 -nolisten tcp &
+export DISPLAY=:99
+export LIBGL_ALWAYS_SOFTWARE=1
+./app
+```
+
+Avec cela, la fenêtre et le rendu fonctionnent en 3.0.0 comme en 2.6.1 (exit 0, test n°33). `LIBGL_ALWAYS_SOFTWARE=1` force le rendu logiciel de Mesa (lent mais sans GPU).
+
+:::caution[Non vérifié]
+`xvfb-run -a ./app` (qui lance Xvfb à ta place) est la méthode courante, mais `xvfb-run` n'était pas installé sur la machine de test : je ne l'ai pas essayé. Sur Ubuntu, Xvfb est dans le paquet `xvfb`.
+:::
+
+**Vérifier** : `echo $DISPLAY` doit afficher quelque chose, et le [programme de diagnostic](/guides/install/check-your-setup/) doit afficher `Fenetre : OK`.
+
+SFML 3.0.2 n'a que le backend X11 (aucune mention de Wayland dans `libsfml-window.so`, test lot 4) : sous Wayland, ça passe par XWayland.
+
+## Messages inoffensifs sous Xvfb
+
+Ces lignes apparaissent sur stderr et **ne sont pas des erreurs** de ton code :
+
+| Message | Signification |
+|---|---|
+| `amdgpu_device_initialize failed` (bruit de Mesa) | Mesa cherche un GPU AMD et n'en trouve pas ; il bascule en rendu logiciel. Inoffensif (test n°33). |
+| `Failed to create input context for window -- TextEntered event won't be able to return unicode` | Pas de méthode de saisie (clavier avancé) dans Xvfb. Seul `sfEvtTextEntered` serait touché. |
+| `Setting vertical sync not supported` | La synchro verticale n'existe pas dans Xvfb. Utilise `sfRenderWindow_setFramerateLimit`. |
+
+Les deux messages SFML ont été vus avec les deux versions dans nos tests.
+
+## Audio en même temps ?
+
+Sans écran, il n'y a souvent pas de son non plus : voir [audio sans périphérique](/guides/concepts/audio-without-device/).
+
+## Pour les tests automatiques
+
+Tu peux lire des pixels sans voir la fenêtre (voir [fenêtre noire](/guides/troubleshooting/black-window/)). Ne dépends pas d'événements utilisateur : seuls `sfEvtResized` et `sfEvtFocusGained` arrivent à l'ouverture (test n°17).

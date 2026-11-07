@@ -1,0 +1,24 @@
+---
+title: "Les concepts de CSFML"
+description: "Les idées à comprendre avant de coder avec CSFML : conventions, propriété des objets, boucle de jeu, événements, temps, coordonnées, ressources, audio, mémoire."
+sidebar:
+  order: 0
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+Ces pages expliquent le **pourquoi** derrière l'API. Lis-les dans cet ordre si tu débutes.
+
+<CardGrid>
+  <LinkCard title="1. Conventions de l'API" href="/guides/concepts/api-conventions/" description="Préfixe sf, create/destroy, types opaques, bool, includes." />
+  <LinkCard title="2. Qui possède quoi" href="/guides/concepts/ownership/" description="Pointeurs gardés, buffers en mémoire, chaînes à libérer." />
+  <LinkCard title="3. La boucle de jeu" href="/guides/concepts/game-loop/" description="Événements, clear, draw, display." />
+  <LinkCard title="4. Les événements" href="/guides/concepts/events/" description="sfEvent et les différences entre 2.6 et 3.0." />
+  <LinkCard title="5. Le temps" href="/guides/concepts/time/" description="sfClock, delta time, framerate." />
+  <LinkCard title="6. Coordonnées et vues" href="/guides/concepts/coordinates-views/" description="Pixels, monde, transformations, caméra." />
+  <LinkCard title="7. Les ressources" href="/guides/concepts/resources/" description="Textures, polices, sons : charger une seule fois." />
+  <LinkCard title="8. L'audio sans périphérique" href="/guides/concepts/audio-without-device/" description="Ce qui se passe sans carte son." />
+  <LinkCard title="9. La mémoire" href="/guides/concepts/memory/" description="valgrind, fuites, destroy(NULL)." />
+</CardGrid>
+
+Chaque page renvoie vers des exemples **réellement compilés et exécutés** (dossier `examples/` du dépôt) et vers la [référence](/3-0/reference/) pour les signatures exactes.

@@ -1,0 +1,35 @@
+---
+title: "Pas de son"
+description: "Le programme est muet. Vérifier le chargement, la durée de vie des objets, le périphérique audio et l'attente de la fin de lecture."
+sidebar:
+  order: 5
+---
+
+## 1. Le fichier a-t-il été chargé ?
+
+Teste le retour de `sfSoundBuffer_createFromFile` et de `sfMusic_createFromFile` : ils renvoient `NULL` si le fichier est introuvable. Messages réels (3.0.0) : `Failed to open sound file (couldn't open stream)`, `Provided path: nope.ogg`, `Absolute path: …/nope.ogg`, puis `Failed to open music from file`. En 2.6.1 : `Failed to open sound file "nope.ogg" (couldn't open stream)`. Le chemin est relatif au dossier courant (voir [ressources](/guides/concepts/resources/)).
+
+## 2. Le programme se termine-t-il trop vite ?
+
+`sfSound_play` et `sfMusic_play` ne bloquent pas : la lecture se fait dans un autre thread. Si `main` se termine tout de suite, tu n'entends rien. Dans une boucle de jeu, ce n'est pas un problème. Dans un petit test, attends la fin, comme l'exemple [Son avec buffer](/3-0/cookbook/audio/sound-buffer-play/) (aussi en [2.6](/2-6/cookbook/audio/sound-buffer-play/)) : il boucle sur `sfSound_getStatus` avec `sfSleep(sfMilliseconds(10))`.
+
+## 3. Les objets sont-ils encore vivants ?
+
+Un `sfSound` garde un pointeur vers son `sfSoundBuffer` : ne détruis pas le buffer pendant la lecture (voir [qui possède quoi](/guides/concepts/ownership/)). Ordre de destruction : `sfSound_stop`, `sfSound_destroy`, puis `sfSoundBuffer_destroy`.
+
+## 4. Y a-t-il un périphérique audio ?
+
+Sans périphérique (serveur, conteneur, WSL sans son), le programme ne plante pas, mais il est muet, et des messages apparaissent sur stderr :
+
+- 3.0.0 : `miniaudio ERROR: [PulseAudio] Failed to connect PulseAudio context`, `Failed to get audio playback devices: Resource does not exist`, `Failed to initialize sound: No engine available`.
+- 2.6.1 : `Failed to open the audio device`.
+
+Attention : en 3.0, `sfMusic_getStatus` peut répondre « Playing » (2) alors que rien ne sort. En 2.6, il répond « Stopped » (0). Détails : [audio sans périphérique](/guides/concepts/audio-without-device/).
+
+## 5. Le volume et le type de fichier
+
+Vérifie `sfSound_setVolume` / `sfMusic_setVolume` (de 0 à 100 d'après la doc SFML ; non retesté ici) et que le format est supporté. L'exemple du dépôt utilise un `.ogg` (`doodle_pop.ogg`).
+
+:::caution[Non vérifié]
+Je n'ai pas testé de cas « périphérique présent mais volume système à zéro », ni les formats autres que `.ogg`. Sous Windows et macOS, aucun test de son n'a été fait.
+:::

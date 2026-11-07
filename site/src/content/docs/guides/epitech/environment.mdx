@@ -1,0 +1,51 @@
+---
+title: "L'environnement de correction"
+description: "Les versions de CSFML et de SFML dans les images Docker d'Epitech (latest et ubuntu24), et comment vérifier chez toi."
+sidebar:
+  order: 1
+---
+
+Le correcteur automatique compile ton code dans une image **Docker** (*conteneur* : un mini-système isolé). Savoir quelle version de CSFML s'y trouve est essentiel, car le code 2.6 et le code 3.0 ne sont pas compatibles (voir [conventions](/guides/concepts/api-conventions/)).
+
+## Ce qui a été vérifié
+
+Méthode (tests/RESULTATS.md, A.2) : Docker n'étant pas utilisable sur la machine de test, les couches des images ont été lues directement depuis l'API du registre Docker Hub (fichier `dpkg/status` et `Config.h`).
+
+| Image | Base | `libcsfml-dev` | `libsfml-dev` | Headers CSFML |
+|---|---|---|---|---|
+| `epitechcontent/epitest-docker:latest` | Ubuntu 26.04 (gcc 15.2) | 3.0.0-1 | 3.0.2+dfsg-2 | `/usr/include/CSFML` |
+| `epitechcontent/epitest-docker:ubuntu24` | Ubuntu 24.04 | 2.6.0-3build1 | 2.6.1+dfsg-2build2 | `/usr/include/SFML` |
+
+À retenir :
+
+- L'image actuelle (`latest`) a **CSFML 3.0.0** : utilise `#include <CSFML/Graphics.h>` et les signatures 3.0.
+- L'image `ubuntu24` a la **2.6.0** (et non la 2.6.1). Les différences entre 2.6.0 et 2.6.1 n'ont pas été étudiées.
+- `latest` contient aussi `pkgconf`, `valgrind`, `cmake`, `make`, gcc 15 et 16 et clang 21 (même source).
+- Le Dockerfile public fixe `CC=clang` dans l'environnement (rapport `research/01` §6, lu sur GitHub). Un Makefile qui écrit `CC = gcc` l'emporte ; un Makefile qui ne touche pas à `CC` compilera avec clang dans cette image. Teste avec les deux compilateurs.
+
+:::caution[Non vérifié]
+- **Fedora / postes de l'école** : aucune image Fedora d'Epitech n'a été identifiée. Fedora fournit CSFML 2.6.1 (d'après le rapport), mais je ne sais pas ce qu'ont les postes des étudiants.
+- **Images futures** : cette information date du 2026-11-07. Elle changera si Epitech met l'image à jour.
+- **Code qui court dans le correcteur** : je n'ai pas exécuté ces images, seulement lu leur contenu.
+:::
+
+## Comment vérifier chez toi
+
+Si Docker est installé et que tu es dans le groupe `docker` :
+
+```sh
+docker run --rm epitechcontent/epitest-docker:latest dpkg -l libcsfml-dev
+```
+
+Cette commande (suggérée par le rapport) n'a pas pu être exécutée ici faute d'accès à Docker ; la lecture des couches donne le même résultat qu'un `dpkg -l`.
+
+Sans Docker, reproduis l'environnement : Ubuntu 26.04 + `sudo apt install libcsfml-dev` donne la 3.0.0 (vérifié : `dpkg -l libcsfml-dev` affiche `3.0.0-1`). Ensuite lance le [programme de diagnostic](/guides/install/check-your-setup/) et compile avec les mêmes options que ton Makefile.
+
+## Si tu travailles sur une autre version
+
+Tu peux avoir la 2.6 chez toi et la 3.0 chez le correcteur. Deux solutions :
+
+1. Installer la 3.0 chez toi (voir [depuis les sources](/guides/install/from-source/) si tu n'es pas sur Ubuntu 26.04).
+2. Écrire du code qui compile avec les deux (compliqué, voir [vérifier ton installation](/guides/install/check-your-setup/) pour un exemple de test de version). Ce n'est pas nécessaire si tu vises la 3.0.
+
+Ne mélange pas : un ancien projet écrit pour la 2.x ne compile plus avec la 3.0 (voir la [migration](/3-0/migration/overview/)).

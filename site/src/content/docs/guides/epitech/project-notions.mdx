@@ -1,0 +1,37 @@
+---
+title: "Notions CSFML utiles pour les projets graphiques"
+description: "Quelles pages de cette doc lire pour chaque notion rencontrée dans les projets Epitech graphiques (my_hunter, my_runner, my_radar, my_paint, my_world, my_rpg, my_defender). Aucune solution."
+sidebar:
+  order: 5
+---
+
+:::danger[Pas de solution ici]
+Cette page ne contient **aucun code de projet noté**. Elle te dit quelles notions chercher et où les lire. Tu écris ton projet toi-même, en suivant ton sujet.
+:::
+
+Les noms de projets sont publics, mais les sujets ne le sont pas : les notions ci-dessous sont déduites de dépôts publics d'étudiants et de l'API (rapport `research/06` §4), et **ne remplacent pas ton sujet**.
+
+## Notions par projet
+
+| Projet | Notions probables | Pages à lire |
+|---|---|---|
+| my_hunter | fenêtre, sprites, clic souris, animation par rectangle, son, temps | [boucle de jeu](/guides/concepts/game-loop/), [événements](/guides/concepts/events/), [position de la souris](/3-0/cookbook/window/mouse-position/), [animation par rectangle](/3-0/cookbook/graphics/sprite-sheet-animation/), [Sprite](/3-0/reference/graphics/sprite/), [Son](/3-0/cookbook/audio/sound-buffer-play/) |
+| my_runner | delta time, défilement, texture répétée, musique | [temps](/guides/concepts/time/), [delta time](/3-0/cookbook/graphics/clock-delta-time/), [musique](/3-0/cookbook/audio/music-stream/) |
+| my_radar | formes, texte, beaucoup d'entités (performances), vue | [formes](/3-0/cookbook/graphics/shapes/), [texte](/3-0/cookbook/graphics/text/), [coordonnées et vues](/guides/concepts/coordinates-views/) |
+| my_paint | `sfImage`, mise à jour d'une texture, souris continue, `sfRenderTexture`, enregistrement | [Image](/3-0/reference/graphics/image/), [RenderTexture](/3-0/cookbook/graphics/render-texture/), [capture](/3-0/cookbook/graphics/screenshot/) |
+| my_world | pseudo-3D, tableaux de sommets | [VertexArray](/3-0/cookbook/graphics/vertex-array/), [vertex](/3-0/reference/graphics/vertex-array/) |
+| my_rpg, my_defender | plusieurs scènes, boutons, sons, sauvegarde, caméra | [ressources](/guides/concepts/resources/), [vues](/guides/concepts/coordinates-views/), [FloatRect](/3-0/reference/graphics/rect/) |
+
+(En 2.6, remplace `/3-0/` par `/2-6/` dans les liens.) Dans le tableau, `sfQuads` n'existe plus en 3.0 : on dessine des triangles. L'exemple VertexArray utilise deux triangles par carré dans les deux versions.
+
+## Bonnes habitudes (valables pour tous)
+
+- **Charge une fois**, **détruis** à la fin, dans l'ordre inverse ([qui possède quoi](/guides/concepts/ownership/)).
+- **Teste chaque `create`** avant de t'en servir ([plantages](/guides/troubleshooting/runtime-crashes/)).
+- **Vide la file d'événements** avec un `while`.
+- **Ne dépends pas du dossier courant** pour tes assets.
+- **Sépare** en petites fonctions et regroupe l'état dans une `struct` ([coding style](/guides/epitech/coding-style/)).
+
+## Fonctions autorisées
+
+Chaque sujet liste les fonctions que tu as le droit d'utiliser. Cette doc **ne donne pas** cette liste : lis ton sujet. Les exemples de ce site utilisent parfois `printf`, `snprintf` ou `getenv` pour leurs tests ; ce n'est pas un modèle à copier dans un projet qui l'interdit.

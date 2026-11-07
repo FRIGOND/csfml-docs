@@ -1,0 +1,96 @@
+---
+title: "Compiler un programme avec CSFML"
+description: "La ligne gcc, l'ordre des options -l, une bibliothèque par module, pkg-config, un Makefile modèle, les avertissements de la 2.6 et le rpath."
+sidebar:
+  order: 7
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Compiler un programme CSFML se fait en deux temps : le **compilateur** lit tes `.c` (il a besoin des headers), puis l'**éditeur de liens** (*linker*) assemble le tout avec les bibliothèques (il a besoin des `-l`).
+
+## La ligne de base
+
+```sh
+gcc -std=c11 -Wall -Wextra -o app main.c -lcsfml-graphics -lcsfml-window -lcsfml-system
+```
+
+Avec le paquet de la distribution, c'est tout : pas de `-I` ni de `-L`. Cette ligne a été testée avec le paquet système 3.0.0 (Ubuntu 26.04).
+
+## Les `-l` vont après les sources
+
+`-lcsfml-system` veut dire « cherche `libcsfml-system.so` ». L'éditeur de liens lit la ligne de gauche à droite et ne retient que ce dont il a déjà besoin. Si tu mets `-l` **avant** ton `.c`, il n'a encore besoin de rien et ignore la bibliothèque. Test réel (tests/RESULTATS.md, n°6) : `-l` avant la source donne `undefined reference to 'sfClock_create'`.
+
+Voir aussi [erreurs de lien](/guides/troubleshooting/link-errors/).
+
+## Une bibliothèque par module
+
+Chaque module CSFML a sa bibliothèque, et **aucune n'inclut les autres** (constaté avec `objdump -p`, rapport `research/02` §4.1). Si tu appelles `sfClock_create`, tu dois ajouter `-lcsfml-system`, même avec `-lcsfml-graphics` (test n°5 : sans lui, `undefined reference to 'sfClock_create'`).
+
+| Si tu utilises... | Ajoute |
+|---|---|
+| `sfRenderWindow_*`, sprites, textures, formes, texte, `sfMouse_getPositionRenderWindow` | `-lcsfml-graphics` |
+| `sfWindow_*`, `sfKeyboard_*`, événements | `-lcsfml-window` |
+| `sfClock_*`, `sfTime_*`, vecteurs | `-lcsfml-system` |
+| `sfMusic_*`, `sfSound_*` | `-lcsfml-audio` |
+| sockets, `sfPacket_*`, `sfHttp_*` | `-lcsfml-network` |
+
+Si tu utilises `sin`, `sqrt`, etc., ajoute aussi `-lm`.
+
+## pkg-config
+
+`pkg-config` écrit les options à ta place :
+
+```sh
+gcc -std=c11 -Wall -Wextra -o app main.c $(pkg-config --cflags --libs csfml-graphics)
+```
+
+Vérifié : avec les `.pc` d'un préfixe local, `pkg-config --cflags --libs csfml-graphics` renvoie `-I…/include -I/usr/include/freetype2 -I/usr/include/libpng16 -L…/lib -lcsfml-graphics -lcsfml-window -lcsfml-system` (avec `PKG_CONFIG_PATH=<préfixe>/lib/pkgconfig`). Le module `csfml-graphics` tire donc `window` et `system`. Il existe aussi `csfml-all`. Le `.pc` ne donne pas de `-rpath` (voir plus bas). Le programme `pkg-config` doit être installé (paquet `pkgconf`).
+
+## Avec un préfixe local
+
+```sh
+gcc -I"$P/include" -o app main.c -L"$P/lib" -Wl,-rpath,"$P/lib" \
+    -lcsfml-graphics -lcsfml-window -lcsfml-system
+```
+
+- `-I` : où trouver les headers (compilation).
+- `-L` : où trouver les `.so` (édition de liens).
+- `-Wl,-rpath,...` : où les retrouver **au lancement**. Sans lui : `error while loading shared libraries: libcsfml-system.so.2.6: cannot open shared object file` (constaté avec un préfixe 2.6). Avec lui, `readelf -d` montre un `RUNPATH`. Alternative : `LD_LIBRARY_PATH="$P/lib" ./app` (testé : exit 0).
+
+## Un Makefile modèle
+
+Le Makefile commun des exemples du dépôt, `examples/common/example.mk`, est un bon modèle. Il fait :
+
+```make
+CFLAGS += -std=c11 -Wall -Wextra -Werror
+LDLIBS += -lcsfml-graphics -lcsfml-window -lcsfml-audio -lcsfml-network -lcsfml-system -lm
+```
+
+et ajoute `-I`, `-L` et `-Wl,-rpath` quand `CSFML_PREFIX` désigne un préfixe local. Il prend les `.c` comme dépendances du binaire, donc `make` deux fois de suite ne recompile rien. Pour les règles `all/clean/fclean/re`, voir [Makefile Epitech](/guides/epitech/makefile/).
+
+## Les avertissements de la 2.6
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 3.0">
+Aucun avertissement particulier avec `-Wall -Wextra -pedantic` en `-std=c11` (test n°15, paquet 3.0.0).
+  </TabItem>
+  <TabItem label="CSFML 2.6">
+Avec CSFML 2.6.1, `#include <SFML/Graphics.h>` seul déclenche :
+
+```text
+Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+```
+
+Le header marque le type `sfMouseWheelEvent` comme obsolète (*deprecated*), même si tu ne l'utilises pas. Avec `-Werror`, la compilation échoue (`error: type is deprecated [-Werror=deprecated-declarations]`, vérifié). Solution utilisée par nos exemples : `-Wno-error=deprecated-declarations` (l'avertissement reste visible mais n'est plus une erreur).
+  </TabItem>
+</Tabs>
+
+:::caution[Non vérifié]
+Cet avertissement a été observé avec CSFML 2.6.1 compilée localement. Je ne l'ai pas confirmé avec la 2.6.0 du paquet Ubuntu 24.04.
+:::
+
+## Mélanger les versions : danger
+
+Si les headers viennent d'une version et les `.so` d'une autre, le programme peut compiler et se comporter bizarrement. Contrôle avec `ldd ./app | grep csfml`. Dans nos tests, un test `__has_include(<CSFML/Config.h>)` a même choisi les headers 3.0 du paquet système alors que `-I` visait un préfixe 2.6 : voir [vérifier ton installation](/guides/install/check-your-setup/).
