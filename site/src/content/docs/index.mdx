@@ -1,0 +1,28 @@
+---
+title: CSFML — documentation non officielle
+description: SFML en C, versions 3.0 et 2.6, avec des exemples compilés et exécutés par des tests.
+template: splash
+hero:
+  tagline: SFML en langage C. Deux versions de première classe (3.0 et 2.6), chaque exemple est compilé et exécuté.
+  actions:
+    - text: CSFML 3.0 — Démarrer
+      link: /3-0/getting-started/first-window/
+      icon: right-arrow
+    - text: CSFML 2.6 — Démarrer
+      link: /2-6/getting-started/first-window/
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+<CardGrid>
+  <Card title="Vérifié, pas supposé" icon="approve-check">
+    Les signatures viennent des headers (libclang). Un exemple est dans la page seulement s'il a été compilé et exécuté.
+  </Card>
+  <Card title="Deux versions" icon="random">
+    CSFML 3.0.0 (dernière stable) et 2.6.1 (celle de Fedora). Une page de migration explique ce qui change.
+  </Card>
+  <Card title="Mention honnête" icon="information">
+    Documentation non officielle, écrite avec une IA et vérifiée par des tests. En cas de doute, les headers font foi.
+  </Card>
+</CardGrid>

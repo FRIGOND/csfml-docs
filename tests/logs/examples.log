@@ -1,7 +1,66 @@
-=== graphics/screenshot [3.0]
+=== audio/listener-spatial [3.0]
+=== window/cursor [2.6]
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from 2.6/main.c:1:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+auditeur : (1.0, 0.0, 2.0), volume 50
+son : (5.0, 0.0, 0.0), distance min 2.0
+=== audio/listener-spatial [2.6]
+auditeur : (1.0, 0.0, 2.0), volume 50
+son : (5.0, 0.0, 0.0), distance min 2.0
+=== audio/music-stream [3.0]
+Failed to create input context for window -- TextEntered event won't be able to return unicode
+duree = 24002 ms
+play     statut=2 position=18 ms volume=40
+pause    statut=1 position=18 ms volume=40
+offset   statut=1 position=200 ms volume=40
+stop     statut=0 position=0 ms volume=40
+boucle = 1
+Setting vertical sync not supported
+=== audio/music-stream [2.6]
+=== window/events [3.0]
+duree = 24002 ms
+play     statut=2 position=21 ms volume=40
+pause    statut=1 position=21 ms volume=40
+offset   statut=1 position=200 ms volume=40
+stop     statut=0 position=0 ms volume=40
+boucle = 1
+=== audio/sound-buffer-play [3.0]
+duree = 24002 ms, 44100 Hz, 2 canal(aux)
+attendu 300 ms, statut = 2
+=== audio/sound-buffer-play [2.6]
 Failed to create input context for window -- TextEntered event won't be able to return unicode
 Setting vertical sync not supported
-pixel(400,300) = 255,0,0
-=== window/basic-window [3.0]
+Resized size=800x600
+duree = 24002 ms, 44100 Hz, 2 canal(aux)
+attendu 300 ms, statut = 2
+=== window/events [2.6]
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from 2.6/main.c:1:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+=== audio/sound-no-device [3.0]
+buffer = cree, music = cree
+statut apres play = 2 (0 arret, 2 lecture)
+enregistrement possible : 1
+=== audio/sound-no-device [2.6]
 Failed to create input context for window -- TextEntered event won't be able to return unicode
 Setting vertical sync not supported
+buffer = cree, music = cree
+statut apres play = 2 (0 arret, 2 lecture)
+enregistrement possible : 1

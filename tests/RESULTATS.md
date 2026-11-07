@@ -169,3 +169,20 @@ Détail par extrait : `tests/RESULTATS-migration.md` (programmes générés dans
 | 25 | Les 8 AVANT compilent en 2.6.1, les 8 APRÈS en 3.0.0 | ✅ 16/16 | `-std=c11 -Wall -Wextra`. Seul avertissement : `-Wdeprecated-declarations` (`Event.h:133`) sur les AVANT 4.2 à 4.8 en 2.6.1. Contexte ajouté dans les wrappers (déclarations factices, includes) ; extraits non modifiés. |
 | 26 | Les AVANT échouent en 3.0.0 (include changé) et inversement | ✅ | 8/8 AVANT en échec en 3.0.0 ; 8/8 APRÈS en échec en 2.6.1. Piège silencieux : `{800,600,32}` et `{0,0,110,110}` ne donnent qu'un `-Wmissing-braces` (visible seulement avec `-Wall`). |
 | 27 | Exécution fenêtre+sprite+texte et son sous Xvfb | ✅ | exit 0 (timeout 20). Son : 0 octet « definitely lost ». Fenêtre : 1 646 octets perdus en 8 blocs, toutes les piles dans `libfreetype` (`FT_Glyph_To_Bitmap` via `sf::Font::loadGlyph`) : fuite interne à SFML/FreeType, pas du code utilisateur. |
+
+## C — Prototype du site (tests P1 40 à 46)
+
+Site : `site/` (Astro 7.4.7, Starlight 0.42.10, starlight-sidebar-topics 0.9.0, starlight-links-validator 0.27.0, Node 24.22.2).
+
+| N° | Test | Verdict | Constat |
+|---|---|---|---|
+| 40 | Starlight 0.42.10 + Astro 7.4.7 construisent un site | ✅ | `npm run build` OK (≈ 1 s pour 17 pages), index Pagefind généré. |
+| 41 | Node 22.22.1 échoue avec Astro 7.4.7 | ✅ avec correction | `Node.js v22.22.1 is not supported by Astro! ... ">=22.23.4"`. Le prérequis est **Node ≥ 22.23.4**, pas Node 24. npm local 9.2.0 trop ancien aussi (engines `>=9.6.5`). |
+| 42 | Import d'un fichier hors de `src/` (`examples/**/main.c`) | ✅ | `import.meta.glob('../../../examples/*/*/*/main.c', {query:'?raw', eager:true})` dans `Example.astro` + `<Code lang="c">` d'Expressive Code ; fichier absent → build en échec. |
+| 43 | Locales `root`=fr + `en` avec repli | ✅ | pages non traduites générées sous `/en/…` avec le contenu français. Le validateur de liens ne voit pas ces pages de repli (il faut une vraie page EN pour lier vers elle). |
+| 44 | Pagefind indexe fr et en séparément | ⚠️ | `pagefind-entry.json` : langues `fr` (8 pages) et `en` (8 pages). Recherche avec pluriel/singulier (« fenêtres » / « fenêtre ») **non testée** (nécessite un navigateur). |
+| 45 | Sélecteur de version | ⚠️ | topics « CSFML 3.0 / CSFML 2.6 » affichés en haut de la barre latérale (capture réelle) ; pas de menu déroulant. Pages jumelles : liens manuels. |
+| 46 | `starlight-links-validator` | ✅ | lien mort `/3-0/nexiste-pas/` → build en échec avec l'emplacement. Ancre cassée : non vérifiée séparément. |
+| — | Garde-fou signatures | ✅ | `<ApiFunction name="sfSprite_inexistante">` → `Error: ApiFunction: sfSprite_inexistante absente des headers de CSFML 3.0`. |
+| — | Rendu | ✅ | Captures Firefox headless (bureau 1280 px, mobile 390 px) lues : sidebar, recherche, mode clair/sombre (sélecteur « Auto »), langue, code C coloré avec bouton copier, tableaux de paramètres. Sur mobile : bloc de code à défilement horizontal. |
+| — | Point à corriger en phase D | ⚠️ | le badge « Testé sur » est répété sous chaque fonction : une fois par page suffit. Les descriptions des paramètres viennent des headers (anglais). |

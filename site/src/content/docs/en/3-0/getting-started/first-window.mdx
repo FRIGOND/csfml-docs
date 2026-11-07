@@ -1,0 +1,29 @@
+---
+title: Open your first window
+description: First CSFML 3.0 program in C, with an event loop and a clean exit.
+---
+
+import Example from '@/components/Example.astro';
+import TestedBadge from '@/components/TestedBadge.astro';
+
+<TestedBadge version="3.0" />
+
+This program opens a black 800×600 window and keeps it open until you close it.
+
+<Example example="window/basic-window" version="3.0" />
+
+## What the program does
+
+1. `sfRenderWindow_create` creates the window. It returns `NULL` on failure: **always check** the result.
+2. The loop runs while `sfRenderWindow_isOpen` is true.
+3. `sfRenderWindow_pollEvent` drains **all** pending events every frame.
+4. `sfRenderWindow_clear` then `sfRenderWindow_display` draw the frame.
+5. `sfRenderWindow_destroy` frees the window before exiting.
+
+## Build
+
+```sh
+gcc -std=c11 -Wall -Wextra -o app main.c -lcsfml-graphics -lcsfml-window -lcsfml-system
+```
+
+The `-l` flags go **after** the source file. The migration notes are not translated yet (French only).

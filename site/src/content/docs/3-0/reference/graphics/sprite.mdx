@@ -1,0 +1,30 @@
+---
+title: sfSprite
+description: Afficher une texture (ou une partie) avec position, rotation et échelle.
+---
+
+import ApiFunction from '@/components/ApiFunction.astro';
+import TestedBadge from '@/components/TestedBadge.astro';
+
+<TestedBadge version="3.0" />
+
+Un `sfSprite` affiche une `sfTexture`. **Le sprite garde un pointeur sur la texture, il ne la copie pas** : la texture doit rester vivante tant que le sprite est utilisé (vérifié avec valgrind : lire un sprite dont la texture est détruite donne `Invalid read`).
+
+En-tête : `#include <CSFML/Graphics.h>` · bibliothèques : `-lcsfml-graphics -lcsfml-window -lcsfml-system`.
+
+## Cycle de vie
+
+<ApiFunction name="sfSprite_create" version="3.0" />
+<ApiFunction name="sfSprite_destroy" version="3.0" />
+
+## Apparence et position
+
+<ApiFunction name="sfSprite_setTexture" version="3.0" />
+<ApiFunction name="sfSprite_setPosition" version="3.0" />
+
+:::caution[Erreurs fréquentes]
+- Passer `NULL` à `sfSprite_create` : `assert` sur le paquet Ubuntu, segfault sur un build Release maison.
+- Détruire la texture avant le sprite.
+:::
+
+Même fonction en [2.6](/2-6/reference/graphics/sprite/) : `sfSprite_create()` n'a pas de paramètre.

@@ -1,0 +1,11 @@
+---
+// Inclut le VRAI fichier examples/<exemple>/<version>/main.c (jamais copié à la main).
+// Échoue au build si le fichier n'existe pas.
+import { Code } from '@astrojs/starlight/components';
+const { example, version } = Astro.props; // ex. 'window/basic-window', '3.0'
+const files = import.meta.glob('../../../examples/*/*/*/main.c', { query: '?raw', import: 'default', eager: true });
+const key = `../../../examples/${example}/${version}/main.c`;
+const code = files[key];
+if (typeof code !== 'string') throw new Error(`Example: fichier introuvable : examples/${example}/${version}/main.c`);
+---
+<Code code={code} lang="c" title={`examples/${example}/${version}/main.c`} />

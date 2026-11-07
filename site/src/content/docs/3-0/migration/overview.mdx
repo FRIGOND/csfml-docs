@@ -1,0 +1,32 @@
+---
+title: Migrer de CSFML 2.6 à 3.0
+description: Les changements qui cassent le plus de code, avec ancien et nouveau code.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Example from '@/components/Example.astro';
+import ApiFunction from '@/components/ApiFunction.astro';
+
+*(Page prototype : le tableau complet vient de la recherche, `research/04-migration-2-vers-3.md`, et sera généré depuis les deux fichiers d'API.)*
+
+## Les 5 premiers changements
+
+| Ancien (2.6.1) | Nouveau (3.0.0) |
+|---|---|
+| `#include <SFML/Graphics.h>` | `#include <CSFML/Graphics.h>` |
+| `sfBool`, `sfTrue`, `sfFalse` | `bool`, `true`, `false` |
+| `sfRenderWindow_create(mode, titre, style, NULL)` | `sfRenderWindow_create(mode, titre, style, sfWindowed, NULL)` |
+| `sfVideoMode m = {800, 600, 32}` | `sfVideoMode m = {{800, 600}, 32}` (l'ancienne forme compile avec `-Wmissing-braces`) |
+| `sfSprite_create()` puis `sfSprite_setTexture` | `sfSprite_create(texture)` |
+
+## Le même programme dans les deux versions
+
+<Tabs>
+  <TabItem label="CSFML 2.6.1"><Example example="window/basic-window" version="2.6" /></TabItem>
+  <TabItem label="CSFML 3.0.0"><Example example="window/basic-window" version="3.0" /></TabItem>
+</Tabs>
+
+## La fonction qui change
+
+<ApiFunction name="sfRenderWindow_create" version="3.0" />
+<ApiFunction name="sfRenderWindow_create" version="2.6" />

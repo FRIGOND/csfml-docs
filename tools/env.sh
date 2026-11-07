@@ -1,6 +1,6 @@
 # source tools/env.sh — outils locaux sans sudo (xvfb, pkgconf) et préfixes CSFML.
 # Pré-requis : paquets .deb extraits dans ~/local/root (voir tests/RESULTATS.md) et wrapper ~/local/bin/pkg-config.
-export PATH="$HOME/local/bin:$HOME/local/root/usr/bin:$PATH"
+export PATH="$HOME/local/node24/bin:$HOME/local/bin:$HOME/local/root/usr/bin:$PATH"
 export P3="$HOME/csfml-3.0" P2="$HOME/csfml-2.6"
 export XKB_DIR="$HOME/local/root/usr/share/X11/xkb"
 export LC_ALL=C.UTF-8   # messages du compilateur en anglais, comme dans la doc

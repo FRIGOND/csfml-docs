@@ -1,0 +1,28 @@
+---
+// Fiche d'une fonction, générée depuis api/csfml-<version>.json (headers + libclang).
+// Si la fonction n'existe pas dans les headers de la version : le BUILD ÉCHOUE (aucune signature inventée).
+import fs from 'node:fs';
+import path from 'node:path';
+import { Code } from '@astrojs/starlight/components';
+import tested from '../data/tested.json';
+import TestedBadge from './TestedBadge.astro';
+const { name, version } = Astro.props; // version : '3.0' | '2.6'
+const file = path.resolve(process.cwd(), '..', 'api', tested[version].api);
+const api = JSON.parse(fs.readFileSync(file, 'utf-8'));
+const fn = api.functions.find((f) => f.name === name);
+if (!fn) throw new Error(`ApiFunction: ${name} absente des headers de CSFML ${version} (${file})`);
+const params = fn.params.filter((p) => p.name || p.type !== 'void');
+---
+<section>
+  <h4 id={name}><code>{name}</code></h4>
+  <div class="api-sig"><Code code={fn.signature} lang="c" /></div>
+  {fn.brief && <p><em>Résumé (doc officielle, en anglais) :</em> {fn.brief}</p>}
+  {params.length > 0 && (
+    <table>
+      <thead><tr><th>Paramètre</th><th>Type</th><th>Description (doc officielle)</th></tr></thead>
+      <tbody>{params.map((p) => <tr><td><code>{p.name}</code></td><td><code>{p.type}</code></td><td>{p.doc || <span class="badge-tested badge-unverified">non documenté</span>}</td></tr>)}</tbody>
+    </table>
+  )}
+  <p>Retour : <code>{fn.returns}</code>{fn.return_doc ? ` — ${fn.return_doc}` : ''}</p>
+  <p><small>Défini dans <code>{fn.header}:{fn.line}</code> · {fn.deprecated ? 'DÉPRÉCIÉ · ' : ''}<TestedBadge version={version} /></small></p>
+</section>

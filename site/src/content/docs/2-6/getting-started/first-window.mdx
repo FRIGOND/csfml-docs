@@ -1,0 +1,26 @@
+---
+title: Ouvrir une première fenêtre
+description: Premier programme CSFML 2.6 en C, avec boucle d'événements et fermeture propre.
+---
+
+import Example from '@/components/Example.astro';
+import TestedBadge from '@/components/TestedBadge.astro';
+
+<TestedBadge version="2.6" />
+
+Ce programme ouvre une fenêtre noire de 800×600 pixels et la garde ouverte jusqu'à ce que tu la fermes.
+
+<Example example="window/basic-window" version="2.6" />
+
+## Compiler
+
+```sh
+gcc -std=c11 -Wall -Wextra -o app main.c -lcsfml-graphics -lcsfml-window -lcsfml-system
+```
+
+:::caution[Avertissement de dépréciation]
+Avec `-Wall`, les headers 2.6.1 émettent `type is deprecated` (`Event.h`, `sfMouseWheelEvent`), même sans l'utiliser.
+Avec `-Werror`, ajoute `-Wno-error=deprecated-declarations`.
+:::
+
+Version 3.0 : [même page](/3-0/getting-started/first-window/).

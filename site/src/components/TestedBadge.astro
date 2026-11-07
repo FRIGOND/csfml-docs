@@ -1,0 +1,7 @@
+---
+// Badge « testé sur CSFML x.y.z ». Les valeurs viennent de src/data/tested.json (écrit par la CI/tests, pas à la main).
+import tested from '../data/tested.json';
+const { version } = Astro.props; // '3.0' | '2.6'
+const t = tested[version];
+---
+{t && <span class="badge-tested">Testé sur CSFML {t.csfml} (SFML {t.sfml}, {t.os}) · {t.date}</span>}

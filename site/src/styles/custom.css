@@ -1,0 +1,6 @@
+/* Thème : on garde celui de Starlight, avec une couleur d'accent bleu (contraste AA en clair et en sombre). */
+:root { --sl-color-accent-low: #0c2a4d; --sl-color-accent: #0a6cc4; --sl-color-accent-high: #a9d3ff; }
+:root[data-theme='light'] { --sl-color-accent-low: #cfe5fb; --sl-color-accent: #0a5aa6; --sl-color-accent-high: #072f57; }
+.api-sig { margin-block: 0.5rem; }
+.badge-tested { display: inline-block; font-size: var(--sl-text-xs); padding: 0.1rem 0.5rem; border-radius: 0.75rem; border: 1px solid var(--sl-color-green); color: var(--sl-color-green-high); background: var(--sl-color-green-low); }
+.badge-unverified { border-color: var(--sl-color-orange); color: var(--sl-color-orange-high); background: var(--sl-color-orange-low); }

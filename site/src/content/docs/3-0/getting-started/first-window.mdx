@@ -1,0 +1,35 @@
+---
+title: Ouvrir une première fenêtre
+description: Premier programme CSFML 3.0 en C, avec boucle d'événements et fermeture propre.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Example from '@/components/Example.astro';
+import TestedBadge from '@/components/TestedBadge.astro';
+
+<TestedBadge version="3.0" />
+
+Ce programme ouvre une fenêtre noire de 800×600 pixels et la garde ouverte jusqu'à ce que tu la fermes.
+
+<Example example="window/basic-window" version="3.0" />
+
+## Ce que fait le programme
+
+1. `sfRenderWindow_create` crée la fenêtre. Elle renvoie `NULL` en cas d'échec : **teste toujours** ce retour.
+2. La boucle tourne tant que `sfRenderWindow_isOpen` est vrai.
+3. `sfRenderWindow_pollEvent` vide **tous** les événements en attente à chaque image.
+4. `sfRenderWindow_clear` puis `sfRenderWindow_display` dessinent l'image.
+5. `sfRenderWindow_destroy` libère la fenêtre avant de quitter.
+
+## Compiler
+
+```sh
+gcc -std=c11 -Wall -Wextra -o app main.c -lcsfml-graphics -lcsfml-window -lcsfml-system
+```
+
+Les `-l` viennent **après** le fichier source. Voir [la version 2.6](/2-6/getting-started/first-window/) pour comparer.
+
+:::note[Différence avec la 2.6]
+En 3.0, `sfRenderWindow_create` prend 5 paramètres (un `sfWindowState` en plus) et le mode vidéo s'écrit `{{800, 600}, 32}`.
+Détails : [migration 2.6 → 3.0](/3-0/migration/overview/).
+:::

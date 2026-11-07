@@ -1,0 +1,16 @@
+---
+title: Open your first window
+description: First CSFML 2.6 program in C, with an event loop and a clean exit.
+---
+
+import Example from '@/components/Example.astro';
+import TestedBadge from '@/components/TestedBadge.astro';
+
+<TestedBadge version="2.6" />
+
+<Example example="window/basic-window" version="2.6" />
+
+:::caution[Deprecation warning]
+With `-Wall`, the 2.6.1 headers emit `type is deprecated` (`Event.h`, `sfMouseWheelEvent`) even if you do not use it.
+With `-Werror`, add `-Wno-error=deprecated-declarations`.
+:::
