@@ -142,5 +142,5 @@ data = {"csfml_version": version, "namespace": ns, "generated_by": "tools/gen_ap
         "clang_errors": [str(e) for e in errs], "functions": sorted(ftab, key=lambda f: (f["module"], f["header"], f["name"])),
         "types": types, "variables": variables, "macros": [m for m in macros if "value" in m]}
 os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
-json.dump(data, open(out, "w", encoding="utf-8"), indent=1, ensure_ascii=False)
+open(out, "w", encoding="utf-8").write(json.dumps(data, indent=1, ensure_ascii=False).replace(prefix.rstrip("/"), "<prefix>"))  # pas de chemin personnel dans le JSON
 print(out, json.dumps(data["counts"]), "erreurs clang:", len(errs))

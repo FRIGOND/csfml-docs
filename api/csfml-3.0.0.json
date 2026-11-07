@@ -22682,7 +22682,7 @@
    "brief": ""
   },
   {
-   "name": "enum (unnamed at ~/csfml-3.0/include/CSFML/Window/Joystick.h:39:1)",
+   "name": "enum (unnamed at <prefix>/include/CSFML/Window/Joystick.h:39:1)",
    "kind": "enum",
    "opaque": false,
    "values": [
@@ -23298,7 +23298,7 @@
    "brief": "Key codes"
   },
   {
-   "name": "enum (unnamed at ~/csfml-3.0/include/CSFML/Window/Keyboard.h:147:1)",
+   "name": "enum (unnamed at <prefix>/include/CSFML/Window/Keyboard.h:147:1)",
    "kind": "enum",
    "opaque": false,
    "values": [
@@ -24069,7 +24069,7 @@
    "brief": "Scancodes"
   },
   {
-   "name": "enum (unnamed at ~/csfml-3.0/include/CSFML/Window/Keyboard.h:317:1)",
+   "name": "enum (unnamed at <prefix>/include/CSFML/Window/Keyboard.h:317:1)",
    "kind": "enum",
    "opaque": false,
    "values": [
@@ -24202,7 +24202,7 @@
    "brief": "Mouse buttons"
   },
   {
-   "name": "enum (unnamed at ~/csfml-3.0/include/CSFML/Window/Mouse.h:49:1)",
+   "name": "enum (unnamed at <prefix>/include/CSFML/Window/Mouse.h:49:1)",
    "kind": "enum",
    "opaque": false,
    "values": [
@@ -24298,7 +24298,7 @@
    "brief": "Sensor Types"
   },
   {
-   "name": "enum (unnamed at ~/csfml-3.0/include/CSFML/Window/Sensor.h:50:1)",
+   "name": "enum (unnamed at <prefix>/include/CSFML/Window/Sensor.h:50:1)",
    "kind": "enum",
    "opaque": false,
    "values": [

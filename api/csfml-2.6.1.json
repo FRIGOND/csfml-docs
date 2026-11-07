@@ -20883,7 +20883,7 @@
    "brief": ""
   },
   {
-   "name": "enum (unnamed at ~/csfml-2.6/include/SFML/Window/Joystick.h:39:1)",
+   "name": "enum (unnamed at <prefix>/include/SFML/Window/Joystick.h:39:1)",
    "kind": "enum",
    "opaque": false,
    "values": [
