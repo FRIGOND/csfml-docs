@@ -20,7 +20,7 @@ pour **CSFML 3.0** et **CSFML 2.6**. Hébergée sur GitHub Pages.
 ```sh
 cd site
 npm ci
-npm run dev        # http://localhost:4321/
+npm run dev        # http://localhost:4321/csfml-docs/
 npm run build && npm run check   # build + vérification des liens
 ```
 

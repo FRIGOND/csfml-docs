@@ -209,4 +209,4 @@ Contesté : l'audit estime ~115 fonctions « types seuls » au lieu de 140 ; 140
 - Le résumé « Doc officielle » est en anglais (copié des headers).
 
 ### Prévisualiser en local
-`source tools/env.sh && cd site && npm ci && npm run dev` (http://localhost:4321/) ; build : `npm run build && npm run check`.
+`source tools/env.sh && cd site && npm ci && npm run dev` (http://localhost:4321/csfml-docs/) ; build : `npm run build && npm run check`.

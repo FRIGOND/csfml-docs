@@ -11,9 +11,9 @@
     "predev": "npm run gen",
     "dev": "astro dev",
     "prebuild": "npm run gen",
-    "build": "astro build && python3 ../tools/fix-base.py dist \"${SITE_BASE:-/}\"",
+    "build": "astro build && python3 ../tools/fix-base.py dist \"${SITE_BASE:-/csfml-docs}\"",
     "preview": "astro preview",
-    "check": "python3 ../tools/check-site.py dist /"
+    "check": "python3 ../tools/check-site.py dist ${SITE_BASE:-/csfml-docs}"
   },
   "dependencies": {
     "@astrojs/starlight": "0.42.10",

@@ -5,9 +5,9 @@ import starlightSidebarTopics from 'starlight-sidebar-topics';
 import starlightLinksValidator from 'starlight-links-validator';
 
 // GitHub Pages (dépôt de projet) : https://<utilisateur>.github.io/<dépôt>/
-// SITE_URL et SITE_BASE sont fournis par la CI ; valeurs locales par défaut.
-const site = process.env.SITE_URL ?? 'http://localhost:4321';
-const base = process.env.SITE_BASE ?? '/';
+// SITE_URL et SITE_BASE sont fournis par la CI ; valeurs par défaut = dépôt FRIGOND/csfml-docs.
+const site = process.env.SITE_URL ?? 'https://frigond.github.io';
+const base = process.env.SITE_BASE ?? '/csfml-docs';
 
 const group = (label, en, directory, extra = {}) => ({
   label, translations: { en }, items: [{ autogenerate: { directory, ...extra } }],
