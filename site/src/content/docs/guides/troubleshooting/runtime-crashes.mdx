@@ -15,7 +15,7 @@ Message du paquet Ubuntu 3.0.0 pour `sfSprite_create(NULL)` (test n°31) : `Asse
 
 **Cause** : en 3.0, `sfSprite_create(const sfTexture*)` exige une texture non `NULL`. Le plus souvent le chargement a échoué plus tôt et tu n'as pas testé le retour de `sfTexture_createFromFile`.
 
-**Solution** : teste chaque `create` : `if (tex == NULL) return 1;`. Regarde le message de chargement sur stderr (voir [ressources](/guides/concepts/resources/)). Pareil pour `sfText_create(font)` et `sfSound_create(buffer)`.
+**Solution** : teste chaque `create` : `if (tex == NULL) return 1;`. Regarde le message de chargement sur stderr (voir [ressources](/guides/concepts/resources/)). Pareil pour `sfText_create(font)` et `sfSound_create(buffer)` (3.0 seulement : en 2.6 ces fonctions ne prennent aucun argument).
 
 Autre exemple, avec le même paquet : `sfClock_getElapsedTime(NULL)` donne `Clock.cpp:59: ... Assertion 'clock' failed.` (exit 134).
 

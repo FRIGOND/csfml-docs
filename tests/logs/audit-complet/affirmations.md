@@ -2,13 +2,13 @@
 
 Généré par `python3 tools/audit-claims.py`. preuve = le paragraphe cite un test (n°), un fichier research/, une source ou porte la marque « non vérifié ». SANS MARQUE = à corriger ; INTERDIT = affirme « Epitech utilise la version X ».
 
-91 paragraphes, 91 avec preuve, 0 à traiter.
+94 paragraphes, 94 avec preuve, 0 à traiter.
 
 | Page:ligne | Statut | Mots | Début du paragraphe |
 |---|---|---|---|
 | 2-6/tutorials/04-input.mdx:57 | preuve | Xvfb | :::caution[Non vérifié] `sfKeyboard_isKeyPressed` n'a pas été testée avec de vraies touches : sous Xvfb (écran virtuel), aucune touche n'est enfoncée. Seule la  |
 | 3-0/migration/events.mdx:192 | preuve | Xvfb | :::caution[Non vérifié] Le commentaire du header 3.0.0 pour `sfEvtMouseMovedRaw` dit « data in event.mouseMove », mais la structure s'appelle `mouseMoveRaw` (re |
-| 3-0/migration/objects-creation.mdx:24 | preuve (section) | Ubuntu | \| Objet \| Ressource exigée \| Si tu passes `NULL` \| \|---\|---\|---\| \| `sfSprite_create(texture)` \| une `sfTexture` valide \| arrêt du programme par une assertion (p |
+| 3-0/migration/objects-creation.mdx:24 | preuve | Ubuntu | \| Objet \| Ressource exigée \| Si tu passes `NULL` \| \|---\|---\|---\| \| `sfSprite_create(texture)` \| une `sfTexture` valide \| arrêt du programme par une assertion (p |
 | 3-0/migration/objects-creation.mdx:30 | preuve | Ubuntu | Mesures (tests locaux, CSFML 3.0.0) : avec le **paquet Ubuntu**, `sfSprite_create(NULL)` affiche `Assertion 'texture' failed` et s'arrête (code 134) ; avec un * |
 | 3-0/migration/objects-creation.mdx:32 | preuve | Ubuntu | :::caution[Non vérifié] Les assertions de `sfText_create(NULL)` et `sfSound_create(NULL)` n'ont pas été exécutées une par une : le comportement décrit pour elle |
 | 3-0/tutorials/04-input.mdx:57 | preuve | Xvfb | :::caution[Non vérifié] `sfKeyboard_isKeyPressed` n'a pas été testée avec de vraies touches : sous Xvfb (écran virtuel), aucune touche n'est enfoncée. Seule la  |
@@ -20,10 +20,11 @@ Généré par `python3 tools/audit-claims.py`. preuve = le paragraphe cite un te
 | guides/concepts/audio-without-device.mdx:48 | preuve | PipeWire | :::caution[Non vérifié] Une machine **réellement dépourvue** de carte son (et non simulée par variables d'environnement) n'a pas été testée. Le comportement ave |
 | guides/concepts/events.mdx:38 | preuve | Xvfb | - `waitEvent` (3.0) : après avoir vidé la file, `sfRenderWindow_waitEvent(w, 200 ms, &e)` renvoie `false` après environ 207 ms ; avec `sfTime_Zero` il attend sa |
 | guides/concepts/game-loop.mdx:38 | preuve | Xvfb | La doc SFML conseille de ne pas utiliser les deux ensemble (source : rapport, non retestée). Sous Xvfb, la synchro verticale n'est pas supportée (message `Setti |
-| guides/concepts/memory.mdx:18 | preuve | X11,Xvfb | Résultat mesuré (test n°27, tests/RESULTATS.md) avec un programme qui ouvre et ferme juste une fenêtre (CSFML 3.0.0, build local, Xvfb) : `definitely lost: 0 by |
+| guides/concepts/memory.mdx:18 | preuve | X11,Xvfb | Résultat mesuré (tests/logs/guides-agent.md ; le test n°27 de tests/RESULTATS.md donne d'autres chiffres, pour une fenêtre avec texte) avec un programme qui ouv |
 | guides/concepts/memory.mdx:22 | preuve | Mesa,Xvfb | - **Mesa / amdgpu** : sur certaines machines, des messages comme `amdgpu_device_initialize failed` apparaissent. Observé sous Xvfb avec `LIBGL_ALWAYS_SOFTWARE=1 |
 | guides/concepts/memory.mdx:33 | preuve | Ubuntu | \| Version \| Résultat (test) \| \|---\|---\| \| 3.0.0 \| les 40 fonctions `*_destroy` appelées avec `NULL` ne plantent pas (paquet Ubuntu et build local, n°62) \| \| 2.6 |
 | guides/concepts/memory.mdx:42 | preuve (section) | Ubuntu | Dans le paquet Ubuntu 3.0.0, les `assert` sont actifs : `sfClock_getElapsedTime(NULL)` affiche `Clock.cpp:59: ... Assertion 'clock' failed.` et abandonne (exit  |
+| guides/epitech/before-you-submit.mdx:10 | preuve | epitest | L'image publique `epitest-docker:latest` contenait **CSFML 3.0.0** le 2026-11-07 (voir [environnement](/guides/epitech/environment/)) ; quelle version utilise t |
 | guides/epitech/before-you-submit.mdx:51 | preuve | Epitech | :::caution[Non vérifié] Je ne connais ni les tests du correcteur, ni les exigences exactes de ton sujet (fonctions autorisées, présence de `pkg-config`, dossier |
 | guides/epitech/coding-style.mdx:4 | preuve | Epitech | :::caution[Non vérifié] Les règles de ton projet peuvent différer de ce que fait la version de `epiclang` installée ici (`banana-coding-style-checker` 202610061 |
 | guides/epitech/coding-style.mdx:20 | preuve (section) | Epitech | \| Règle \| Message de l'outil \| Ce que ça veut dire pour toi \| \|---\|---\|---\| \| C-F3 \| `101-character line (C-F3)` \| ligne trop longue (limite visible : 80 colonn |
@@ -41,6 +42,7 @@ Généré par `python3 tools/audit-claims.py`. preuve = le paragraphe cite un te
 | guides/epitech/makefile.mdx:44 | preuve | Epitech | Dans le Dockerfile public d'Epitech, `CC=clang` est défini dans l'environnement (lu sur GitHub, `research/01` §6 ; non vérifié ici, et je ne sais pas si ton pos |
 | guides/help/about.mdx:8 | preuve | Xvfb | - **Écrite avec une IA** (un assistant de type Claude), puis **vérifiée par des tests réels** : chaque exemple de code du dossier `examples/` est compilé avec ` |
 | guides/help/about.mdx:20 | preuve | Arch,Debian,Epitech,Fedora,Ubuntu,WSL,Wayland,Windows,macOS | - Tests faits sur **une seule machine** : Ubuntu 26.04, gcc 15.2, clang 21, SFML 3.0.2 (pour CSFML 3.0.0) et SFML 2.6.2 (pour CSFML 2.6.1). - **Pas testé** : Wi |
+| guides/help/faq.mdx:4 | preuve | epitest | **Quelle version de CSFML dois-je utiliser ?** Celle de ton environnement de rendu (là où ton code est compilé pour la note ; en cas de doute, demande à l'équip |
 | guides/help/faq.mdx:7 | preuve (section) | Ubuntu | **Comment savoir quelle version j'ai ?** Compile le [programme de diagnostic](/guides/install/check-your-setup/) : il affiche `CSFML 3.0.0` ou `CSFML 2.6.1`. Su |
 | guides/help/faq.mdx:13 | preuve | Ubuntu | **Puis-je installer CSFML sans `sudo` ?** Oui, en la construisant dans ton dossier personnel : [depuis les sources](/guides/install/from-source/) (recette testé |
 | guides/help/faq.mdx:72 | preuve | Wayland,X11 | **CSFML fonctionne-t-elle sous Wayland ?** SFML 3.0.2 n'a que le backend X11 (aucune mention de Wayland trouvée dans la bibliothèque, non vérifié par les header |
@@ -49,7 +51,7 @@ Généré par `python3 tools/audit-claims.py`. preuve = le paragraphe cite un te
 | guides/install/arch.mdx:25 | preuve | Arch,Ubuntu | Compile depuis les sources : [depuis les sources](/guides/install/from-source/). Cette recette a été testée sur Ubuntu, pas sur Arch. |
 | guides/install/check-your-setup.mdx:86 | preuve | Ubuntu,WSL,Windows,Xvfb,macOS | :::note Ce programme n'a été testé que sous Linux (Ubuntu 26.04), avec Xvfb pour l'affichage. Sur macOS, Windows ou WSL, il n'a pas été essayé. :::  |
 | guides/install/compiling.mdx:12 | preuve | Ubuntu | Avec le paquet de la distribution, c'est tout : pas de `-I` ni de `-L`. Cette ligne a été testée avec le paquet système 3.0.0 (Ubuntu 26.04). |
-| guides/install/compiling.mdx:84 | preuve | Ubuntu | :::caution[Non vérifié] Cet avertissement a été observé avec CSFML 2.6.1 compilée localement. Je ne l'ai pas confirmé avec la 2.6.0 du paquet Ubuntu 24.04. ::: |
+| guides/install/compiling.mdx:85 | preuve | Ubuntu | :::caution[Non vérifié] Cet avertissement a été observé avec CSFML 2.6.1 compilée localement. Je ne l'ai pas confirmé avec la 2.6.0 du paquet Ubuntu 24.04. ::: |
 | guides/install/fedora.mdx:8 | preuve | Fedora | D'après le rapport de recherche (`research/01-versions.md` §5, consulté sur packages.fedoraproject.org le 2026-11-07), Fedora 43 et suivantes fournissent **CSFM |
 | guides/install/fedora.mdx:10 | preuve (section) | Fedora | Conséquence importante : la plupart des pages de cette documentation montrent la **3.0**. Avec Fedora, utilise les onglets « CSFML 2.6 » ou le site [CSFML 2.6]( |
 | guides/install/fedora.mdx:12 | preuve | Epitech,Fedora,dnf | :::caution[Non vérifié] Je n'ai pas de machine Fedora : ni la commande `dnf`, ni la version exacte, ni l'emplacement des fichiers n'ont été testés ici. Tout vie |
@@ -58,10 +60,11 @@ Généré par `python3 tools/audit-claims.py`. preuve = le paragraphe cite un te
 | guides/install/fedora.mdx:22 | preuve | Fedora,X11 | - Fedora utilise `lib64` : CSFML installe ses bibliothèques dans `lib` mais ses fichiers `.pc` dans le « libdir » choisi par CMake. Il est donc prudent de passe |
 | guides/install/fedora.mdx:25 | preuve | Fedora | :::caution[Non vérifié] Le piège `lib64` est déduit de la lecture des fichiers CMake de CSFML (research/02 §3.4) ; je ne l'ai pas observé sur Fedora. Les noms d |
 | guides/install/from-source.mdx:8 | preuve | Ubuntu | Cette recette est celle du script `tools/build-csfml.sh` du dépôt, qui a **réussi du premier coup** pour les deux versions sous Ubuntu 26.04 (tests/RESULTATS.md |
-| guides/install/from-source.mdx:17 | preuve (section) | OpenAL,Ubuntu,X11 | Un compilateur C et C++, `cmake`, `git`, et les headers de développement de : X11 (Xrandr, Xcursor, Xi), udev, OpenGL, freetype, FLAC, vorbis/ogg. Sur Ubuntu :  |
-| guides/install/from-source.mdx:19 | preuve | Arch,Fedora | :::caution[Non vérifié] Les noms de paquets de dépendances viennent du rapport (`research/02` §3.2) ; sur la machine de test ils étaient déjà installés. Sur Fed |
-| guides/install/from-source.mdx:59 | preuve | Ubuntu | **4. `CMAKE_INSTALL_LIBDIR=lib`.** Force `lib` (et non `lib64`) pour que les `.pc` pointent au bon endroit. Cette précaution vient de la lecture des fichiers CM |
-| guides/install/from-source.mdx:70 | preuve | Arch,Fedora,Windows,macOS | :::caution[Non vérifié] SFML 3.1.x avec CSFML 3.0.0 n'a pas été construit ici (la 3.1 demande CMake 3.28 et Internet, d'après le rapport). Un build sur Fedora,  |
+| guides/install/from-source.mdx:17 | preuve (section) | OpenAL,Ubuntu,X11 | Un compilateur C et C++ (`gcc`, `g++`), `cmake`, `git`, et les headers de développement de : X11 (Xrandr, Xcursor, Xi), udev, OpenGL, freetype, FLAC, vorbis/ogg |
+| guides/install/from-source.mdx:19 | preuve | apt | **Attention : `sudo` est nécessaire pour installer ces paquets `-dev`** (`sudo apt install ...`). La recette ci-dessous n'a pas besoin de `sudo` pour **construi |
+| guides/install/from-source.mdx:21 | preuve | Arch,Fedora | :::caution[Non vérifié] Les noms de paquets de dépendances viennent du rapport (`research/02` §3.2) ; sur la machine de test ils étaient déjà installés. Sur Fed |
+| guides/install/from-source.mdx:61 | preuve | Ubuntu | **4. `CMAKE_INSTALL_LIBDIR=lib`.** Force `lib` (et non `lib64`) pour que les `.pc` pointent au bon endroit. Cette précaution vient de la lecture des fichiers CM |
+| guides/install/from-source.mdx:72 | preuve | Arch,Fedora,Windows,macOS | :::caution[Non vérifié] SFML 3.1.x avec CSFML 3.0.0 n'a pas été construit ici (la 3.1 demande CMake 3.28 et Internet, d'après le rapport). Un build sur Fedora,  |
 | guides/install/index.mdx:10 | preuve | Debian,Epitech,Fedora,Ubuntu,epitest | \| Version \| Dossier des headers \| Booléens \| Remarque \| \|---\|---\|---\|---\| \| CSFML 3.0.0 \| `<CSFML/Graphics.h>` \| `bool` \| Version contenue dans l'image publique |
 | guides/install/index.mdx:19 | preuve (section) | Arch,Debian,Fedora,Homebrew,Ubuntu,macOS | \| Distribution \| Paquet \| CSFML \| SFML dessous \| \|---\|---\|---\|---\| \| Ubuntu 26.04 \| `libcsfml-dev` \| 3.0.0 \| 3.0.2 \| \| Ubuntu 24.04 \| `libcsfml-dev` \| 2.6.0 \| 2 |
 | guides/install/index.mdx:29 | preuve | Docker,Epitech,Ubuntu | Seule la ligne **Ubuntu 26.04** (installée sur la machine de test : `dpkg -l libcsfml-dev` donne `3.0.0-1`) et les deux images Epitech (lues dans les couches Do |
@@ -82,7 +85,7 @@ Généré par `python3 tools/audit-claims.py`. preuve = le paragraphe cite un te
 | guides/install/wsl.mdx:16 | preuve | X11 | 1. Vérifie qu'un affichage existe : `echo $DISPLAY` doit afficher quelque chose comme `:0`. 2. Compile et lance le [programme de diagnostic](/guides/install/che |
 | guides/install/wsl.mdx:20 | preuve | WSLg,Xvfb | Ce qui est vérifié, sous Linux avec Xvfb (écran virtuel) : la fenêtre s'ouvre et se ferme sans erreur en CSFML 3.0.0 et 2.6.1. Cela ne prouve rien pour WSLg. |
 | guides/install/wsl.mdx:24 | preuve | WSL | Garde ton projet dans le système de fichiers Linux (`~/...`) plutôt que dans `/mnt/c/...` : c'est une règle générale de WSL, non testée ici.  |
-| guides/troubleshooting/black-window.mdx:17 | preuve | Xvfb | Lis un pixel de ce que tu viens de dessiner, comme le font nos exemples : `sfTexture_updateFromRenderWindow` (en 3.0 et 2.6) puis `sfTexture_copyToImage` et `sf |
+| guides/troubleshooting/black-window.mdx:17 | preuve | Xvfb | Lis un pixel de ce que tu viens de dessiner, comme le font nos exemples : `sfTexture_updateFromRenderWindow` (existe en 3.0 et en 2.6, mais la position se passe |
 | guides/troubleshooting/black-window.mdx:21 | preuve | Mesa,WSL,Xvfb | - **WSL, machine virtuelle, pilote OpenGL absent** : une fenêtre noire peut venir d'un rendu OpenGL qui échoue. Essaie `LIBGL_ALWAYS_SOFTWARE=1 ./app` (rendu lo |
 | guides/troubleshooting/black-window.mdx:24 | preuve | WSL | :::caution[Non vérifié] La plupart des causes de cette liste (items 3, 4, 7, 8, WSL) sont des conseils du rapport de recherche, **non reproduits** par des tests |
 | guides/troubleshooting/compile-errors.mdx:44 | preuve | Ubuntu | :::caution[Non vérifié] Cet avertissement a été observé avec CSFML 2.6.1 locale. Pas confirmé avec la 2.6.0 d'Ubuntu 24.04. ::: |

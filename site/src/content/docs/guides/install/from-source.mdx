@@ -20,7 +20,9 @@ Cette recette est celle du script `tools/build-csfml.sh` du dépôt, qui a **ré
 
 ## Prérequis
 
-Un compilateur C et C++, `cmake`, `git`, et les headers de développement de : X11 (Xrandr, Xcursor, Xi), udev, OpenGL, freetype, FLAC, vorbis/ogg. Sur Ubuntu : `libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl-dev libfreetype-dev libflac-dev libvorbis-dev` (liste de la CI de CSFML, relevée dans le rapport). La 2.6 demande aussi OpenAL. CSFML 3.0.0 demande CMake 3.22 ou plus.
+Un compilateur C et C++ (`gcc`, `g++`), `cmake`, `git`, et les headers de développement de : X11 (Xrandr, Xcursor, Xi), udev, OpenGL, freetype, FLAC, vorbis/ogg. Sur Ubuntu : `libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl-dev libfreetype-dev libflac-dev libvorbis-dev` (liste de la CI de CSFML, relevée dans le rapport). La 2.6 demande aussi OpenAL. CSFML 3.0.0 demande CMake 3.22 ou plus.
+
+**Attention : `sudo` est nécessaire pour installer ces paquets `-dev`** (`sudo apt install ...`). La recette ci-dessous n'a pas besoin de `sudo` pour **construire et installer CSFML dans ton dossier personnel**, mais seulement si ces headers sont déjà présents. S'ils manquent et que tu n'as pas `sudo`, cette recette ne marchera pas : je ne l'ai pas testée dans ce cas.
 
 :::caution[Non vérifié]
 Les noms de paquets de dépendances viennent du rapport (`research/02` §3.2) ; sur la machine de test ils étaient déjà installés. Sur Fedora ou Arch, les noms ne sont pas vérifiés.
@@ -71,7 +73,7 @@ gcc -I"$PREFIX/include" main.c -o app -L"$PREFIX/lib" -Wl,-rpath,"$PREFIX/lib" \
     -lcsfml-graphics -lcsfml-window -lcsfml-system
 ```
 
-Détails dans [compiler un programme](/guides/install/compiling/). Pour tout supprimer : `rm -rf "$PREFIX"`.
+Détails dans [compiler un programme](/guides/install/compiling/). Pour tout supprimer (dans le même terminal que la recette, où `PREFIX` est défini ; vérifie d'abord avec `echo "$PREFIX"` que la variable n'est pas vide) : `rm -rf "$PREFIX"`.
 
 :::caution[Non vérifié]
 SFML 3.1.x avec CSFML 3.0.0 n'a pas été construit ici (la 3.1 demande CMake 3.28 et Internet, d'après le rapport). Un build sur Fedora, Arch, macOS ou Windows n'a pas été fait.

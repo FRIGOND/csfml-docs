@@ -97,7 +97,7 @@ La vérification contrôle le texte du score et que le premier caractère du tit
 
 ## Le programme complet
 
-Ce programme compile avec `-std=c11 -Wall -Wextra -Werror` et il est exécuté par les tests du dépôt.
+Ce programme compile avec `-std=c11 -Wall -Wextra -Werror -Wno-error=deprecated-declarations` (le header 2.6 `Event.h` est marqué « deprecated » : sans cette option, `-Werror` le transforme en erreur) et il est exécuté par les tests du dépôt.
 
 <Example example="tutorials/07-text-score" version="2.6" />
 

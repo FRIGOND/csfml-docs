@@ -54,6 +54,7 @@ gcc -I"$P/include" -o app main.c -L"$P/lib" -Wl,-rpath,"$P/lib" \
     -lcsfml-graphics -lcsfml-window -lcsfml-system
 ```
 
+- (`$P` = le dossier où tu as installé CSFML, par exemple `$HOME/csfml-3.0` ; c'est `$PREFIX` dans la recette « depuis les sources »)
 - `-I` : où trouver les headers (compilation).
 - `-L` : où trouver les `.so` (édition de liens).
 - `-Wl,-rpath,...` : où les retrouver **au lancement**. Sans lui : `error while loading shared libraries: libcsfml-system.so.2.6: cannot open shared object file` (constaté avec un préfixe 2.6). Avec lui, `readelf -d` montre un `RUNPATH`. Alternative : `LD_LIBRARY_PATH="$P/lib" ./app` (testé : exit 0).
@@ -67,7 +68,7 @@ CFLAGS += -std=c11 -Wall -Wextra -Werror
 LDLIBS += -lcsfml-graphics -lcsfml-window -lcsfml-audio -lcsfml-network -lcsfml-system -lm
 ```
 
-et ajoute `-I`, `-L` et `-Wl,-rpath` quand `CSFML_PREFIX` désigne un préfixe local. Il prend les `.c` comme dépendances du binaire, donc `make` deux fois de suite ne recompile rien. Pour les règles `all/clean/fclean/re`, voir [Makefile Epitech](/guides/epitech/makefile/).
+et choisit le préfixe avec la variable `CSFML_PREFIX` (par défaut `~/csfml-3.0` ou `~/csfml-2.6` selon `CSFML=3.0|2.6`) : il ajoute alors `-I`, `-L` et `-Wl,-rpath`. Avec le paquet de la distribution, passe `CSFML_PREFIX=system` pour ne rien ajouter. Il prend les `.c` comme dépendances du binaire, donc `make` deux fois de suite ne recompile rien. Pour les règles `all/clean/fclean/re`, voir [Makefile Epitech](/guides/epitech/makefile/).
 
 ## Les avertissements de la 2.6
 

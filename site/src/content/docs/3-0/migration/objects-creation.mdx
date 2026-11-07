@@ -30,8 +30,8 @@ En 3.0, un sprite, un texte et un son **ne peuvent plus être créés vides** : 
 | Objet | Ressource exigée | Si tu passes `NULL` |
 |---|---|---|
 | `sfSprite_create(texture)` | une `sfTexture` valide | arrêt du programme par une assertion (paquet Ubuntu) ou plantage (build maison Release) |
-| `sfText_create(font)` | une `sfFont` valide | idem |
-| `sfSound_create(buffer)` | un `sfSoundBuffer` valide | idem |
+| `sfText_create(font)` | une `sfFont` valide | probablement la même chose (non testé) |
+| `sfSound_create(buffer)` | un `sfSoundBuffer` valide | probablement la même chose (non testé) |
 
 Mesures (tests locaux, CSFML 3.0.0) : avec le **paquet Ubuntu**, `sfSprite_create(NULL)` affiche `Assertion 'texture' failed` et s'arrête (code 134) ; avec un **build maison en Release** (assertions retirées), le programme plante (segfault, code 139). `sfSprite_setTexture(sprite, NULL, …)`, lui, est ignoré sans message, en 3.0.0 comme en 2.6.1. En 2.6.1, nous n'avons observé aucun message d'avertissement pour un pointeur `NULL`.
 

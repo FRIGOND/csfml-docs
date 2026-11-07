@@ -1,7 +1,7 @@
 ---
 // Inclut le VRAI fichier examples/<exemple>/<version>/main.c (jamais copié à la main).
 // Échoue au build si le fichier n'existe pas.
-import { Code } from '@astrojs/starlight/components';
+import { Code, Aside } from '@astrojs/starlight/components';
 const { example, version } = Astro.props; // ex. 'window/basic-window', '3.0'
 const files = import.meta.glob('../../../examples/*/*/*/main.c', { query: '?raw', import: 'default', eager: true });
 const key = `../../../examples/${example}/${version}/main.c`;
@@ -9,3 +9,8 @@ const code = files[key];
 if (typeof code !== 'string') throw new Error(`Example: fichier introuvable : examples/${example}/${version}/main.c`);
 ---
 <Code code={code} lang="c" title={`examples/${example}/${version}/main.c`} />
+{/test_mode\.h|example_frames|example_asset/.test(code) && (
+  <Aside type="note" title="Lignes pour les tests automatiques">
+    Les lignes avec <code>test_mode.h</code>, <code>example_frames()</code> ou <code>example_asset()</code> servent aux tests du dépôt (fermer la fenêtre après N images, trouver les fichiers de ressources). Elles n'ont rien à voir avec CSFML. Pour compiler ce code seul : supprime l'<code>#include "test_mode.h"</code>, remplace <code>example_frames()</code> par <code>-1</code> (pas de limite) et donne le vrai chemin de tes fichiers à la place de <code>example_asset(...)</code>. Ou clone le dépôt (<a href="https://github.com/FRIGOND/csfml-docs">github.com/FRIGOND/csfml-docs</a>) et compile avec <code>make</code> depuis le dossier de l'exemple.
+  </Aside>
+)}

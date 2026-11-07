@@ -20,7 +20,7 @@ Une fenêtre noire veut dire « la fenêtre existe, mais rien n'a été dessiné
 
 ## Vérifier toi-même
 
-Lis un pixel de ce que tu viens de dessiner, comme le font nos exemples : `sfTexture_updateFromRenderWindow` (en 3.0 et 2.6) puis `sfTexture_copyToImage` et `sfImage_getPixel`. L'exemple [Formes](/3-0/cookbook/graphics/shapes/) (aussi en [2.6](/2-6/cookbook/graphics/shapes/)) vérifie ainsi 4 pixels. Ça marche aussi sous Xvfb.
+Lis un pixel de ce que tu viens de dessiner, comme le font nos exemples : `sfTexture_updateFromRenderWindow` (existe en 3.0 et en 2.6, mais la position se passe en `sfVector2u` en 3.0 et en deux entiers `x`, `y` en 2.6) puis `sfTexture_copyToImage` et `sfImage_getPixel`. L'exemple [Formes](/3-0/cookbook/graphics/shapes/) (aussi en [2.6](/2-6/cookbook/graphics/shapes/)) vérifie ainsi 4 pixels. Ça marche aussi sous Xvfb.
 
 ## Cas particuliers
 

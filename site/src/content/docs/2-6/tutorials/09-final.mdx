@@ -85,7 +85,7 @@ Tu as maintenant un jeu complet. Quelques idées pour continuer : plusieurs nive
 
 ## Le programme complet
 
-Ce programme compile avec `-std=c11 -Wall -Wextra -Werror` et il est exécuté par les tests du dépôt.
+Ce programme compile avec `-std=c11 -Wall -Wextra -Werror -Wno-error=deprecated-declarations` (le header 2.6 `Event.h` est marqué « deprecated » : sans cette option, `-Werror` le transforme en erreur) et il est exécuté par les tests du dépôt.
 
 <Example example="tutorials/09-final" version="2.6" />
 

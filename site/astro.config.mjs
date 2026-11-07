@@ -32,7 +32,7 @@ export default defineConfig({
         root: { label: 'Français', lang: 'fr' },
         en: { label: 'English', lang: 'en' },
       },
-      social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/' }],
+      social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/FRIGOND/csfml-docs' }],
       customCss: ['./src/styles/custom.css'],
       plugins: [
         starlightLinksValidator({

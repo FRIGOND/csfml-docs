@@ -197,7 +197,7 @@ while (sfRenderWindow_pollEvent(win, &event)) {
 
 ### 6. Les ressources deviennent obligatoires à la création
 
-`sfSprite_create(texture)`, `sfText_create(font)`, `sfSound_create(buffer)` : on donne la ressource tout de suite. Lui passer `NULL` arrête le programme (assertion) ou plante : **teste le chargement de la ressource avant**. Détails : [Création d'objets](/3-0/migration/objects-creation/).
+`sfSprite_create(texture)`, `sfText_create(font)`, `sfSound_create(buffer)` : on donne la ressource tout de suite. Lui passer `NULL` à `sfSprite_create` arrête le programme (assertion) ou plante (test n°31) ; pour `sfText_create` et `sfSound_create` je n'ai pas testé, mais n'y compte pas : **teste le chargement de la ressource avant**. Détails : [Création d'objets](/3-0/migration/objects-creation/).
 
 <Tabs syncKey="csfml-version">
   <TabItem label="CSFML 2.6">
@@ -303,7 +303,7 @@ sfRenderWindow_setIcon(win, (sfVector2u){64, 64}, sfImage_getPixelsPtr(img));
 | `sfTextureCoordinateType`, `sfTextureNormalized`, `sfTexturePixels` | `sfCoordinateType`, `sfCoordinateTypeNormalized`, `sfCoordinateTypePixels` |
 | `sfMouseXButton1`, `sfMouseXButton2` | `sfMouseButtonExtra1`, `sfMouseButtonExtra2` |
 | `sfKeyReturn`, `sfKeyBack`, `sfKeyTilde`, `sfKeyDash`, `sfKeyQuote`, `sfKeySemiColon`, `sfKeyBackSlash` | `sfKeyEnter`, `sfKeyBackspace`, `sfKeyGrave`, `sfKeyHyphen`, `sfKeyApostrophe`, `sfKeySemicolon`, `sfKeyBackslash` |
-| `sfGlFunctionPointer` (était `GlFunctionPointer`) | |
+| `GlFunctionPointer` | `sfGlFunctionPointer` |
 
 Un renommage oublié donne `implicit declaration of function` (gcc le traite en **erreur** depuis la version 14) ou `undeclared`.
 

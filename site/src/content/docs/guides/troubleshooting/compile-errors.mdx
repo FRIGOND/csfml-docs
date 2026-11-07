@@ -29,7 +29,7 @@ Messages reproduits avec gcc 15.2 contre les headers CSFML 3.0.0 ou 2.6.1 (tests
 
 ## `implicit declaration of function 'sfSound_setLoop'`
 
-**Cause** : la fonction a été renommée ou supprimée. En 3.0 c'est `sfSound_setLooping` (vérifié dans `api/csfml-3.0.0.json`). Avec gcc 14 et plus, c'est une **erreur** (avant, un simple avertissement) : `error: implicit declaration of function 'sfSound_setLoop'; did you mean 'sfSound_setCone'?`. clang 21 : `error: call to undeclared function`.
+**Cause** : la fonction a été renommée ou supprimée. En 3.0 c'est `sfSound_setLooping` (vérifié dans `api/csfml-3.0.0.json`). Avec gcc 14 et plus (testé avec gcc 15.2 seulement ; la règle vient des notes de version de GCC, non retestée avec gcc 14), c'est une **erreur** (avant, un simple avertissement) : `error: implicit declaration of function 'sfSound_setLoop'; did you mean 'sfSound_setCone'?`. clang 21 : `error: call to undeclared function`.
 
 **Solution** : cherche le nouveau nom dans la [référence 3.0](/3-0/reference/function-index/) ou la [migration](/3-0/migration/overview/).
 
@@ -39,7 +39,7 @@ Messages reproduits avec gcc 15.2 contre les headers CSFML 3.0.0 ou 2.6.1 (tests
 
 **Cause** : en 3.0, `sfVideoMode` contient une sous-structure : `size` de type `sfVector2u`. `sfVideoMode m = {800, 600, 32};` compile quand même, avec les **bonnes** valeurs (800, 600, 32), mais `-Wall` avertit. (Le rapport de recherche affirmait un mauvais résultat : c'est faux, voir CORRECTIONS n°3.)
 
-**Solution** : `sfVideoMode m = {{800, 600}, 32};`. Même chose pour `sfIntRect` et `sfFloatRect` (`{{0, 0}, {32, 32}}`).
+**Solution** (CSFML 3.0 seulement ; en 2.6 c'est `{800, 600, 32}`) : `sfVideoMode m = {{800, 600}, 32};`. Même chose pour `sfIntRect` et `sfFloatRect` (`{{0, 0}, {32, 32}}`).
 
 ## `type is deprecated [-Wdeprecated-declarations]` (CSFML 2.6)
 

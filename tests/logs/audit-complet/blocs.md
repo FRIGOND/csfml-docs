@@ -57,9 +57,9 @@ Totaux : importé 38, extrait 73, partiel 3, non testé 45, shell 48, autre 2
 | guides/index.mdx | 0 | — |
 | guides/install/arch.mdx | 0 | 5:sh:shell, 17:sh:shell |
 | guides/install/check-your-setup.mdx | 0 | 12:c:non testé, 58:sh:shell, 66:sh:shell |
-| guides/install/compiling.mdx | 0 | 9:sh:shell, 39:sh:shell, 47:sh:shell, 60:make:shell, 76:text:autre |
+| guides/install/compiling.mdx | 0 | 9:sh:shell, 39:sh:shell, 47:sh:shell, 61:make:shell, 77:text:autre |
 | guides/install/fedora.mdx | 0 | 5:sh:shell |
-| guides/install/from-source.mdx | 0 | 26:sh:shell, 50:text:autre, 64:sh:shell |
+| guides/install/from-source.mdx | 0 | 28:sh:shell, 52:text:autre, 66:sh:shell |
 | guides/install/index.mdx | 0 | — |
 | guides/install/macos-windows.mdx | 0 | 11:sh:shell, 19:sh:shell |
 | guides/install/ubuntu-debian.mdx | 0 | 9:sh:shell, 27:sh:shell |

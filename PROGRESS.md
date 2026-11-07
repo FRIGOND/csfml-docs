@@ -43,3 +43,4 @@ Périmètre : 66 pages écrites à la main (liste dans l'en-tête de tests/AUDIT
 - Fait (2026-11-07) : tools/test-snippets.py (66 extraits C non issus d'examples/ : compilation -fsyntax-only dans la bonne version, 0 échec), affirmations : 0 SANS MARQUE (formulations « Epitech » corrigées dans install/index, epitech/environment, makefile, faq), chiffres recomptés (140, 40, 42, 926, 850).
 - En attente : rapports des 2 relecteurs (tests/logs/audit-complet/<page>.md). Ensuite : corrections, tests/AUDIT-COMPLET.md, build+check, run-all-examples, push, workflows.
 - Relecteurs relancés après limite d'usage (42 pages sans rapport : voir ls tests/logs/audit-complet). Reprise : relancer SendMessage si besoin, puis corrections + AUDIT-COMPLET.md.
+- Audit complet terminé (2026-11-07) : tests/AUDIT-COMPLET.md ; build, check, 80/80 exemples OK. Reste : push + vérif workflows.

@@ -14,7 +14,7 @@ Une documentation **communautaire et non officielle** de CSFML (le binding C de 
 - **Écrite avec une IA** (un assistant de type Claude), puis **vérifiée par des tests réels** : chaque exemple de code du dossier `examples/` est compilé avec `-Wall -Wextra -Werror` et exécuté sous Xvfb avec les deux versions, avec des vérifications (valeurs de pixels, positions, durées). Résultats dans `tests/RESULTATS.md`.
 - **Signatures générées depuis les headers** avec libclang : les fichiers `api/csfml-3.0.0.json` (926 fonctions) et `api/csfml-2.6.1.json` (850 fonctions) sont lus par le site au moment du build. Les signatures ne sont jamais recopiées à la main. Si une fonction citée n'existe pas, le build échoue.
 - **Les exemples sont de vrais fichiers** : le site inclut `examples/<module>/<nom>/<version>/main.c`, jamais une copie.
-- **Intégration continue (CI)** : le site est construit automatiquement et les liens internes et les ancres sont vérifiés (un lien mort fait échouer le build).
+- **Intégration continue (CI)** : le workflow `.github/workflows/pages.yml` construit le site et vérifie les liens internes et les ancres (un lien mort fait échouer le build). Son résultat sur GitHub est suivi dans `tests/AUDIT-COMPLET.md`.
 - **Corrections** : quand un test contredit le rapport de recherche initial, le test gagne. Les écarts sont notés dans `research/CORRECTIONS.md`.
 
 ## Les encadrés « Non vérifié »

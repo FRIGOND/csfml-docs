@@ -99,7 +99,7 @@ En mode test, le code « appuie sur Entrée » à la 1re image, et la raquette v
 
 ## Le programme complet
 
-Ce programme compile avec `-std=c11 -Wall -Wextra -Werror` et il est exécuté par les tests du dépôt.
+Ce programme compile avec `-std=c11 -Wall -Wextra -Werror -Wno-error=deprecated-declarations` (le header 2.6 `Event.h` est marqué « deprecated » : sans cette option, `-Werror` le transforme en erreur) et il est exécuté par les tests du dépôt.
 
 <Example example="tutorials/08-sound-states" version="2.6" />
 
