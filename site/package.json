@@ -11,7 +11,7 @@
     "predev": "npm run gen",
     "dev": "astro dev",
     "prebuild": "npm run gen",
-    "build": "astro build",
+    "build": "astro build && python3 ../tools/fix-base.py dist \"${SITE_BASE:-/}\"",
     "preview": "astro preview",
     "check": "python3 ../tools/check-site.py dist /"
   },

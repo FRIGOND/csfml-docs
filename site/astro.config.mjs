@@ -35,7 +35,11 @@ export default defineConfig({
       social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/' }],
       customCss: ['./src/styles/custom.css'],
       plugins: [
-        starlightLinksValidator({ errorOnInvalidHashes: false }), // ancres des composants vérifiées par tools/check-site.py
+        starlightLinksValidator({
+          errorOnInvalidHashes: false,
+          // avec un base (GitHub Pages), les liens racine du contenu n'ont pas le préfixe : tools/fix-base.py + tools/check-site.py les traitent
+          exclude: ({ link }) => base !== '/' && link.startsWith('/') && !link.startsWith(base.replace(/\/$/, '') + '/'),
+        }), // ancres des composants vérifiées par tools/check-site.py
         starlightSidebarTopics([
           { label: 'CSFML 3.0', link: '/3-0/getting-started/first-window/', icon: 'rocket', items: sidebarFor('3.0') },
           { label: 'CSFML 2.6', link: '/2-6/getting-started/first-window/', icon: 'puzzle', items: sidebarFor('2.6') },

@@ -29,6 +29,8 @@ for url, (ids, links) in pages.items():
         if re.match(r"^(https?:|mailto:|tel:|javascript:)", href): continue
         u = urllib.parse.urlparse(href); n += 1
         path = urllib.parse.unquote(u.path) or url
+        if base and u.path and path.startswith("/") and not (path + "/").startswith(base + "/"):
+            bad.append((url, href, f"lien racine sans le base {base}")); continue
         if base and path.startswith(base + "/"): path = path[len(base):]
         if not path.startswith("/"): path = urllib.parse.urljoin(url, path)
         if path.endswith(".html") or "." in path.rsplit("/", 1)[-1]:   # fichiers statiques

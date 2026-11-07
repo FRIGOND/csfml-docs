@@ -16,3 +16,9 @@ Journal des décisions prises pendant l'implémentation (phase 2 et suivantes).
 - 2026-11-07 (phase D) : GitHub Pages gratuit = site statique Astro déployé par GitHub Actions (`actions/deploy-pages`), `SITE_URL`/`SITE_BASE` fournis par la CI (dépôt de projet `https://<user>.github.io/<dépôt>/`). Aucun service payant ni externe : recherche locale Pagefind, pas d'Algolia. Dépôt public requis pour Pages gratuit.
 - 2026-11-07 (phase D) : pages de référence et cookbook **générées au build** (`npm run gen` = `tools/gen_site_pages.py`, non commitées). Une page par header (76 en 3.0, 73 en 2.6) avec le composant `ApiHeader` ; notes vérifiées dans `site/src/data/notes.json` (chaque note cite son test). Les ancres générées par composants ne sont pas vues par `starlight-links-validator` (`errorOnInvalidHashes: false`) : `tools/check-site.py` vérifie liens et ancres sur le HTML final (58 655 liens, 0 problème).
 - 2026-11-07 (phase D) : 3e « topic » `Guides (3.0 et 2.6)` pour le contenu commun aux deux versions (installation, concepts, dépannage, Epitech, aide), avec onglets 3.0/2.6 là où le code diffère (évite de dupliquer 2 fois le texte).
+
+## Base GitHub Pages et liens du contenu (2026-11-07)
+Constat (clone vierge, `SITE_BASE=/csfml-docs`) : les liens Markdown « /3-0/... » n'ont pas le base, donc 404 en ligne ;
+`tools/check-site.py` était trop tolérant. Astro 7 (Sätteri) ne prend plus les plugins rehype sans paquet legacy.
+Décision : `tools/fix-base.py` préfixe les liens racine dans `dist/` après `astro build` (script `npm run build`),
+le validateur Starlight exclut ces liens quand un base est défini, et `check-site.py` est strict (lien racine sans base = erreur).
