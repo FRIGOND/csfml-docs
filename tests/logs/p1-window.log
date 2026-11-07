@@ -1,0 +1,49 @@
+t24_kbd.c: In function ‘main’:
+t24_kbd.c:5:11: warning: initialization discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+    5 |   char *d=sfKeyboard_getDescription(sfScanA);
+      |           ^~~~~~~~~~~~~~~~~~~~~~~~~
+
+=== 17 waitEvent / pollEvent
+Failed to create input context for window -- TextEntered event won't be able to return unicode
+Setting vertical sync not supported
+waitEvent timeout=200ms -> got=1, elapsed=0 ms, type=1
+pollEvent drained 1 events, elapsed=0.0 ms
+
+=== 18 UTF-8 dans sfText_setString
+UTF-8 "été" (5 octets) -> 5 code points: U+FFFFFFFF U+FFFFFFFF U+0074 U+FFFFFFFF U+FFFFFFFF
+setUnicodeString(U+E9,t,U+E9) -> 3 code points
+
+=== 24 sfKeyboard_getDescription sous valgrind
+description(sfScanA)=a
+==83287==     in use at exit: 0 bytes in 0 blocks
+==83287== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+=== 24b sans free() : fuite ?
+/tmp/tmp.b06zLac3vs/t24b.c: In function ‘main’:
+/tmp/tmp.b06zLac3vs/t24b.c:5:11: warning: initialization discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+    5 |   char *d=sfKeyboard_getDescription(sfScanA);
+      |           ^~~~~~~~~~~~~~~~~~~~~~~~~
+==83302== 2 bytes in 1 blocks are definitely lost in loss record 1 of 1
+==83302==    definitely lost: 2 bytes in 1 blocks
+==83302== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+
+=== 32 DISPLAY vide
+Failed to open X11 display; make sure the DISPLAY environment variable is set correctly
+exit=134
+
+=== 19 sprite vs texture détruite (valgrind)
+==83320== Invalid read of size 1
+==83320==    by 0x4001384: main (t19_sprite_uaf.c:11)
+==83320==  Address 0x1f6e65d8 is 40 bytes inside a block of size 56 free'd
+==83320==    by 0x4001358: main (t19_sprite_uaf.c:9)
+==83320==    by 0x40012FB: main (t19_sprite_uaf.c:6)
+
+=== 20 text vs font détruite (valgrind)
+==83424== Invalid read of size 8
+==83424==    by 0x488ACBC: sfText_getLocalBounds (in ~/csfml-3.0/lib/libcsfml-graphics.so.3.0.0)
+==83424==  Address 0x5358220 is 80 bytes inside a block of size 248 free'd
+==83424== Invalid read of size 8
+==83424==    by 0x488ACBC: sfText_getLocalBounds (in ~/csfml-3.0/lib/libcsfml-graphics.so.3.0.0)
+
+=== 21 sound vs buffer détruit (valgrind)
+sfSound_getBuffer==b: 1

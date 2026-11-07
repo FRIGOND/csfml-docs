@@ -67,3 +67,28 @@ Outils locaux sans sudo : `tools/env.sh` (Xvfb et pkgconf extraits de .deb dans 
 Rappel dans les pages : sur un build maison en Release, les `assert` de CSFML sont retirés ; tester le retour de `create*` ne suffit pas pour `sfSprite_create(NULL)`, il faut ne jamais passer NULL.
 
 Le paquet système a bien 1 appel à `__assert_fail` dans `libcsfml-graphics` ; le build local n'en a aucun.
+
+## A.4 — Tests P1 (lot 2 : exemples officiels, symboles, Makefile, pkg-config)
+
+| N° | Test | Verdict | Constat |
+|---|---|---|---|
+| 12 | Makefile minimal de 02 §4.5 (paquet système puis préfixe local) | ✅ | `make` : libs résolues dans `/usr/lib/x86_64-linux-gnu` ; `make re CSFML_PREFIX=$P3` : résolues dans `~/csfml-3.0/lib` ; programme affiche `0.10` |
+| 13, 36 | Exemple `doc/mainpage.hpp` @ 3.0.0 ne compile pas | ✅ | 4 erreurs : `sfRenderWindow_create` « expected 5, have 4 » + « incompatible type for argument 4 », `sfSprite_create` « expected 1, have 0 », `sfText_create` « expected 1, have 0 ». À documenter dans « Erreurs connues de la doc officielle ». |
+| 37 | Même test sur `master` | ✅ | `sfText_create` corrigé ; restent `sfRenderWindow_create` et `sfSprite_create` |
+| 38 | `examples/example.c` @ 3.0.0 | ✅ | compile sans avertissement (`-Wall -Wextra`) ; lancé sous Xvfb, tourne jusqu'au timeout (exit 124 attendu, boucle interactive). Fermeture propre non testée. Assets : `sfml_logo.png`, `tuffy.ttf`, `doodle_pop.ogg` (dans `tests/p1/`). |
+| 14 | Inventaire (926 fonctions, 23 constantes) vs `.so` | ✅ | headers 3.0.0 : 926 fonctions déclarées, **926 exportées** (`nm -D`), 0 manquante ; 960 symboles exportés = 926 + 23 constantes + 11 symboles typeinfo C++ (`_ZTI…`, bruit). Les 109 noms du doc non exportés sont les ajouts de `master` (section « écarts sur master »). |
+| pkg-config | `.pc` des préfixes et du paquet | ✅ | `pkgconf 2.5.1` extrait ; `pkg-config --cflags --libs csfml-graphics` OK pour `$P3`, `$P2`, système ; compile + lance `clock.c` via `$(pkg-config --cflags --libs csfml-system)`. Les `.pc` 3.0.0 ajoutent `-I/usr/include/freetype2 -I/usr/include/libpng16`. |
+
+## A.4 — Tests P1 (lot 3 : fenêtre, polices, valgrind sous Xvfb)
+
+Script : `tests/run-p1-window.sh` (log : `tests/logs/p1-window.log`). Bibliothèque : `~/csfml-3.0` (build Release, SFML 3.0.2).
+
+| N° | Test | Verdict | Constat |
+|---|---|---|---|
+| 17 | `sfRenderWindow_waitEvent(w, timeout, &e)` | ✅ | après avoir vidé la file : `waitEvent(200ms)` → `got=0`, `elapsed≈207 ms` (local) et 206 ms (système). `sfTime_Zero` : attend sans limite (bloqué > 3 s). À la création d'une fenêtre sous Xvfb : 2 événements, type 1 (`sfEvtResized`) et type 3 (`sfEvtFocusGained`). |
+| 18 | UTF-8 dans `sfText_setString` | ✅ **confirmé : cassé** | `"été"` (5 octets) → 5 points de code dont `U+FFFFFFFF` ×4 ; `sfText_setUnicodeString` avec `{0xE9,0x74,0xE9,0}` → 3 points de code. Pour du texte accentué : `sfText_setUnicodeString` avec des `sfChar32`. Locale du test : `C.UTF-8`. |
+| 19 | Sprite vs texture détruite | ✅ | valgrind : `Invalid read of size 1` après `sfTexture_destroy`, bloc libéré à la ligne du destroy |
+| 20 | Text vs font détruite | ✅ | valgrind : `Invalid read of size 8` dans `sfText_getLocalBounds` |
+| 21 | Sound vs buffer détruit | ⚠️ | `sfSound_getBuffer(s) == b` vrai (pointeur gardé, pas de copie) ; mais aucune erreur valgrind observée après `sfSoundBuffer_destroy` (lecture 200 ms). Comportement indéfini non démontré ; ne pas affirmer « crash ». |
+| 24 | `sfKeyboard_getDescription` | ✅ avec nuance | le header déclare `const char*` (3.0.0) ; la source fait `strdup(...)`. Sans `free` : valgrind `2 bytes in 1 blocks are definitely lost` ; avec `free` : 0 erreur. Écrire `char *d = ...` donne `-Wdiscarded-qualifiers` : il faut `free((void *)d)` ou garder un `const char *` et caster au `free`. |
+| 32 | Sans `DISPLAY`, `sfRenderWindow_create` | ✅ | message `Failed to open X11 display; make sure the DISPLAY environment variable is set correctly` puis **abort** (exit 134), pas de retour NULL : paquet système **et** build local |
