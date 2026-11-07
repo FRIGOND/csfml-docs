@@ -19,10 +19,6 @@ In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
       |                 ^~~
 
 --- croisé rc=1
-~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_avant_inc3.c:5:8: error: unknown type name ‘sfBool’; did you mean ‘_Bool’?
-    5 | extern sfBool paused; extern const sfTexture *tileset;
-      |        ^~~~~~
-      |        _Bool
 ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_avant_inc3.c: In function ‘block’:
 ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_avant_inc3.c:12:20: warning: missing braces around initializer [-Wmissing-braces]
    12 | sfVideoMode mode = {800, 600, 32};
@@ -149,10 +145,6 @@ In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
       |         ^~~~~~
 
 --- croisé rc=1
-~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_avant_inc3.c:6:8: error: unknown type name ‘sfBool’; did you mean ‘_Bool’?
-    6 | extern sfBool paused; extern const sfTexture *tileset;
-      |        ^~~~~~
-      |        _Bool
 ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_avant_inc3.c: In function ‘block’:
 ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_avant_inc3.c:18:32: error: ‘sfMouseButtonEvent’ has no member named ‘x’
    18 |         shoot(event.mouseButton.x, event.mouseButton.y);
@@ -231,10 +223,6 @@ In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
       |         ^~~~~~
 
 --- croisé rc=1
-~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_avant_inc3.c:6:8: error: unknown type name ‘sfBool’; did you mean ‘_Bool’?
-    6 | extern sfBool paused; extern const sfTexture *tileset;
-      |        ^~~~~~
-      |        _Bool
 ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_avant_inc3.c: In function ‘block’:
 ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_avant_inc3.c:14:17: error: too few arguments to function ‘sfSprite_create’; expected 1, have 0
    14 | sfSprite *spr = sfSprite_create();
@@ -321,10 +309,6 @@ In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
       |         ^~~~~~
 
 --- croisé rc=1
-~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.4_avant_inc3.c:6:8: error: unknown type name ‘sfBool’; did you mean ‘_Bool’?
-    6 | extern sfBool paused; extern const sfTexture *tileset;
-      |        ^~~~~~
-      |        _Bool
 ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.4_avant_inc3.c: In function ‘block’:
 ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.4_avant_inc3.c:14:47: error: ‘sfMouseButtonEvent’ has no member named ‘x’
    14 | if (sfFloatRect_contains(&b, event.mouseButton.x, event.mouseButton.y))
@@ -391,10 +375,6 @@ In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
       |         ^~~~~~
 
 --- croisé rc=1
-~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.5_avant_inc3.c:6:8: error: unknown type name ‘sfBool’; did you mean ‘_Bool’?
-    6 | extern sfBool paused; extern const sfTexture *tileset;
-      |        ^~~~~~
-      |        _Bool
 ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.5_avant_inc3.c: In function ‘block’:
 ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.5_avant_inc3.c:14:15: error: too few arguments to function ‘sfText_create’; expected 1, have 0
    14 | sfText *txt = sfText_create();
@@ -446,10 +426,6 @@ In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
       |         ^~~~~~
 
 --- croisé rc=1
-~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.6_avant_inc3.c:6:8: error: unknown type name ‘sfBool’; did you mean ‘_Bool’?
-    6 | extern sfBool paused; extern const sfTexture *tileset;
-      |        ^~~~~~
-      |        _Bool
 ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.6_avant_inc3.c: In function ‘block’:
 ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.6_avant_inc3.c:14:16: error: too few arguments to function ‘sfSound_create’; expected 1, have 0
    14 | sfSound *snd = sfSound_create();
@@ -511,10 +487,6 @@ In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
       |         ^~~~~~
 
 --- croisé rc=1
-~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_avant_inc3.c:6:8: error: unknown type name ‘sfBool’; did you mean ‘_Bool’?
-    6 | extern sfBool paused; extern const sfTexture *tileset;
-      |        ^~~~~~
-      |        _Bool
 ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_avant_inc3.c: In function ‘block’:
 ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_avant_inc3.c:13:31: error: incompatible type for argument 1 of ‘sfImage_create’
    13 | sfImage *img = sfImage_create(64, 64);
@@ -726,10 +698,6 @@ In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
       |         ^~~~~~
 
 --- croisé rc=1
-~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.8_avant_inc3.c:6:8: error: unknown type name ‘sfBool’; did you mean ‘_Bool’?
-    6 | extern sfBool paused; extern const sfTexture *tileset;
-      |        ^~~~~~
-      |        _Bool
 ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.8_avant_inc3.c: In function ‘block’:
 ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.8_avant_inc3.c:14:36: error: ‘sfQuads’ undeclared (first use in this function)
    14 | sfVertexArray_setPrimitiveType(va, sfQuads);
@@ -763,3 +731,10 @@ In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
    16 | sfRenderStates st = sfRenderStates_default;    /* variable, plus de () */
       |                     ^~~~~~~~~~~~~~~~~~~~~~
 
+##### t27_window
+build rc=0
+Failed to create input context for window -- TextEntered event won't be able to return unicode
+Setting vertical sync not supported
+frames ok
+run rc=0
+--- valgrind

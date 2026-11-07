@@ -2,7 +2,7 @@
 #include <CSFML/Graphics.h>
 #include <stdbool.h>
 extern sfRenderWindow *win; extern sfEvent event; extern sfSprite *spr;
-extern sfBool paused; extern const sfTexture *tileset;
+extern int paused; extern const sfTexture *tileset;
 void shoot(int x, int y); void resize(unsigned w, unsigned h);
 void zoom(int d); void start(void); void hit(void);
 int block(void)

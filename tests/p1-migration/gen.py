@@ -18,7 +18,7 @@ assert len(blocks) == 16
 # Contexte factice commun (ajouté par le wrapper, jamais dans l'extrait).
 PRE = {
  "avant": "extern sfRenderWindow *win; extern sfEvent event; extern sfSprite *spr;\n"
-          "extern sfBool paused; extern const sfTexture *tileset;\n"
+          "extern int paused; extern const sfTexture *tileset;\n"
           "void shoot(int x, int y); void resize(unsigned w, unsigned h);\n"
           "void zoom(int d); void start(void); void hit(void);\n",
  "apres": "extern sfRenderWindow *win; extern sfEvent event; extern sfSprite *spr;\n"

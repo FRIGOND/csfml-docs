@@ -112,3 +112,26 @@ Sans `DISPLAY`, 2.6.1 se comporte comme 3.0.0 : message `Failed to open X11 disp
 | 7 | Build SFML 3.0.2 sans sudo, partagée | ✅ | fait par `tools/build-csfml.sh` : `libsfml-*.so.3.0.2`, `lib/cmake/SFML`, `lib/pkgconfig/sfml-*.pc` présents |
 | 8 | CSFML 3.0.0 trouve SFML via `SFML_ROOT` | ✅ | testé dans le test 11 (`-DSFML_ROOT=<préfixe>`, sans `SFML_DIR`) ; le build principal utilisait `-DSFML_DIR` |
 | 11 | SFML 3 statique par défaut ; CSFML ne la trouve pas | ✅ | SFML installée avec `libsfml-*-s.a` (statique par défaut). Configuration de CSFML 3.0.0 : `CMake Error at …/SFMLConfig.cmake:185: Requested SFML configuration (Shared) was not found. Set SFML_STATIC_LIBRARIES to ON for static libraries`, puis `find_package(SFML) … NOT FOUND` (`CMakeLists.txt:69`). Avec `-DCSFML_LINK_SFML_STATICALLY=ON` : configuration réussie (génération OK, build non lancé). |
+
+## A.4 — Tests P2 (lot 1 : comportement de l'API, sans fenêtre)
+
+Sources : `tests/p2/` (`gen_destroy.py`, `p2_misc.c`, `t63.c`, `t82.c`, `t86.c`, `t101.c`). Locale `C.UTF-8`.
+
+| N° | Test | Verdict | Constat |
+|---|---|---|---|
+| 62 | `sfX_destroy(NULL)` sans effet (3.0.0) | ✅ | les 40 fonctions `*_destroy` appelées avec NULL (une par processus fils) : 0 crash, sur le paquet Ubuntu **et** sur le build local |
+| 91 | idem en 2.6.1 | ⚠️ | 42 fonctions `*_destroy` : 41 OK, **`sfRenderTexture_destroy(NULL)` plante (SIGSEGV)** |
+| 63 | `assert` actifs dans le paquet Ubuntu | ✅ | `sfClock_getElapsedTime(NULL)` → `./src/CSFML/System/Clock.cpp:59: sfTime sfClock_getElapsedTime(const sfClock*): Assertion \`clock' failed.` exit 134 (le build Release local : pas d'assert) |
+| 67 | `sfImage_saveToMemory` remplit un `sfBuffer` de l'appelant | ✅ | `sfBuffer_create()` puis `saveToMemory(img, buf, "png")` → `true`, taille 76 octets (image 2×2) |
+| 72 | `sfText_getString` : pointeur interne | ✅ | deux appels successifs renvoient la **même adresse** ; le contenu a changé (`xyz`) ; l'ancienne valeur doit être copiée si on la garde |
+| 78 | `sfIpAddress_toString` | ✅ | `sizeof(sfIpAddress.address)` = 16 en 3.0.0 ; `255.255.255.255` correctement écrit (débordement ASan non testé) |
+| 79 | `sfIpAddress_fromString("localhost")` | ✅ | `127.0.0.1` ; une chaîne invalide donne une adresse dont `toString` est vide |
+| 81 | `U"…"` accepté par `sfText_setUnicodeString` | ✅ | compile avec `-std=c11 -Wall -Wextra` sans avertissement ; `"été"` → 3 points de code |
+| 82 | `sfFree` absent des headers parapluie | ✅ | avec seulement `<CSFML/System.h>` : `implicit declaration of function ‘sfFree’` ; avec `<CSFML/System/Alloc.h>` : OK |
+| 83 | `sfMouse_getPositionRenderWindow` dans libcsfml-graphics | ✅ | présent dans `libcsfml-graphics.so.3.0.0` (1), absent de `libcsfml-window.so.3.0.0` (0) |
+| 86 | Fonction supprimée = erreur avec gcc récent | ✅ | gcc 15 : `error: implicit declaration of function ‘sfSound_setLoop’; did you mean ‘sfSound_setCone’?` ; clang 21 : `error: call to undeclared function ‘sfSound_setLoop’` |
+| 87 | `sfClock_restart` renvoie le temps écoulé | ✅ partiel | `restart` renvoie 0.10 s puis le temps repart de 0 (0.10 s mesuré après 100 ms). `sfClock_reset` (pause) : non testé. |
+| 101 | `EXIT_FAILURE` sans `#include <stdlib.h>` | ✅ | compile avec seulement `<CSFML/Audio.h>` et `<CSFML/Graphics.h>` (inclusion transitive) : ne pas s'y fier |
+| 102 | Pas de `CSFMLConfig.cmake` | ✅ | `dpkg -L libcsfml-dev` : aucun fichier cmake ; le préfixe local ne contient que `lib/cmake/SFML` |
+| 110 | Epitech `latest` : CSFML 3.0.0 | ✅ | voir A.2 |
+| 111 | `epitest-docker:ubuntu24` : CSFML 2.6.0 | ✅ | voir A.2 (tag existant, `libcsfml-dev 2.6.0-3build1`) |
