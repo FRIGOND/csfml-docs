@@ -5,7 +5,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { Code } from '@astrojs/starlight/components';
 import tested from '../data/tested.json';
-import TestedBadge from './TestedBadge.astro';
 const { name, version } = Astro.props; // version : '3.0' | '2.6'
 const file = path.resolve(process.cwd(), '..', 'api', tested[version].api);
 const api = JSON.parse(fs.readFileSync(file, 'utf-8'));
@@ -24,5 +23,5 @@ const params = fn.params.filter((p) => p.name || p.type !== 'void');
     </table>
   )}
   <p>Retour : <code>{fn.returns}</code>{fn.return_doc ? ` — ${fn.return_doc}` : ''}</p>
-  <p><small>Défini dans <code>{fn.header}:{fn.line}</code> · {fn.deprecated ? 'DÉPRÉCIÉ · ' : ''}<TestedBadge version={version} /></small></p>
+  <p><small>Défini dans <code>{fn.header}:{fn.line}</code>{fn.deprecated ? ' · ' : ''}{fn.deprecated ? 'DÉPRÉCIÉ' : ''}</small></p>
 </section>
