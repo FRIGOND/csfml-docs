@@ -1,0 +1,105 @@
+---
+title: "Migration : checklist"
+description: "Les étapes, dans l’ordre, pour migrer un projet de CSFML 2.6 à 3.0, avec les messages du compilateur à reconnaître."
+sidebar:
+  order: 5
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Example from '@/components/Example.astro';
+import TestedBadge from '@/components/TestedBadge.astro';
+
+<TestedBadge version="3.0" />
+
+
+Cette liste est à suivre dans l'ordre. Chaque étape finit par une **compilation** : corrige les erreurs de l'étape avant de passer à la suivante.
+
+:::tip[Avant de commencer]
+Travaille sur une **copie** (ou une branche) de ton projet. Garde l'ancienne version qui marche.
+:::
+
+## 1. Préparer l'environnement
+
+- Installe CSFML 3.0 (voir [installer et compiler](/guides/install/)). Vérifie : `ls /usr/include/CSFML` ou ton préfixe local.
+- Les noms des bibliothèques sont les mêmes : `-lcsfml-graphics -lcsfml-window -lcsfml-system -lcsfml-audio`. Les `-l` vont **après** les fichiers `.c`.
+- Si CSFML est dans un préfixe local, ajoute `-I<préfixe>/include -L<préfixe>/lib` (et `-Wl,-rpath,<préfixe>/lib`).
+
+## 2. Les includes
+
+Remplace `<SFML/` par `<CSFML/` :
+
+```sh
+sed -i 's|#include <SFML/|#include <CSFML/|' src/*.c include/*.h
+```
+
+Recompile. Les erreurs de type « fichier introuvable » doivent disparaître, remplacées par d'autres.
+
+## 3. Les booléens et les entiers
+
+```sh
+sed -i -E 's/\bsfBool\b/bool/g; s/\bsfTrue\b/true/g; s/\bsfFalse\b/false/g' src/*.c include/*.h
+sed -i -E 's/\bsfUint(8|16|32|64)\b/uint\1_t/g; s/\bsfInt(8|16|32|64)\b/int\1_t/g' src/*.c include/*.h
+```
+
+Ajoute `#include <stdbool.h>` et `#include <stdint.h>` dans tes headers si tu veux être sûr. Relis les changements avec `git diff` : un `sfUint32` qui devient `uint32_t` est exact, mais vérifie que tu n'as pas touché un commentaire ou une chaîne.
+
+## 4. La fenêtre
+
+- Ajoute `sfWindowed` dans chaque `sfRenderWindow_create` (et `sfWindow_create`…), entre le style et les réglages.
+- `sfVideoMode mode = {800, 600, 32}` devient `{{800, 600}, 32}` ; `mode.width` devient `mode.size.x`.
+- Si tu utilisais `sfFullscreen` comme style : voir [le piège du plein écran](/3-0/migration/overview/#3-sfrenderwindow_create-a-5-paramètres).
+
+## 5. Les objets obligatoires
+
+Pour chaque `sfSprite_create()`, `sfText_create()`, `sfSound_create()` : déplace le chargement de la ressource **avant**, teste-le, et passe-la en argument. Voir [création d'objets](/3-0/migration/objects-creation/).
+
+## 6. Les événements
+
+Corrige les champs (`x`, `y` → `position`), les types (`sfEvtLostFocus` → `sfEvtFocusLost`), `waitEvent`, les touches. Voir [événements](/3-0/migration/events/).
+
+## 7. Les vecteurs et les rectangles
+
+Passe les paires de nombres en vecteurs et `left`/`top`/`width`/`height` en `position`/`size`. Voir [types](/3-0/migration/types/).
+
+## 8. Les renommages et suppressions
+
+Cherche les fonctions renommées (`setLoop`, `setColor`, `getSystemHandle`…) et supprimées (`sfQuads`, `sfView_reset`, `sfMutex_*`…) avec `grep`. Le tableau de la [vue d'ensemble](/3-0/migration/overview/) et [l'annexe générée](/3-0/migration/api-changes/) les listent.
+
+## 9. Lire les messages du compilateur
+
+Voici les messages réels relevés quand on compile l'**ancien** code avec les headers 3.0.0 (gcc 15), et ce qu'ils veulent dire :
+
+| Message | Cause | Où |
+|---|---|---|
+| `fatal error: SFML/Graphics.h: Aucun fichier ou dossier de ce nom` | l'include | étape 2 |
+| `unknown type name 'sfBool'`, `'sfTrue' undeclared`, `unknown type name 'sfInt64'` | `sfBool`, entiers | étape 3 |
+| `too few arguments to function 'sfRenderWindow_create'; expected 5, have 4` | `sfWindowed` manquant | étape 4 |
+| `incompatible type for argument 4 of 'sfRenderWindow_create'` | idem | étape 4 |
+| `'sfMouseButtonEvent' has no member named 'x'` | `position` | étape 6 |
+| `'sfSizeEvent' has no member named 'width'` | `size.x` | étape 6 |
+| `'sfEvtLostFocus' undeclared`, `'sfKeyReturn' undeclared`, `'sfEvtMouseWheelMoved' undeclared` | renommages d'événements | étape 6 |
+| `too few arguments to function 'sfSprite_create'; expected 1, have 0` (idem `sfText_create`, `sfSound_create`) | ressource obligatoire | étape 5 |
+| `'sfIntRect' has no member named 'left'` | rectangles | étape 7 |
+| `too many arguments to function 'sfFloatRect_contains'; expected 2, have 3` | `contains` avec un point | étape 7 |
+| `too many arguments to function 'sfImage_create'; expected 1, have 2` (idem `sfTexture_create`, `sfImage_setPixel`…) | vecteurs | étape 7 |
+| `implicit declaration of function 'sfText_setColor'; did you mean 'sfText_setFillColor'?` | renommage | étape 8 |
+| `implicit declaration of function 'sfMusic_setLoop'` | renommage | étape 8 |
+| `'sfQuads' undeclared` | primitive supprimée | étape 8 |
+| `called object 'sfRenderStates_default' is not a function or function pointer` | fonction devenue variable | étape 8 |
+
+Avec gcc 14 ou plus récent, une fonction non déclarée (renommée ou supprimée) est une **erreur**, pas un simple avertissement. Voir aussi [erreurs de compilation](/guides/troubleshooting/compile-errors/).
+
+:::danger[Les erreurs qui ne se voient pas]
+Deux modifications se compilent **sans message** (à moins de lire les avertissements) : `sfFullscreen` passé comme style (fenêtre non plein écran), et les initialisations à plat `{800, 600, 32}` (seulement `-Wmissing-braces` avec `-Wall`). Compile toujours avec `-Wall -Wextra`.
+:::
+
+## 10. Tester
+
+- Compile avec `-std=c11 -Wall -Wextra -Werror`, sans aucun avertissement.
+- Lance le programme : une fenêtre, des sprites, du texte, du son.
+- Lance sous `valgrind --leak-check=full`. Dans nos tests, la seule fuite constatée venait de FreeType (police) et pas du code des extraits : 1 646 octets en 8 blocs, tous dans `libfreetype`.
+- Sans carte son, vérifie que le programme ne plante pas ([audio sans périphérique](/guides/concepts/audio-without-device/)).
+
+## Ce qui a été vérifié
+
+16 extraits avant/après ont été compilés (`-std=c11 -Wall -Wextra`) : les 8 « avant » avec les headers 2.6.1 et les 8 « après » avec les headers 3.0.0 passent ; en changeant seulement l'include, les 8 « avant » échouent avec 3.0.0 et les 8 « après » échouent avec 2.6.1. Les programmes « après » fenêtre + sprite + texte + son se sont exécutés avec le code de retour 0.

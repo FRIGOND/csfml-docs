@@ -1,0 +1,139 @@
+---
+title: "Casse-briques 7 : texte et score"
+description: "Afficher le score et un titre avec des lettres accentuées. (CSFML 3.0)"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Example from '@/components/Example.astro';
+import TestedBadge from '@/components/TestedBadge.astro';
+
+<TestedBadge version="3.0" />
+
+Tutoriel du **casse-briques** (CSFML 3.0), étape 7 sur 9. Cette page a une jumelle pour [CSFML 2.6](/2-6/tutorials/07-text-score/) : même plan, avec les différences d'API expliquées.
+
+## Objectif
+
+Afficher le score et un titre avec des lettres accentuées.
+
+## Prérequis
+
+[Étape 6](/3-0/tutorials/06-sprites/) : les sprites. Le fichier `tuffy.ttf` du dossier `examples/assets/`.
+
+## Pas à pas
+
+### La police
+
+Un texte a besoin d'une **police** (*font*). [`sfFont_createFromFile`](/3-0/reference/graphics/font/#sfFont_createFromFile) charge un fichier `.ttf` et renvoie `NULL` s'il est introuvable. Le chemin vient de `example_asset`, une fonction de `test_mode.h` : elle donne `../../assets/tuffy.ttf` (ou le dossier de `EXAMPLE_ASSETS`).
+
+### Créer un texte
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 3.0">
+
+```c
+sfText *text = sfText_create(font);
+
+if (text != NULL)
+    sfText_setCharacterSize(text, size);
+return text;
+```
+
+  </TabItem>
+  <TabItem label="CSFML 2.6">
+
+```c
+sfText *text = sfText_create();
+
+if (text == NULL)
+    return NULL;
+sfText_setFont(text, font);
+sfText_setCharacterSize(text, size);
+return text;
+```
+
+  </TabItem>
+</Tabs>
+
+En 3.0, `sfText_create` **exige** la police (`NULL` interdit : assertion).
+
+Comme le sprite pour la texture, le texte **garde l'adresse** de sa police. On détruit donc les textes **avant** la police.
+
+### Écrire le score
+
+[`sfText_setString`](/3-0/reference/graphics/text/#sfText_setString) copie une chaîne dans le texte. On fabrique la chaîne avec `snprintf` :
+
+```c
+snprintf(buffer, sizeof(buffer), "Score : %d", g->score);
+sfText_setString(g->score_text, buffer);
+```
+
+`snprintf` écrit au plus `sizeof(buffer)` caractères : pas de débordement.
+
+### Les accents
+
+:::danger[Accents et sfText_setString]
+`sfText_setString` ne lit pas correctement l'UTF-8. Le test (CSFML 3.0.0, locale `C.UTF-8`) montre que `"été"` (5 octets) donne 5 caractères dont quatre invalides. Pour des lettres accentuées, utilise [`sfText_setUnicodeString`](/3-0/reference/graphics/text/#sfText_setUnicodeString), qui prend des caractères de 32 bits.
+:::
+
+En C11, un littéral `U"..."` est un tableau de caractères 32 bits. Le compilateur convertit les accents pour toi :
+
+```c
+sfText_setUnicodeString(g->title_text, U"Éclate-les toutes !");
+```
+
+`sfChar32` est un entier de 32 bits (`uint32_t`), défini par CSFML 3.0.
+
+### Centrer un texte
+
+[`sfText_getLocalBounds`](/3-0/reference/graphics/text/#sfText_getLocalBounds) donne la taille du texte. On place l'origine au milieu de cette zone avec [`sfText_setOrigin`](/3-0/reference/graphics/text/#sfText_setOrigin), puis on positionne le texte : il est centré sur le point voulu.
+
+### Quelques détails
+
+- [`sfText_getString`](/3-0/reference/graphics/text/#sfText_getString) renvoie un pointeur **interne** : il change si le texte change. Copie la chaîne si tu veux la garder.
+- Le score est mis à jour à chaque brique cassée (`SCORE_PER_BRICK`, soit 10 points).
+- Sous valgrind, une petite fuite venant de FreeType (la bibliothèque de polices) peut apparaître. Elle n'est pas de ton fait ; le dépôt la masque avec `tests/valgrind.supp`.
+
+La vérification contrôle le texte du score et que le premier caractère du titre vaut `U+00C9` (« É »).
+
+## Le programme complet
+
+Ce programme compile avec `-std=c11 -Wall -Wextra -Werror` et il est exécuté par les tests du dépôt.
+
+<Example example="tutorials/07-text-score" version="3.0" />
+
+## Compiler et lancer
+
+```sh
+make -C examples/tutorials/07-text-score CSFML=3.0 CSFML_PREFIX=system   # ou CSFML_PREFIX=$HOME/csfml-3.0
+cd examples/tutorials/07-text-score && ./build/3.0/example
+```
+
+Pour compiler à la main, ajoute `-I examples/common` (le fichier `test_mode.h`) et lie : `-lcsfml-graphics -lcsfml-window -lcsfml-system -lm`.
+
+## Ce que tu as appris
+
+- Charger une police et créer un `sfText`.
+- Mettre un entier dans un texte avec `snprintf`.
+- Afficher des accents avec `sfText_setUnicodeString` et `U"..."`.
+- Centrer un texte avec son origine.
+
+## Erreurs fréquentes
+
+- Mettre des accents dans `sfText_setString` : caractères faux.
+- Détruire la police avant le texte. Voir [qui possède quoi](/guides/concepts/ownership/).
+- Passer `NULL` à `sfText_create` (police non chargée) en 3.0 : arrêt du programme.
+- Chemin de la police faux : `sfFont_createFromFile` renvoie `NULL`. Lance le programme depuis son dossier, ou règle `EXAMPLE_ASSETS`.
+
+## Exercices facultatifs
+
+Il n'y a pas de corrigé : essaie, casse, recommence.
+
+- Ajoute un texte « Meilleur score » qui garde le plus haut score depuis le lancement.
+- Change la taille du score selon le nombre de briques détruites.
+- Affiche le score sur 5 chiffres (`%05d`).
+
+## Suite
+
+- Précédent : [Étape 6 : les sprites](/3-0/tutorials/06-sprites/)
+- Suivant : [Étape 8 : son et états](/3-0/tutorials/08-sound-states/)
+- Même étape en [CSFML 2.6](/2-6/tutorials/07-text-score/).

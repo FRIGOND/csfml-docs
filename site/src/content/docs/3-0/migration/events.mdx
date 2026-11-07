@@ -1,0 +1,200 @@
+---
+title: "Migration : les événements"
+description: "Types d'événements et champs renommés, waitEvent avec timeout, touches et boutons, avant et après."
+sidebar:
+  order: 2
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Example from '@/components/Example.astro';
+import TestedBadge from '@/components/TestedBadge.astro';
+
+<TestedBadge version="3.0" />
+
+
+Un programme de jeu passe beaucoup de temps dans la boucle d'événements : c'est là qu'il y a le plus de modifications à faire.
+
+## Ce qui ne change pas
+
+- `sfEvent` est toujours une **union** : tu lis `event.type`, puis le champ qui correspond (`event.key`, `event.mouseButton`…).
+- `sfRenderWindow_pollEvent` se boucle comme avant ; `sfEvtClosed`, `sfEvtResized`, `sfEvtKeyPressed`, `sfEvtKeyReleased`, `sfEvtTextEntered`, `sfEvtMouseButtonPressed`… gardent leur nom.
+- `event.key.code`, `event.key.scancode` et les touches de lettres ne changent pas. Les événements de joystick (`sfJoystickMoveEvent`, `sfJoystickButtonEvent`, `sfJoystickConnectEvent`) gardent exactement les mêmes champs (vérifié dans les fichiers d'API).
+- Les booléens des événements (`event.key.alt`, `control`, `shift`, `system`) passent de `sfBool` à `bool`.
+
+## Avant / après : la boucle complète
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6">
+
+```c
+sfEvent event;
+while (sfRenderWindow_pollEvent(win, &event)) {
+    if (event.type == sfEvtClosed)
+        sfRenderWindow_close(win);
+    if (event.type == sfEvtMouseButtonPressed && event.mouseButton.button == sfMouseLeft)
+        shoot(event.mouseButton.x, event.mouseButton.y);
+    if (event.type == sfEvtResized)
+        resize(event.size.width, event.size.height);
+    if (event.type == sfEvtLostFocus)
+        paused = sfTrue;
+    if (event.type == sfEvtKeyPressed && event.key.code == sfKeyReturn)
+        start();
+    if (event.type == sfEvtMouseWheelMoved)
+        zoom(event.mouseWheel.delta);
+}
+```
+
+  </TabItem>
+  <TabItem label="CSFML 3.0">
+
+```c
+sfEvent event;
+while (sfRenderWindow_pollEvent(win, &event)) {
+    if (event.type == sfEvtClosed)
+        sfRenderWindow_close(win);
+    if (event.type == sfEvtMouseButtonPressed && event.mouseButton.button == sfMouseLeft)
+        shoot(event.mouseButton.position.x, event.mouseButton.position.y);
+    if (event.type == sfEvtResized)
+        resize(event.size.size.x, event.size.size.y);
+    if (event.type == sfEvtFocusLost)
+        paused = true;
+    if (event.type == sfEvtKeyPressed && event.key.code == sfKeyEnter)
+        start();
+    if (event.type == sfEvtMouseWheelScrolled
+        && event.mouseWheelScroll.wheel == sfMouseVerticalWheel)
+        zoom(event.mouseWheelScroll.delta);   /* float */
+}
+/* attente bloquante : sfRenderWindow_waitEvent(win, sfTime_Zero, &event) */
+```
+
+  </TabItem>
+</Tabs>
+
+Ce code a été compilé dans chaque version (voir [la checklist](/3-0/migration/checklist/)). En 2.6.1, compiler la boucle « avant » donne un avertissement `-Wdeprecated-declarations` : c'est normal, le type `sfMouseWheelEvent` y est déjà déprécié (voir plus bas).
+
+## Types d'événements
+
+| Ancien (2.6.1) | Nouveau (3.0.0) | Effet |
+|---|---|---|
+| `sfEvtLostFocus` | `sfEvtFocusLost` | Casse |
+| `sfEvtGainedFocus` | `sfEvtFocusGained` | Casse |
+| `sfEvtMouseWheelMoved` (type `sfMouseWheelEvent`, `event.mouseWheel`) | (supprimé) : `sfEvtMouseWheelScrolled` | Casse |
+| — | `sfEvtMouseMovedRaw` (`event.mouseMoveRaw`, avec `delta`) | Ajout |
+
+Les valeurs numériques de `sfEventType` changent aussi (un type disparaît, un autre est inséré). Cela ne gêne que du code qui stocke ces valeurs « en dur » : ne le fais pas.
+
+## Champs renommés ou déplacés
+
+Les couples de nombres `x`, `y` deviennent un vecteur `position` (un `sfVector2i`) ; les trois nombres du capteur deviennent un `sfVector3f` nommé `value`.
+
+| Champ de l'événement | Champs 2.6.1 | Champs 3.0.0 |
+|---|---|---|
+| `event.size` | `width`, `height` | `size` |
+| `event.mouseButton` | `button`, `x`, `y` | `button`, `position` |
+| `event.mouseMove` | `x`, `y` | `position` |
+| `event.mouseWheelScroll` | `wheel`, `delta`, `x`, `y` | `wheel`, `delta`, `position` |
+| `event.touch` | `finger`, `x`, `y` | `finger`, `position` |
+| `event.sensor` | `sensorType`, `x`, `y`, `z` | `sensorType`, `value` |
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6">
+
+```c
+if (event.type == sfEvtMouseMoved)
+    use(event.mouseMove.x, event.mouseMove.y);
+if (event.type == sfEvtTouchBegan)
+    use(event.touch.x, event.touch.y);
+if (event.type == sfEvtSensorChanged)
+    use3(event.sensor.x, event.sensor.y, event.sensor.z);
+if (event.type == sfEvtMouseButtonPressed
+    && event.mouseButton.button == sfMouseXButton1)
+    use(1, 1);
+```
+
+  </TabItem>
+  <TabItem label="CSFML 3.0">
+
+```c
+if (event.type == sfEvtMouseMoved)
+    use(event.mouseMove.position.x, event.mouseMove.position.y);
+if (event.type == sfEvtTouchBegan)
+    use(event.touch.position.x, event.touch.position.y);
+if (event.type == sfEvtSensorChanged)
+    use3(event.sensor.value.x, event.sensor.value.y, event.sensor.value.z);
+if (event.type == sfEvtMouseButtonPressed
+    && event.mouseButton.button == sfMouseButtonExtra1)
+    use(1, 1);
+```
+
+  </TabItem>
+</Tabs>
+
+:::note[Roulette de la souris]
+En 3.0, la roulette s'écrit `event.mouseWheelScroll` ; teste `event.mouseWheelScroll.wheel == sfMouseVerticalWheel` pour la roulette verticale, et `delta` est un `float`. En 2.6.1, `sfEvtMouseWheelMoved` et son type `sfMouseWheelEvent` sont **déjà dépréciés** : le header `Event.h` fait avertir le compilateur même si tu ne les utilises pas (c'est pourquoi les exemples de ce dépôt compilent la 2.6 avec `-Wno-error=deprecated-declarations`). Pour migrer, passe d'abord à `sfEvtMouseWheelScrolled` **en 2.6**, ça marche déjà.
+:::
+
+## waitEvent : un timeout
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6">
+
+```c
+sfBool got = sfRenderWindow_waitEvent(win, &event);
+```
+
+  </TabItem>
+  <TabItem label="CSFML 3.0">
+
+```c
+bool got = sfRenderWindow_waitEvent(win, sfTime_Zero, &event);
+```
+
+  </TabItem>
+</Tabs>
+
+`sfRenderWindow_waitEvent` reçoit un paramètre de plus : le **timeout**, de type `sfTime`. Signature en 3.0 : `bool sfRenderWindow_waitEvent(sfRenderWindow* renderWindow, sfTime timeout, sfEvent* event)`. Avec `sfTime_Zero`, l'attente est **sans limite**. La fonction renvoie `false` si aucun événement n'est arrivé avant la fin du timeout (et en cas d'erreur).
+
+Mesures faites dans les tests (3.0.0) : après avoir vidé la file, `waitEvent` avec 200 ms a renvoyé `false` au bout d'environ 207 ms ; avec `sfTime_Zero`, le programme est resté bloqué plus de 3 secondes. Même changement pour `sfWindow_waitEvent` et `sfWindowBase_waitEvent`.
+
+## Touches et boutons renommés
+
+Les anciens **alias** de touches sont supprimés, et la souris a de nouveaux noms pour ses boutons supplémentaires :
+
+| Ancien | Nouveau |
+|---|---|
+| `sfKeyReturn` | `sfKeyEnter` |
+| `sfKeyBack` | `sfKeyBackspace` |
+| `sfKeyTilde` | `sfKeyGrave` |
+| `sfKeyDash` | `sfKeyHyphen` |
+| `sfKeyQuote` | `sfKeyApostrophe` |
+| `sfKeySemiColon` | `sfKeySemicolon` |
+| `sfKeyBackSlash` | `sfKeyBackslash` |
+
+`sfMouseXButton1` et `sfMouseXButton2` deviennent `sfMouseButtonExtra1` et `sfMouseButtonExtra2`. Les correspondances ci-dessus viennent des headers (des deux versions), pas du guide C++ de SFML qui contient deux erreurs sur ces lignes.
+
+## Autres changements proches
+
+- `sfWindowHandle sfRenderWindow_getSystemHandle(const sfRenderWindow* renderWindow)` devient `sfWindowHandle sfRenderWindow_getNativeHandle(const sfRenderWindow* renderWindow)`.
+- `sfKeyboard_isKeyPressed`, `sfMouse_isButtonPressed`, `sfMouse_getPositionRenderWindow` : même signature, `bool` à la place de `sfBool`.
+- `sfRenderWindow_mapPixelToCoords(window, point, view)` est identique dans les deux versions : c'est la bonne façon de passer d'un pixel de la souris à une position dans le jeu.
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6">
+
+```c
+void *handle = (void *)sfRenderWindow_getSystemHandle(win);
+```
+
+  </TabItem>
+  <TabItem label="CSFML 3.0">
+
+```c
+void *handle = (void *)sfRenderWindow_getNativeHandle(win);
+```
+
+  </TabItem>
+</Tabs>
+
+:::caution[Non vérifié]
+Le commentaire du header 3.0.0 pour `sfEvtMouseMovedRaw` dit « data in event.mouseMove », mais la structure s'appelle `mouseMoveRaw` (relevé dans le code source de CSFML). Cet événement n'a pas été exécuté dans nos tests (pas de souris sous Xvfb).
+:::

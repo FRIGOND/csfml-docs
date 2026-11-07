@@ -1,0 +1,29 @@
+{
+  "title": "Raquette, balle, briques",
+  "summary": "Dessine la raquette, la balle et 50 briques avec des sfRectangleShape et un sfCircleShape.",
+  "functions": [
+    "sfRectangleShape_setSize",
+    "sfRectangleShape_setPosition",
+    "sfRectangleShape_setFillColor",
+    "sfRectangleShape_create",
+    "sfCircleShape_create",
+    "sfCircleShape_setRadius",
+    "sfCircleShape_setOrigin",
+    "sfCircleShape_setPosition",
+    "sfRectangleShape_destroy",
+    "sfCircleShape_destroy",
+    "sfRenderWindow_destroy",
+    "sfRectangleShape_getGlobalBounds",
+    "sfCircleShape_getGlobalBounds",
+    "sfRenderWindow_clear",
+    "sfRenderWindow_drawRectangleShape",
+    "sfRenderWindow_drawCircleShape",
+    "sfRenderWindow_display",
+    "sfRenderWindow_isOpen",
+    "sfRenderWindow_pollEvent",
+    "sfRenderWindow_close",
+    "sfRenderWindow_create",
+    "sfRenderWindow_setFramerateLimit"
+  ],
+  "assets": []
+}

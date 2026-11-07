@@ -1,0 +1,110 @@
+---
+title: "Casse-briques 3 : le mouvement"
+description: "Faire bouger la balle avec le temps réel (*delta time*) et la faire rebondir sur les murs. (CSFML 3.0)"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Example from '@/components/Example.astro';
+import TestedBadge from '@/components/TestedBadge.astro';
+
+<TestedBadge version="3.0" />
+
+Tutoriel du **casse-briques** (CSFML 3.0), étape 3 sur 9. Cette page a une jumelle pour [CSFML 2.6](/2-6/tutorials/03-movement/) : même plan, avec les différences d'API expliquées.
+
+## Objectif
+
+Faire bouger la balle avec le temps réel (*delta time*) et la faire rebondir sur les murs.
+
+## Prérequis
+
+[Étape 2](/3-0/tutorials/02-shapes/) : les formes à l'écran.
+
+## Pas à pas
+
+### Pourquoi le delta time
+
+Si tu écris `x += 5` à chaque image, la balle va deux fois plus vite sur un ordinateur qui affiche 120 images par seconde que sur un autre à 60. La solution : mesurer le temps écoulé entre deux images (le *delta time*, noté `dt`) et déplacer de `vitesse * dt`. La vitesse s'exprime alors en **pixels par seconde**. Voir [le temps](/guides/concepts/time/).
+
+### sfClock
+
+[`sfClock_create`](/3-0/reference/system/clock/#sfClock_create) crée une horloge qui part tout de suite. [`sfClock_restart`](/3-0/reference/system/clock/#sfClock_restart) remet l'horloge à zéro **et renvoie** le temps écoulé depuis le dernier appel : c'est exactement notre `dt`. Un `sfTime` se convertit en secondes avec [`sfTime_asSeconds`](/3-0/reference/system/time/#sfTime_asSeconds).
+
+```c
+float dt = sfTime_asSeconds(sfClock_restart(clock));
+```
+
+On limite `dt` à `MAX_DT` (0,05 s). Sans cette limite, un gros ralentissement (fenêtre déplacée, par exemple) ferait faire un grand saut à la balle.
+
+### L'état de la balle
+
+La balle a maintenant une position, une vitesse et un compteur de rebonds, dans sa propre structure :
+
+```c
+typedef struct {
+    sfCircleShape *shape;
+    sfVector2f pos;
+    sfVector2f vel;
+    int bounces;
+} ball_t;
+```
+
+On garde la position dans `pos` et on la recopie dans la forme avec [`sfCircleShape_setPosition`](/3-0/reference/graphics/circle-shape/#sfCircleShape_setPosition). Ainsi le calcul ne dépend pas de la forme, et c'est exactement le même calcul chaque fois.
+
+### Le rebond
+
+Quand le centre de la balle sort de la zone permise, on le remet sur le bord et on **inverse** la vitesse sur cet axe :
+
+```c
+static int reflect(float *pos, float *vel, float min, float max)
+{
+    if (*pos < min) {
+```
+
+La fonction `reflect` sert pour `x` et pour `y`. Elle renvoie `1` si un rebond a eu lieu, ce qui permet de les compter.
+
+### Un test qui donne toujours le même résultat
+
+En mode test, `next_dt` renvoie toujours `1/60` seconde, quelle que soit la vitesse de la machine. La partie est alors toujours la même, et on peut vérifier que la balle est restée dans la fenêtre et qu'elle a rebondi au moins une fois.
+
+## Le programme complet
+
+Ce programme compile avec `-std=c11 -Wall -Wextra -Werror` et il est exécuté par les tests du dépôt.
+
+<Example example="tutorials/03-movement" version="3.0" />
+
+## Compiler et lancer
+
+```sh
+make -C examples/tutorials/03-movement CSFML=3.0 CSFML_PREFIX=system   # ou CSFML_PREFIX=$HOME/csfml-3.0
+cd examples/tutorials/03-movement && ./build/3.0/example
+```
+
+Pour compiler à la main, ajoute `-I examples/common` (le fichier `test_mode.h`) et lie : `-lcsfml-graphics -lcsfml-window -lcsfml-system`.
+
+## Ce que tu as appris
+
+- Mesurer le temps avec `sfClock` et `sfTime`.
+- Déplacer un objet à vitesse constante : `position += vitesse * dt`.
+- Inverser une vitesse pour faire rebondir.
+- Rendre un test déterministe avec un `dt` fixe.
+
+## Erreurs fréquentes
+
+- Déplacer d'une valeur fixe par image : la vitesse dépend de l'ordinateur.
+- Appeler `sfClock_restart` plusieurs fois par image : chaque appel remet à zéro, le `dt` devient minuscule.
+- Oublier de remettre la balle **sur** le bord avant d'inverser la vitesse : elle peut rester coincée dans le mur.
+- Mélanger secondes et millisecondes ([`sfTime_asMilliseconds`](/3-0/reference/system/time/#sfTime_asMilliseconds) renvoie des millisecondes).
+
+## Exercices facultatifs
+
+Il n'y a pas de corrigé : essaie, casse, recommence.
+
+- Double la vitesse de la balle : le rebond marche-t-il encore ?
+- Compte les rebonds séparément pour les murs de gauche, de droite et du haut.
+- Affiche le `dt` moyen dans le terminal toutes les 60 images.
+
+## Suite
+
+- Précédent : [Étape 2 : les formes](/3-0/tutorials/02-shapes/)
+- Suivant : [Étape 4 : le clavier](/3-0/tutorials/04-input/)
+- Même étape en [CSFML 2.6](/2-6/tutorials/03-movement/).

@@ -1,0 +1,16 @@
+{
+  "title": "Fenêtre",
+  "summary": "Ouvre une fenêtre 800×600, boucle principale et fermeture propre ; vérifie la taille.",
+  "functions": [
+    "sfRenderWindow_getSize",
+    "sfRenderWindow_pollEvent",
+    "sfRenderWindow_close",
+    "sfRenderWindow_isOpen",
+    "sfRenderWindow_clear",
+    "sfRenderWindow_display",
+    "sfRenderWindow_create",
+    "sfRenderWindow_setFramerateLimit",
+    "sfRenderWindow_destroy"
+  ],
+  "assets": []
+}

@@ -1,0 +1,154 @@
+---
+title: "Migration : les types"
+description: "bool et entiers à taille fixe, vecteurs à la place des paires de nombres, rectangles, sfVideoMode, sfRenderStates."
+sidebar:
+  order: 4
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Example from '@/components/Example.astro';
+import TestedBadge from '@/components/TestedBadge.astro';
+
+<TestedBadge version="3.0" />
+
+
+## `sfBool`, `sfTrue`, `sfFalse` et les entiers
+
+`sfBool` (un `int`) n'existe plus : on écrit `bool`, `true`, `false`. Les entiers `sfInt8`, `sfUint8`, `sfInt16`, `sfUint16`, `sfInt32`, `sfUint32`, `sfInt64`, `sfUint64` deviennent `int8_t` … `uint64_t`. `CSFML/Config.h` inclut `<stdbool.h>` et `<stdint.h>` (tes fichiers compilent aussi sans les inclure, mais ajoute-les par habitude). Le nouveau type `sfChar32` (un `uint32_t`) sert aux chaînes Unicode.
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6">
+
+```c
+sfBool visible = sfTrue;
+sfUint8 pixel = 255;
+sfInt64 big = 1;
+```
+
+  </TabItem>
+  <TabItem label="CSFML 3.0">
+
+```c
+bool visible = true;
+uint8_t pixel = 255;
+int64_t big = 1;
+```
+
+  </TabItem>
+</Tabs>
+
+Pour la plupart des fonctions, c'est le **seul** changement (140 fonctions) : un programme qui stockait un résultat dans un `int` continue de marcher. Seuls les noms de type dans **ton** code doivent changer. Dans nos tests, gcc dit : `unknown type name 'sfBool'`, `'sfTrue' undeclared`, `unknown type name 'sfInt64'`.
+
+## Les paires de nombres deviennent des vecteurs
+
+Presque partout où une fonction prenait deux nombres (`x, y` ou `width, height`), elle prend maintenant un vecteur (`sfVector2u`, `sfVector2i` ou `sfVector2f`). Les littéraux composés du C permettent d'écrire `(sfVector2u){64, 64}`.
+
+| Ancien (2.6.1) | Nouveau (3.0.0) | Effet |
+|---|---|---|
+| `sfTexture* sfTexture_create(unsigned int width, unsigned int height)` | `sfTexture* sfTexture_create(sfVector2u size)` | Casse |
+| `void sfTexture_updateFromImage(sfTexture* texture, const sfImage* image, unsigned int x, unsigned int y)` | `void sfTexture_updateFromImage(sfTexture* texture, const sfImage* image, sfVector2u offset)` | Casse |
+| `sfImage* sfImage_create(unsigned int width, unsigned int height)` | `sfImage* sfImage_create(sfVector2u size)` | Casse |
+| `sfImage* sfImage_createFromColor(unsigned int width, unsigned int height, sfColor color)` | `sfImage* sfImage_createFromColor(sfVector2u size, sfColor color)` | Casse |
+| `sfColor sfImage_getPixel(const sfImage* image, unsigned int x, unsigned int y)` | `sfColor sfImage_getPixel(const sfImage* image, sfVector2u coords)` | Casse |
+| `void sfImage_setPixel(sfImage* image, unsigned int x, unsigned int y, sfColor color)` | `void sfImage_setPixel(sfImage* image, sfVector2u coords, sfColor color)` | Casse |
+| `void sfRenderWindow_setIcon(sfRenderWindow* renderWindow, unsigned int width, unsigned int height, const sfUint8* pixels)` | `void sfRenderWindow_setIcon(sfRenderWindow* renderWindow, sfVector2u size, const uint8_t* pixels)` | Casse |
+| `sfRenderTexture* sfRenderTexture_create(unsigned int width, unsigned int height, sfBool depthBuffer)` | `sfRenderTexture* sfRenderTexture_create(sfVector2u size, const sfContextSettings* settings)` | Casse |
+| `void sfTransform_translate(sfTransform* transform, float x, float y)` | `void sfTransform_translate(sfTransform* transform, sfVector2f offset)` | Casse |
+| `void sfTransform_scale(sfTransform* transform, float scaleX, float scaleY)` | `void sfTransform_scale(sfTransform* transform, sfVector2f scale)` | Casse |
+| `void sfTransform_rotateWithCenter(sfTransform* transform, float angle, float centerX, float centerY)` | `void sfTransform_rotateWithCenter(sfTransform* transform, float angle, sfVector2f center)` | Casse |
+| `sfBool sfFloatRect_contains(const sfFloatRect* rect, float x, float y)` | `bool sfFloatRect_contains(const sfFloatRect* rect, sfVector2f point)` | Casse |
+| `sfBool sfIntRect_contains(const sfIntRect* rect, int x, int y)` | `bool sfIntRect_contains(const sfIntRect* rect, sfVector2i point)` | Casse |
+
+## Les rectangles
+
+- `sfFloatRect` : champs `left`, `top`, `width`, `height` en 2.6.1 ; `position`, `size` en 3.0.0.
+- `sfIntRect` : champs `left`, `top`, `width`, `height` en 2.6.1 ; `position`, `size` en 3.0.0.
+
+`position` et `size` sont des vecteurs : `r.left` devient `r.position.x`, `r.width` devient `r.size.x`. Les fonctions `sfFloatRect_getPosition` et `sfFloatRect_getSize` (2.6) n'existent plus.
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6">
+
+```c
+sfTexture *tex = sfTexture_createFromFile("duck.png", NULL);
+sfSprite *spr = sfSprite_create();
+sfSprite_setTexture(spr, tex, sfTrue);
+sfIntRect rect = {0, 0, 110, 110};
+rect.left += 110;
+sfSprite_setTextureRect(spr, rect);
+```
+
+  </TabItem>
+  <TabItem label="CSFML 3.0">
+
+```c
+sfTexture *tex = sfTexture_createFromFile("duck.png", NULL);
+if (tex == NULL)
+    return 84;
+sfSprite *spr = sfSprite_create(tex);          /* NULL interdit : assert */
+sfIntRect rect = {{0, 0}, {110, 110}};
+rect.position.x += 110;
+sfSprite_setTextureRect(spr, rect);
+```
+
+  </TabItem>
+</Tabs>
+
+:::caution[Initialisation à plat]
+`sfIntRect rect = {0, 0, 110, 110};` compile encore en 3.0.0 (élision d'accolades du C) avec un avertissement `-Wmissing-braces`. Écris `{{0, 0}, {110, 110}}`.
+:::
+
+## `sfVideoMode` et `sfContextSettings`
+
+- `sfVideoMode` : `width`, `height`, `bitsPerPixel` → `size`, `bitsPerPixel`. Ici `size` est un `sfVector2u`.
+- `sfContextSettings` : `antialiasingLevel` → `antiAliasingLevel`. L'ordre des champs est le même.
+
+## `sfRenderStates`
+
+- 2.6.1 : `blendMode`, `transform`, `texture`, `shader`.
+- 3.0.0 : `blendMode`, `stencilMode`, `transform`, `coordinateType`, `texture`, `shader`.
+
+`sfRenderStates_default` n'est plus une fonction mais une **variable** : `sfRenderStates s = sfRenderStates_default;`.
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6">
+
+```c
+sfVertexArray *va = sfVertexArray_create();
+sfVertexArray_setPrimitiveType(va, sfQuads);
+/* append a, b, c, d */
+sfRenderStates st = sfRenderStates_default();
+st.texture = tileset;
+sfRenderWindow_drawVertexArray(win, va, &st);
+```
+
+  </TabItem>
+  <TabItem label="CSFML 3.0">
+
+```c
+sfVertexArray *va = sfVertexArray_create();
+sfVertexArray_setPrimitiveType(va, sfTriangles);
+/* append a, b, c puis a, c, d */
+sfRenderStates st = sfRenderStates_default;    /* variable, plus de () */
+st.texture = tileset;
+sfRenderWindow_drawVertexArray(win, va, &st);
+```
+
+  </TabItem>
+</Tabs>
+
+:::caution[Non vérifié]
+Une initialisation désignée qui oublie `stencilMode` et `coordinateType` les laisse à zéro. L'effet visuel exact de ces zéros (dessin invisible ou non selon le tampon stencil de la fenêtre) n'a pas été testé. Pars de `sfRenderStates_default`.
+:::
+
+## Les couleurs et le temps
+
+`sfBlack`, `sfWhite`… deviennent des constantes (`const sfColor`), ce qui est compatible sauf si tu les modifiais. `sfTime` contient un `int64_t microseconds` ; `sfTime_Zero` devient `const`. `sfSeconds`, `sfMilliseconds`, `sfTime_asSeconds`… ne changent pas (seul le type entier change). Les angles restent des `float` en degrés.
+
+## Fonctions de rappel (flux d'entrée personnalisé)
+
+Si tu as écrit ton propre `sfInputStream`, les types des fonctions de lecture et de déplacement changent : voir `System/InputStream.h` (types de fonctions : 3.0.0 `int64_t (*)(void *, size_t, void *)` pour la lecture, 2.6.1 `sfInt64 (*)(void *, sfInt64, void *)`). Avec gcc 14 ou plus récent, un pointeur de fonction de type incompatible est une **erreur**.
+
+:::caution[Non vérifié]
+Cet exemple n'a pas été compilé : seule la lecture des headers a été faite.
+:::

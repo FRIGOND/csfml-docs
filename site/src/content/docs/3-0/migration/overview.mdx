@@ -1,32 +1,441 @@
 ---
-title: Migrer de CSFML 2.6 à 3.0
-description: Les changements qui cassent le plus de code, avec ancien et nouveau code.
+title: "Migrer de CSFML 2.6 à 3.0"
+description: "Les 10 changements qui cassent le plus de code, avec l'ancien et le nouveau code, et un tableau ancien → nouveau vérifié."
+sidebar:
+  order: 1
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import Example from '@/components/Example.astro';
-import ApiFunction from '@/components/ApiFunction.astro';
+import TestedBadge from '@/components/TestedBadge.astro';
 
-*(Page prototype : le tableau complet vient de la recherche, `research/04-migration-2-vers-3.md`, et sera généré depuis les deux fichiers d'API.)*
+<TestedBadge version="3.0" />
 
-## Les 5 premiers changements
 
-| Ancien (2.6.1) | Nouveau (3.0.0) |
+*Migration* = adapter un programme écrit pour une version à une autre. Ici : d'un programme écrit pour **CSFML 2.6.1** vers **CSFML 3.0.0**.
+
+:::note[À savoir]
+Il n'existe pas de guide de migration officiel pour CSFML (seulement celui de SFML en C++, qui n'en parle pas). Cette page vient d'une comparaison des headers des deux versions, vérifiée contre les fichiers d'API (`api/csfml-2.6.1.json`, `api/csfml-3.0.0.json`) et par la compilation de 16 extraits avant/après (voir [la checklist](/3-0/migration/checklist/)).
+:::
+
+La migration de CSFML est **plus légère** que celle de SFML en C++ : l'union `sfEvent` avec `event.type` reste, les angles restent des `float` en degrés, les énumérations restent des énumérations C. Mais presque aucun ancien programme ne compile sans modification. Les messages d'erreur du compilateur sont clairs : dans les tests, les 8 « avant » ont échoué à la compilation avec les mêmes sources en 3.0.0.
+
+## Plan des pages de migration
+
+| Page | Contenu |
 |---|---|
-| `#include <SFML/Graphics.h>` | `#include <CSFML/Graphics.h>` |
-| `sfBool`, `sfTrue`, `sfFalse` | `bool`, `true`, `false` |
-| `sfRenderWindow_create(mode, titre, style, NULL)` | `sfRenderWindow_create(mode, titre, style, sfWindowed, NULL)` |
-| `sfVideoMode m = {800, 600, 32}` | `sfVideoMode m = {{800, 600}, 32}` (l'ancienne forme compile avec `-Wmissing-braces`) |
-| `sfSprite_create()` puis `sfSprite_setTexture` | `sfSprite_create(texture)` |
+| Cette page | Les 10 changements qui cassent le plus, et un tableau ancien → nouveau |
+| [Événements](/3-0/migration/events/) | Champs renommés, `waitEvent` à timeout |
+| [Création d'objets](/3-0/migration/objects-creation/) | Sprite, texte, son : la ressource devient obligatoire |
+| [Types](/3-0/migration/types/) | `bool`, vecteurs, rectangles, structures |
+| [Checklist](/3-0/migration/checklist/) | Les étapes pour migrer un projet |
+| [Compiler pour les deux versions](/3-0/migration/support-both/) | Un seul code source pour 2.6 et 3.0 |
+| [Annexe générée](/3-0/migration/api-changes/) | Liste complète des fonctions supprimées, ajoutées, modifiées |
+
+## Les 10 changements qui cassent le plus
+
+### 1. Le chemin des headers
+
+Tous les headers passent de `SFML/` à `CSFML/`. C'est la première erreur que tu verras (`fatal error: SFML/Graphics.h: Aucun fichier ou dossier de ce nom`).
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6">
+
+```c
+#include <SFML/Graphics.h>
+#include <SFML/Audio.h>
+```
+
+  </TabItem>
+  <TabItem label="CSFML 3.0">
+
+```c
+#include <CSFML/Graphics.h>
+#include <CSFML/Audio.h>
+```
+
+  </TabItem>
+</Tabs>
+
+Les noms des bibliothèques à lier ne changent pas : `-lcsfml-graphics -lcsfml-window -lcsfml-system -lcsfml-audio`.
+
+### 2. `sfBool` disparaît
+
+`sfBool`, `sfTrue` et `sfFalse` n'existent plus : on utilise `bool`, `true` et `false`. De même, `sfInt8` … `sfUint64` deviennent `int8_t` … `uint64_t`. `CSFML/Config.h` inclut déjà `<stdbool.h>` et `<stdint.h>`. Le changement est mécanique, mais il touche 140 fonctions (leurs signatures ne changent que par ces types). Voir [Types](/3-0/migration/types/).
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6">
+
+```c
+sfBool visible = sfTrue;
+sfUint8 pixel = 255;
+sfInt64 big = 1;
+```
+
+  </TabItem>
+  <TabItem label="CSFML 3.0">
+
+```c
+bool visible = true;
+uint8_t pixel = 255;
+int64_t big = 1;
+```
+
+  </TabItem>
+</Tabs>
+
+### 3. `sfRenderWindow_create` a 5 paramètres
+
+`sfWindowState` (`sfWindowed` ou `sfFullscreen`) se glisse entre `style` et `settings`. Même changement pour `sfRenderWindow_createUnicode`, `sfWindow_create`, `sfWindow_createUnicode` et `sfWindowBase_create`.
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6">
+
+```c
+#include <SFML/Graphics.h>
+sfVideoMode mode = {800, 600, 32};
+sfRenderWindow *win = sfRenderWindow_create(mode, "my_hunter", sfResize | sfClose, NULL);
+sfRenderWindow *full = sfRenderWindow_create(sfVideoMode_getDesktopMode(), "full", sfFullscreen, NULL);
+/* mode.width, mode.height */
+```
+
+  </TabItem>
+  <TabItem label="CSFML 3.0">
+
+```c
+#include <CSFML/Graphics.h>
+sfVideoMode mode = {{800, 600}, 32};
+sfRenderWindow *win = sfRenderWindow_create(mode, "my_hunter", sfResize | sfClose, sfWindowed, NULL);
+sfRenderWindow *full = sfRenderWindow_create(sfVideoMode_getDesktopMode(), "full", sfDefaultStyle, sfFullscreen, NULL);
+/* mode.size.x, mode.size.y */
+```
+
+  </TabItem>
+</Tabs>
+
+:::danger[Piège silencieux : sfFullscreen]
+`sfFullscreen` n'est plus un **style** mais un **état**. Passé comme style, il vaut `sfTitlebar` (la valeur `1`) : le code compile et ouvre une fenêtre normale, sans aucun message. Pour le plein écran, écris `sfRenderWindow_create(mode, "x", sfDefaultStyle, sfFullscreen, NULL)`.
+:::
+
+### 4. `sfVideoMode` contient un vecteur
+
+`mode.width` devient `mode.size.x`, et `mode.height` devient `mode.size.y`. Autre champ renommé, dans `sfContextSettings` : `antialiasingLevel` devient `antiAliasingLevel`.
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6">
+
+```c
+sfContextSettings settings = {0};
+settings.antialiasingLevel = 4;
+```
+
+  </TabItem>
+  <TabItem label="CSFML 3.0">
+
+```c
+sfContextSettings settings = {0};
+settings.antiAliasingLevel = 4;
+```
+
+  </TabItem>
+</Tabs>
+
+:::caution[Initialisation à plat]
+`sfVideoMode mode = {800, 600, 32};` compile encore en 3.0.0, avec seulement un avertissement `-Wmissing-braces` (et donc seulement avec `-Wall`). Les valeurs sont correctes (`size = 800, 600`, `bitsPerPixel = 32`) grâce à une règle du C. Mais les accès `mode.width` ne compilent plus. La forme propre est `{{800, 600}, 32}`. Même remarque pour `sfIntRect r = {0, 0, 110, 110};`.
+:::
+
+### 5. Les événements
+
+Plusieurs types et plusieurs champs sont renommés ou déplacés : `event.mouseButton.x` devient `event.mouseButton.position.x`, `event.size.width` devient `event.size.size.x`, `sfEvtLostFocus` devient `sfEvtFocusLost`, `sfEvtMouseWheelMoved` disparaît. `sfRenderWindow_waitEvent` reçoit un **timeout**. Détails : [Événements](/3-0/migration/events/).
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6">
+
+```c
+sfEvent event;
+while (sfRenderWindow_pollEvent(win, &event)) {
+    if (event.type == sfEvtClosed)
+        sfRenderWindow_close(win);
+    if (event.type == sfEvtMouseButtonPressed && event.mouseButton.button == sfMouseLeft)
+        shoot(event.mouseButton.x, event.mouseButton.y);
+    if (event.type == sfEvtResized)
+        resize(event.size.width, event.size.height);
+    if (event.type == sfEvtLostFocus)
+        paused = sfTrue;
+    if (event.type == sfEvtKeyPressed && event.key.code == sfKeyReturn)
+        start();
+    if (event.type == sfEvtMouseWheelMoved)
+        zoom(event.mouseWheel.delta);
+}
+```
+
+  </TabItem>
+  <TabItem label="CSFML 3.0">
+
+```c
+sfEvent event;
+while (sfRenderWindow_pollEvent(win, &event)) {
+    if (event.type == sfEvtClosed)
+        sfRenderWindow_close(win);
+    if (event.type == sfEvtMouseButtonPressed && event.mouseButton.button == sfMouseLeft)
+        shoot(event.mouseButton.position.x, event.mouseButton.position.y);
+    if (event.type == sfEvtResized)
+        resize(event.size.size.x, event.size.size.y);
+    if (event.type == sfEvtFocusLost)
+        paused = true;
+    if (event.type == sfEvtKeyPressed && event.key.code == sfKeyEnter)
+        start();
+    if (event.type == sfEvtMouseWheelScrolled
+        && event.mouseWheelScroll.wheel == sfMouseVerticalWheel)
+        zoom(event.mouseWheelScroll.delta);   /* float */
+}
+/* attente bloquante : sfRenderWindow_waitEvent(win, sfTime_Zero, &event) */
+```
+
+  </TabItem>
+</Tabs>
+
+### 6. Les ressources deviennent obligatoires à la création
+
+`sfSprite_create(texture)`, `sfText_create(font)`, `sfSound_create(buffer)` : on donne la ressource tout de suite. Lui passer `NULL` arrête le programme (assertion) ou plante : **teste le chargement de la ressource avant**. Détails : [Création d'objets](/3-0/migration/objects-creation/).
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6">
+
+```c
+sfTexture *tex = sfTexture_createFromFile("duck.png", NULL);
+sfSprite *spr = sfSprite_create();
+sfSprite_setTexture(spr, tex, sfTrue);
+sfIntRect rect = {0, 0, 110, 110};
+rect.left += 110;
+sfSprite_setTextureRect(spr, rect);
+```
+
+  </TabItem>
+  <TabItem label="CSFML 3.0">
+
+```c
+sfTexture *tex = sfTexture_createFromFile("duck.png", NULL);
+if (tex == NULL)
+    return 84;
+sfSprite *spr = sfSprite_create(tex);          /* NULL interdit : assert */
+sfIntRect rect = {{0, 0}, {110, 110}};
+rect.position.x += 110;
+sfSprite_setTextureRect(spr, rect);
+```
+
+  </TabItem>
+</Tabs>
+
+### 7. Les rectangles : position et taille
+
+`sfFloatRect` et `sfIntRect` ne contiennent plus quatre nombres, mais deux vecteurs.
+
+| Ancien | Nouveau |
+|---|---|
+| `r.left` | `r.position.x` |
+| `r.top` | `r.position.y` |
+| `r.width` | `r.size.x` |
+| `r.height` | `r.size.y` |
+
+`sfBool sfFloatRect_contains(const sfFloatRect* rect, float x, float y)` devient `bool sfFloatRect_contains(const sfFloatRect* rect, sfVector2f point)` (un point au lieu de deux nombres). Les fonctions `sfFloatRect_getPosition` et `sfFloatRect_getSize` (et celles de `sfIntRect`) sont supprimées : lis directement `r.position` et `r.size`.
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6">
+
+```c
+sfFloatRect b = sfSprite_getGlobalBounds(spr);
+if (sfFloatRect_contains(&b, event.mouseButton.x, event.mouseButton.y))
+    hit();
+```
+
+  </TabItem>
+  <TabItem label="CSFML 3.0">
+
+```c
+sfFloatRect b = sfSprite_getGlobalBounds(spr);
+sfVector2f p = sfRenderWindow_mapPixelToCoords(win, event.mouseButton.position, NULL);
+if (sfFloatRect_contains(&b, p))
+    hit();
+```
+
+  </TabItem>
+</Tabs>
+
+### 8. Les paires de nombres deviennent des vecteurs
+
+`sfTexture_create(w, h)` devient `sfTexture_create(size)`. Même chose pour `sfImage_create`, `sfImage_getPixel`, `sfImage_setPixel`, `sfRenderTexture_create`, `sfTransform_translate`, `sfTransform_scale`, `sfTexture_update*` et `sfRenderWindow_setIcon`. Voir [Types](/3-0/migration/types/).
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6">
+
+```c
+sfImage *img = sfImage_create(64, 64);
+sfImage_setPixel(img, 10, 20, sfRed);
+sfTexture *t = sfTexture_create(64, 64);
+sfTexture_updateFromImage(t, img, 0, 0);
+sfRenderWindow_setIcon(win, 64, 64, sfImage_getPixelsPtr(img));
+```
+
+  </TabItem>
+  <TabItem label="CSFML 3.0">
+
+```c
+sfImage *img = sfImage_create((sfVector2u){64, 64});
+sfImage_setPixel(img, (sfVector2u){10, 20}, sfRed);
+sfTexture *t = sfTexture_create((sfVector2u){64, 64});
+sfTexture_updateFromImage(t, img, (sfVector2u){0, 0});
+sfRenderWindow_setIcon(win, (sfVector2u){64, 64}, sfImage_getPixelsPtr(img));
+```
+
+  </TabItem>
+</Tabs>
+
+### 9. Les renommages
+
+| Ancien | Nouveau |
+|---|---|
+| `sfMusic_setLoop`, `sfSound_setLoop`, `sfSoundStream_setLoop` | `sfMusic_setLooping`, `sfSound_setLooping`, `sfSoundStream_setLooping` |
+| `sfMusic_getLoop`, `sfSound_getLoop`, `sfSoundStream_getLoop` | `sfMusic_isLooping`, `sfSound_isLooping`, `sfSoundStream_isLooping` |
+| `sfText_setColor`, `sfText_getColor` | `sfText_setFillColor`, `sfText_getFillColor` |
+| `sfRenderWindow_getSystemHandle` (et `sfWindow_`, `sfWindowBase_`) | `sfRenderWindow_getNativeHandle` (idem) |
+| `sfRenderTexture_getMaximumAntialiasingLevel` | `sfRenderTexture_getMaximumAntiAliasingLevel` |
+| `sfTextureCoordinateType`, `sfTextureNormalized`, `sfTexturePixels` | `sfCoordinateType`, `sfCoordinateTypeNormalized`, `sfCoordinateTypePixels` |
+| `sfMouseXButton1`, `sfMouseXButton2` | `sfMouseButtonExtra1`, `sfMouseButtonExtra2` |
+| `sfKeyReturn`, `sfKeyBack`, `sfKeyTilde`, `sfKeyDash`, `sfKeyQuote`, `sfKeySemiColon`, `sfKeyBackSlash` | `sfKeyEnter`, `sfKeyBackspace`, `sfKeyGrave`, `sfKeyHyphen`, `sfKeyApostrophe`, `sfKeySemicolon`, `sfKeyBackslash` |
+| `sfGlFunctionPointer` (était `GlFunctionPointer`) | |
+
+Un renommage oublié donne `implicit declaration of function` (gcc le traite en **erreur** depuis la version 14) ou `undeclared`.
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6">
+
+```c
+sfSoundBuffer *buf = sfSoundBuffer_createFromFile("shot.ogg");
+sfSound *snd = sfSound_create();
+sfSound_setBuffer(snd, buf);
+sfSound_play(snd);
+sfMusic *mus = sfMusic_createFromFile("theme.ogg");
+sfMusic_setLoop(mus, sfTrue);
+sfMusic_play(mus);
+```
+
+  </TabItem>
+  <TabItem label="CSFML 3.0">
+
+```c
+sfSoundBuffer *buf = sfSoundBuffer_createFromFile("shot.ogg");
+if (buf == NULL)
+    return 84;
+sfSound *snd = sfSound_create(buf);             /* NULL interdit : assert */
+sfSound_play(snd);
+sfMusic *mus = sfMusic_createFromFile("theme.ogg");
+if (mus == NULL)
+    return 84;
+sfMusic_setLooping(mus, true);
+sfMusic_play(mus);
+```
+
+  </TabItem>
+</Tabs>
+
+### 10. Les suppressions
+
+| Supprimé | Remplacement |
+|---|---|
+| `sfMutex_*`, `sfThread_*` (headers `Mutex.h` et `Thread.h`) | `<threads.h>` (C11) ou pthreads |
+| `sfQuads`, `sfLinesStrip`, `sfTrianglesStrip`, `sfTrianglesFan` | `sfTriangles` (2 triangles, donc 6 sommets, par quad) ; `sfLineStrip`, `sfTriangleStrip`, `sfTriangleFan` |
+| `sfRenderStates_default()` (fonction) | `sfRenderStates_default` (**variable**, sans parenthèses) |
+| `sfView_reset` | `sfView_setCenter` + `sfView_setSize` + `sfView_setRotation(view, 0)` |
+| `sfRenderWindow_capture` | `sfTexture_create` + `sfTexture_updateFromRenderWindow` + `sfTexture_copyToImage` |
+| `sfShader_set*Parameter` | `sfShader_set*Uniform` (déjà présentes en 2.6.1) |
+| `sfRenderTexture_createWithSettings` | `sfRenderTexture_create(size, settings)` |
+| `sfSoundRecorder_setProcessingInterval` | (pas de remplacement) |
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6">
+
+```c
+sfVertexArray *va = sfVertexArray_create();
+sfVertexArray_setPrimitiveType(va, sfQuads);
+/* append a, b, c, d */
+sfRenderStates st = sfRenderStates_default();
+st.texture = tileset;
+sfRenderWindow_drawVertexArray(win, va, &st);
+```
+
+  </TabItem>
+  <TabItem label="CSFML 3.0">
+
+```c
+sfVertexArray *va = sfVertexArray_create();
+sfVertexArray_setPrimitiveType(va, sfTriangles);
+/* append a, b, c puis a, c, d */
+sfRenderStates st = sfRenderStates_default;    /* variable, plus de () */
+st.texture = tileset;
+sfRenderWindow_drawVertexArray(win, va, &st);
+```
+
+  </TabItem>
+</Tabs>
+
+`sfRenderStates` a aussi gagné deux champs (`stencilMode` et `coordinateType`). Une initialisation à la main qui oublie ces champs les met à zéro : pars toujours de `sfRenderStates_default` et change seulement ce dont tu as besoin.
+
+## Tableau ancien → nouveau
+
+Les signatures viennent des fichiers d'API générés depuis les headers. « Casse » = erreur de compilation.
+
+| Ancien (2.6.1) | Nouveau (3.0.0) | Effet |
+|---|---|---|
+| `#include <SFML/Graphics.h>` | `#include <CSFML/Graphics.h>` | Casse |
+| `sfBool`, `sfTrue`, `sfFalse` | `bool`, `true`, `false` | Casse |
+| `sfInt8` … `sfUint64` | `int8_t` … `uint64_t` | Casse |
+| `sfRenderWindow* sfRenderWindow_create(sfVideoMode mode, const char* title, sfUint32 style, const sfContextSettings* settings)` | `sfRenderWindow* sfRenderWindow_create(sfVideoMode mode, const char* title, uint32_t style, sfWindowState state, const sfContextSettings* settings)` | Casse |
+| `sfBool sfRenderWindow_waitEvent(sfRenderWindow* renderWindow, sfEvent* event)` | `bool sfRenderWindow_waitEvent(sfRenderWindow* renderWindow, sfTime timeout, sfEvent* event)` | Casse |
+| `sfVideoMode { width; height; bitsPerPixel }` | `sfVideoMode { size; bitsPerPixel }` (`size` est un `sfVector2u`) | Casse |
+| `antialiasingLevel` (`sfContextSettings`) | `antiAliasingLevel` | Casse |
+| `sfEvtLostFocus`, `sfEvtGainedFocus` | `sfEvtFocusLost`, `sfEvtFocusGained` | Casse |
+| `sfEvtMouseWheelMoved`, `event.mouseWheel` | `sfEvtMouseWheelScrolled`, `event.mouseWheelScroll` | Casse |
+| `sfSprite* sfSprite_create(void)` | `sfSprite* sfSprite_create(const sfTexture* texture)` | Casse |
+| `sfText* sfText_create(void)` | `sfText* sfText_create(const sfFont* font)` | Casse |
+| `sfSound* sfSound_create(void)` | `sfSound* sfSound_create(const sfSoundBuffer* buffer)` | Casse |
+| `sfFloatRect { left; top; width; height }` | `sfFloatRect { position; size }` | Casse |
+| `sfBool sfFloatRect_contains(const sfFloatRect* rect, float x, float y)` | `bool sfFloatRect_contains(const sfFloatRect* rect, sfVector2f point)` | Casse |
+| `sfTexture* sfTexture_create(unsigned int width, unsigned int height)` | `sfTexture* sfTexture_create(sfVector2u size)` | Casse |
+| `void sfImage_setPixel(sfImage* image, unsigned int x, unsigned int y, sfColor color)` | `void sfImage_setPixel(sfImage* image, sfVector2u coords, sfColor color)` | Casse |
+| `sfRenderTexture* sfRenderTexture_create(unsigned int width, unsigned int height, sfBool depthBuffer)` | `sfRenderTexture* sfRenderTexture_create(sfVector2u size, const sfContextSettings* settings)` | Casse |
+| `void sfTransform_translate(sfTransform* transform, float x, float y)` | `void sfTransform_translate(sfTransform* transform, sfVector2f offset)` | Casse |
+| `void sfRenderWindow_setIcon(sfRenderWindow* renderWindow, unsigned int width, unsigned int height, const sfUint8* pixels)` | `void sfRenderWindow_setIcon(sfRenderWindow* renderWindow, sfVector2u size, const uint8_t* pixels)` | Casse |
+| `void sfText_setColor(sfText* text, sfColor color)` | `void sfText_setFillColor(sfText* text, sfColor color)` | Casse (renommée) |
+| `void sfMusic_setLoop(sfMusic* music, sfBool loop)` | `void sfMusic_setLooping(sfMusic* music, bool loop)` | Casse (renommée) |
+| `sfBool sfMusic_getLoop(const sfMusic* music)` | `bool sfMusic_isLooping(const sfMusic* music)` | Casse (renommée) |
+| `sfWindowHandle sfRenderWindow_getSystemHandle(const sfRenderWindow* renderWindow)` | `sfWindowHandle sfRenderWindow_getNativeHandle(const sfRenderWindow* renderWindow)` | Casse (renommée) |
+| `sfMouseXButton1`, `sfMouseXButton2` | `sfMouseButtonExtra1`, `sfMouseButtonExtra2` | Casse |
+| `sfKeyReturn`, `sfKeyBack`, `sfKeyTilde`, … | `sfKeyEnter`, `sfKeyBackspace`, `sfKeyGrave`, … | Casse |
+| `sfQuads`, `sfLinesStrip`, `sfTrianglesStrip`, `sfTrianglesFan` | (supprimés) : `sfTriangles`, `sfLineStrip`, `sfTriangleStrip`, `sfTriangleFan` | Casse |
+| `sfRenderStates sfRenderStates_default(void)` | `const sfRenderStates sfRenderStates_default` | Casse (fonction → variable) |
+| `void sfView_reset(sfView* view, sfFloatRect rectangle)` | (supprimée) | Casse (supprimée) |
+| `sfImage* sfRenderWindow_capture(const sfRenderWindow* renderWindow)` | (supprimée) | Casse (supprimée) |
+| `sfMutex* sfMutex_create(void)` | (supprimée) | Casse (supprimée, comme `sfThread_*`) |
+| `void sfShader_setFloatParameter(sfShader* shader, const char* name, float x)` | `void sfShader_setFloatUniform(sfShader* shader, const char* name, float x)` | Casse (supprimée, `sfShader_set*Parameter`) |
+| `sfSoundBuffer* sfSoundBuffer_createFromSamples(const sfInt16* samples, sfUint64 sampleCount, unsigned int channelCount, unsigned int sampleRate)` | `sfSoundBuffer* sfSoundBuffer_createFromSamples(const int16_t* samples, uint64_t sampleCount, unsigned int channelCount, unsigned int sampleRate, sfSoundChannel* channelMapData, size_t channelMapSize)` | Casse |
+
+## Ce qui ne change pas
+
+- `sfEvent` reste une union avec `event.type` ; `sfRenderWindow_pollEvent` se boucle comme avant.
+- Les angles (`sfSprite_setRotation`, `sfTransform_rotate`…) restent des `float` en **degrés**.
+- `sfTexture_createFromFile(filename, area)` et `sfFont_createFromFile` gardent leur signature, et renvoient `NULL` en cas d'échec.
+- `sfMusic_play`, `sfSound_play`, `sfSoundStatus` : inchangés.
+- Les `_destroy` prennent maintenant un `const` (par exemple `void sfWindow_destroy(const sfWindow* window)`) : ton code existant reste valide.
+- Les noms des bibliothèques à lier.
 
 ## Le même programme dans les deux versions
 
-<Tabs>
-  <TabItem label="CSFML 2.6.1"><Example example="window/basic-window" version="2.6" /></TabItem>
-  <TabItem label="CSFML 3.0.0"><Example example="window/basic-window" version="3.0" /></TabItem>
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6"><Example example="window/basic-window" version="2.6" /></TabItem>
+  <TabItem label="CSFML 3.0"><Example example="window/basic-window" version="3.0" /></TabItem>
 </Tabs>
 
-## La fonction qui change
+## Pour continuer
 
-<ApiFunction name="sfRenderWindow_create" version="3.0" />
-<ApiFunction name="sfRenderWindow_create" version="2.6" />
+Commence par la [checklist](/3-0/migration/checklist/). Si tu veux garder les deux versions dans le même projet, lis [compiler pour les deux versions](/3-0/migration/support-both/).

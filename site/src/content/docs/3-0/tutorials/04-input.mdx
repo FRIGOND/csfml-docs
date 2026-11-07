@@ -1,0 +1,106 @@
+---
+title: "Casse-briques 4 : le clavier"
+description: "Déplacer la raquette avec les flèches gauche et droite, sans la laisser sortir de la fenêtre. (CSFML 3.0)"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Example from '@/components/Example.astro';
+import TestedBadge from '@/components/TestedBadge.astro';
+
+<TestedBadge version="3.0" />
+
+Tutoriel du **casse-briques** (CSFML 3.0), étape 4 sur 9. Cette page a une jumelle pour [CSFML 2.6](/2-6/tutorials/04-input/) : même plan, avec les différences d'API expliquées.
+
+## Objectif
+
+Déplacer la raquette avec les flèches gauche et droite, sans la laisser sortir de la fenêtre.
+
+## Prérequis
+
+[Étape 3](/3-0/tutorials/03-movement/) : le temps et le mouvement.
+
+## Pas à pas
+
+### Deux façons de lire le clavier
+
+- Les **événements** (`sfEvtKeyPressed`) arrivent **une fois** quand on appuie. Bien pour « lancer la balle » ou « mettre en pause ».
+- [`sfKeyboard_isKeyPressed`](/3-0/reference/window/keyboard/#sfKeyboard_isKeyPressed) répond **à chaque image** : « cette touche est-elle enfoncée maintenant ? ». C'est ce qu'il faut pour un déplacement continu. Voir [les événements](/guides/concepts/events/).
+
+```c
+if (sfKeyboard_isKeyPressed(sfKeyLeft))
+    dir -= 1;
+if (sfKeyboard_isKeyPressed(sfKeyRight))
+    dir += 1;
+```
+
+Le résultat est une **direction** : `-1` (gauche), `0` (rien) ou `+1` (droite). Si les deux touches sont enfoncées, elles s'annulent. Les noms des touches (`sfKeyLeft`, `sfKeyRight`) sont les mêmes en 3.0.
+
+### Déplacer et limiter
+
+```c
+paddle->x += dir * PADDLE_SPEED * dt;
+if (paddle->x < 0)
+    paddle->x = 0;
+if (paddle->x > WIN_W - PADDLE_W)
+    paddle->x = WIN_W - PADDLE_W;
+```
+
+C'est le même principe que pour la balle : vitesse fois `dt`. Ensuite on bloque la position entre `0` et `WIN_W - PADDLE_W` (le bord droit de la raquette touche le bord de la fenêtre). La raquette garde son `x` dans `paddle_t`, et on le copie dans la forme avec [`sfRectangleShape_setPosition`](/3-0/reference/graphics/rectangle-shape/#sfRectangleShape_setPosition).
+
+### Et en mode test ?
+
+Un test automatique n'a pas de clavier. La fonction qui lit la direction **simule** donc les touches quand `EXAMPLE_FRAMES` existe : à droite pendant 45 images, puis à gauche.
+
+```c
+if (example_frames() >= 0)
+    return frame < 45 ? 1 : -1;
+```
+
+Le reste du programme (déplacement, limites) ne sait pas d'où vient la direction : c'est ce qu'on veut tester.
+
+:::caution[Non vérifié]
+`sfKeyboard_isKeyPressed` n'a pas été testée avec de vraies touches : sous Xvfb (écran virtuel), aucune touche n'est enfoncée. Seule la partie simulée est exercée par les tests.
+:::
+
+## Le programme complet
+
+Ce programme compile avec `-std=c11 -Wall -Wextra -Werror` et il est exécuté par les tests du dépôt.
+
+<Example example="tutorials/04-input" version="3.0" />
+
+## Compiler et lancer
+
+```sh
+make -C examples/tutorials/04-input CSFML=3.0 CSFML_PREFIX=system   # ou CSFML_PREFIX=$HOME/csfml-3.0
+cd examples/tutorials/04-input && ./build/3.0/example
+```
+
+Pour compiler à la main, ajoute `-I examples/common` (le fichier `test_mode.h`) et lie : `-lcsfml-graphics -lcsfml-window -lcsfml-system`.
+
+## Ce que tu as appris
+
+- Lire une touche en temps réel avec `sfKeyboard_isKeyPressed`.
+- Transformer des touches en direction (`-1`, `0`, `+1`).
+- Limiter une position avec `if`.
+- Remplacer le clavier par un script pour tester.
+
+## Erreurs fréquentes
+
+- Utiliser `sfEvtKeyPressed` pour le mouvement : la raquette avance par à-coups (répétition clavier).
+- Oublier la limite : la raquette sort de l'écran.
+- Confondre le `x` de la raquette (bord gauche) avec son centre.
+- Sur un clavier AZERTY, ne pas supposer l'emplacement des lettres : les flèches sont plus sûres.
+
+## Exercices facultatifs
+
+Il n'y a pas de corrigé : essaie, casse, recommence.
+
+- Ajoute les touches `A` et `D` en plus des flèches.
+- Fais accélérer la raquette quand `Shift` gauche est enfoncé.
+- Fais en sorte que la raquette passe de l'autre côté de l'écran au lieu de s'arrêter.
+
+## Suite
+
+- Précédent : [Étape 3 : le mouvement](/3-0/tutorials/03-movement/)
+- Suivant : [Étape 5 : les collisions](/3-0/tutorials/05-collisions/)
+- Même étape en [CSFML 2.6](/2-6/tutorials/04-input/).

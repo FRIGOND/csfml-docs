@@ -1,17 +1,145 @@
 ---
 title: "Casse-briques 1 : la fenêtre"
-description: Première étape du tutoriel casse-briques (CSFML 3.0).
+description: "Ouvrir une fenêtre de 800×600 pixels, la garder ouverte avec une boucle, et la fermer proprement (croix ou touche Échap). (CSFML 3.0)"
 ---
 
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 import Example from '@/components/Example.astro';
 import TestedBadge from '@/components/TestedBadge.astro';
 
 <TestedBadge version="3.0" />
 
-*(Page prototype : le texte complet du tutoriel sera écrit en phase D.)*
+Tutoriel du **casse-briques** (CSFML 3.0), étape 1 sur 9. Cette page a une jumelle pour [CSFML 2.6](/2-6/tutorials/01-window/) : même plan, avec les différences d'API expliquées.
 
-Objectif : une fenêtre qui reste ouverte et se ferme proprement. Le code de départ est l'exemple ci-dessous, inclus depuis le fichier testé.
+## Objectif
 
-<Example example="window/basic-window" version="3.0" />
+Ouvrir une fenêtre de 800×600 pixels, la garder ouverte avec une boucle, et la fermer proprement (croix ou touche Échap). C'est la base de tout le jeu.
 
-Suite : les formes et les couleurs. Version [2.6](/2-6/tutorials/01-window/).
+## Prérequis
+
+Avoir installé CSFML 3.0 et savoir compiler un programme (voir [ouvrir une première fenêtre](/3-0/getting-started/first-window/)).
+
+## Pas à pas
+
+### Les constantes
+
+On écrit la taille de la fenêtre une seule fois, avec `#define WIN_W 800` et `#define WIN_H 600`. Si tu changes d'avis, tu modifies une ligne. Dans tout le tutoriel, le jeu garde ces mêmes noms.
+
+### Le mode vidéo
+
+[`sfVideoMode_getDesktopMode`](/3-0/reference/window/video-mode/#sfVideoMode_getDesktopMode) n'est pas utilisé ici. On construit un `sfVideoMode` à la main : une taille et un nombre de bits par pixel (`32`).
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 3.0">
+
+```c
+sfVideoMode mode = {{WIN_W, WIN_H}, 32};
+```
+
+  </TabItem>
+  <TabItem label="CSFML 2.6">
+
+```c
+sfVideoMode mode = {WIN_W, WIN_H, 32};
+```
+
+  </TabItem>
+</Tabs>
+
+En 3.0, `sfVideoMode` contient un vecteur `size` : on écrit donc deux paires d'accolades. L'ancienne forme à plat compile encore à cause d'une règle du C, mais avec l'avertissement `-Wmissing-braces`.
+
+### Créer la fenêtre
+
+[`sfRenderWindow_create`](/3-0/reference/graphics/render-window/#sfRenderWindow_create) crée la fenêtre. **Elle renvoie `NULL` en cas d'échec** : on teste toujours le résultat avant de s'en servir.
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 3.0">
+
+```c
+sfRenderWindow *window = sfRenderWindow_create(mode, "Casse-briques",
+    sfTitlebar | sfClose, sfWindowed, NULL);
+```
+
+  </TabItem>
+  <TabItem label="CSFML 2.6">
+
+```c
+sfRenderWindow *window = sfRenderWindow_create(mode, "Casse-briques",
+    sfTitlebar | sfClose, NULL);
+```
+
+  </TabItem>
+</Tabs>
+
+Le style `sfTitlebar | sfClose` donne une barre de titre et une croix, sans bouton pour agrandir. En 3.0, le 4e argument `sfWindowed` est nouveau : c'est l'**état** de la fenêtre (fenêtre normale ou plein écran).
+
+[`sfRenderWindow_setFramerateLimit`](/3-0/reference/graphics/render-window/#sfRenderWindow_setFramerateLimit) limite à 60 images par seconde. Sans cela, ta boucle tournerait aussi vite que possible et ferait chauffer le processeur.
+
+### La boucle principale
+
+Un jeu répète sans cesse : **lire les événements, mettre à jour, dessiner**. Pour l'instant, on ne fait que lire les événements et afficher un écran noir.
+
+```c
+while (sfRenderWindow_isOpen(window) && frames != 0) {
+    handle_events(window);
+    sfRenderWindow_clear(window, sfBlack);
+    sfRenderWindow_display(window);
+```
+
+- [`sfRenderWindow_pollEvent`](/3-0/reference/graphics/render-window/#sfRenderWindow_pollEvent) sort **un** événement de la file. On l'appelle dans une boucle `while` pour les vider **tous** à chaque image. Les événements sont en attente tant que tu ne les lis pas, et la fenêtre paraît alors « gelée ».
+- [`sfRenderWindow_clear`](/3-0/reference/graphics/render-window/#sfRenderWindow_clear) efface l'image avec une couleur ; [`sfRenderWindow_display`](/3-0/reference/graphics/render-window/#sfRenderWindow_display) montre l'image terminée. Sans `display`, tu ne vois rien.
+- `sfEvtClosed` arrive quand on clique sur la croix. Le programme doit alors appeler [`sfRenderWindow_close`](/3-0/reference/graphics/render-window/#sfRenderWindow_close), sinon la fenêtre ne se ferme pas.
+
+### Tout détruire
+
+[`sfRenderWindow_destroy`](/3-0/reference/graphics/render-window/#sfRenderWindow_destroy) libère la fenêtre. Règle de base : **chaque `create` a son `destroy`**. Voir [qui possède quoi](/guides/concepts/ownership/).
+
+:::note[Le mode test]
+Tu vois partout `example_frames()` et `EXAMPLE_FRAMES`. Ce n'est **pas** CSFML : c'est un petit outil de ce dépôt (`test_mode.h`). Quand la variable d'environnement `EXAMPLE_FRAMES=N` existe, le programme s'arrête seul après N images et **vérifie** son résultat (il renvoie un code non nul si c'est faux). Sans cette variable, le programme est un vrai jeu interactif.
+:::
+
+Ici, la vérification demande la taille avec [`sfRenderWindow_getSize`](/3-0/reference/graphics/render-window/#sfRenderWindow_getSize) et la compare à 800×600.
+
+## Le programme complet
+
+Ce programme compile avec `-std=c11 -Wall -Wextra -Werror` et il est exécuté par les tests du dépôt.
+
+<Example example="tutorials/01-window" version="3.0" />
+
+## Compiler et lancer
+
+```sh
+make -C examples/tutorials/01-window CSFML=3.0 CSFML_PREFIX=system   # ou CSFML_PREFIX=$HOME/csfml-3.0
+cd examples/tutorials/01-window && ./build/3.0/example
+```
+
+Pour compiler à la main, ajoute `-I examples/common` (le fichier `test_mode.h`) et lie : `-lcsfml-graphics -lcsfml-window -lcsfml-system`.
+
+## Ce que tu as appris
+
+- Créer une fenêtre avec `sfRenderWindow_create` et tester le résultat.
+- La boucle d'un jeu : événements, dessin, affichage.
+- Vider la file d'événements avec `pollEvent`, et réagir à `sfEvtClosed`.
+- Détruire ce qu'on a créé.
+
+## Erreurs fréquentes
+
+- Oublier de tester `NULL` après `sfRenderWindow_create`.
+- Mettre les `-l` **avant** le fichier `.c` : voir les [erreurs d'édition de liens](/guides/troubleshooting/link-errors/).
+- Fenêtre noire ou qui ne s'affiche pas : voir [fenêtre noire](/guides/troubleshooting/black-window/).
+- Ne jamais lire les événements : la fenêtre ne répond plus.
+- Passer `sfFullscreen` comme **style** : en 3.0 cela ne donne pas du plein écran. Voir [la migration](/3-0/migration/overview/).
+
+## Exercices facultatifs
+
+Il n'y a pas de corrigé : essaie, casse, recommence.
+
+- Change le titre et la couleur de fond (cherche `sfColor_fromRGB`).
+- Ferme aussi la fenêtre avec la touche `Q`.
+- Affiche dans le terminal un message à chaque événement `sfEvtResized` reçu.
+
+## Suite
+
+- Précédent : (c'est la première étape)
+- Suivant : [Étape 2 : les formes](/3-0/tutorials/02-shapes/)
+- Même étape en [CSFML 2.6](/2-6/tutorials/01-window/).

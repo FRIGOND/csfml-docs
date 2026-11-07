@@ -1,0 +1,142 @@
+---
+title: "Casse-briques 8 : son et états"
+description: "Jouer un son à chaque brique cassée, et gérer les états du jeu : menu, partie, victoire, défaite. (CSFML 3.0)"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Example from '@/components/Example.astro';
+import TestedBadge from '@/components/TestedBadge.astro';
+
+<TestedBadge version="3.0" />
+
+Tutoriel du **casse-briques** (CSFML 3.0), étape 8 sur 9. Cette page a une jumelle pour [CSFML 2.6](/2-6/tutorials/08-sound-states/) : même plan, avec les différences d'API expliquées.
+
+## Objectif
+
+Jouer un son à chaque brique cassée, et gérer les états du jeu : menu, partie, victoire, défaite.
+
+## Prérequis
+
+[Étape 7](/3-0/tutorials/07-text-score/) : le texte. Le fichier `doodle_pop.ogg` de `examples/assets/`.
+
+## Pas à pas
+
+### Buffer et sound
+
+Comme pour l'image et la texture, il y a deux objets :
+
+- [`sfSoundBuffer_createFromFile`](/3-0/reference/audio/sound-buffer/#sfSoundBuffer_createFromFile) charge le son en mémoire (`NULL` si le fichier est introuvable).
+- `sfSound` **joue** un buffer. Il garde son adresse, comme un sprite : le buffer doit rester vivant plus longtemps que le son.
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 3.0">
+
+```c
+g->sound = sfSound_create(g->buffer);
+return g->sound == NULL;
+```
+
+  </TabItem>
+  <TabItem label="CSFML 2.6">
+
+```c
+g->sound = sfSound_create();
+if (g->sound == NULL)
+    return 1;
+sfSound_setBuffer(g->sound, g->buffer);
+return 0;
+```
+
+  </TabItem>
+</Tabs>
+
+En 3.0, `sfSound_create(buffer)` exige un buffer valide (`NULL` interdit).
+
+[`sfSound_play`](/3-0/reference/audio/sound/#sfSound_play) démarre le son. Si le son joue déjà, il **recommence** depuis le début. Le fichier de l'exemple dure 24 secondes ; ce n'est pas un vrai « pop » court, mais il suffit pour apprendre. Voir [les ressources](/guides/concepts/resources/).
+
+### Et sans carte son ?
+
+Le programme doit marcher même sans périphérique audio (ordinateur de test, conteneur…). Les tests montrent que les objets sont créés et qu'il n'y a pas de plantage, avec seulement des messages sur la sortie d'erreur. En revanche, pour un `sfMusic`, le statut renvoyé après `play` diffère entre les versions quand il n'y a pas de carte son (3.0.0 : `sfPlaying`, 2.6.1 : `sfStopped`). Pour `sfSound` ce n'est pas vérifié. **On ne teste donc jamais le statut dans un test.** Voir [l'audio sans périphérique](/guides/concepts/audio-without-device/).
+
+### Les états du jeu
+
+Un jeu est toujours dans **un** état. On le représente avec une énumération :
+
+```c
+typedef enum {
+    STATE_MENU,
+    STATE_PLAY,
+    STATE_WON,
+    STATE_LOST
+} state_t;
+```
+
+Chaque état change ce que fait le jeu :
+
+| État | Mise à jour | Message |
+|---|---|---|
+| `STATE_MENU` | rien | « Appuie sur Entrée pour jouer » |
+| `STATE_PLAY` | raquette, balle, collisions | aucun |
+| `STATE_WON` | rien | « Victoire ! » |
+| `STATE_LOST` | rien | « Perdu… » |
+
+Les transitions : `MENU → PLAY` avec Entrée ; `PLAY → WON` quand il n'y a plus de brique ; `PLAY → LOST` quand la balle tombe ; `WON` ou `LOST → PLAY` avec Entrée (nouvelle partie).
+
+### Entrée : un événement, pas un état
+
+Cette fois on veut réagir **une seule fois** à l'appui sur Entrée : on utilise un événement.
+
+```c
+if (event.type == sfEvtKeyPressed && event.key.code == sfKeyEnter)
+    press_enter(g);
+```
+
+`sfKeyEnter` existe en 3.0 ; l'ancien nom `sfKeyReturn` a été supprimé.
+
+### Le test joue la partie
+
+En mode test, le code « appuie sur Entrée » à la 1re image, et la raquette va à gauche sans suivre la balle : la balle tombe, l'état doit devenir `STATE_LOST`. Pour que ce soit rapide, chaque image joue `TEST_SPEEDUP` pas de simulation. On vérifie aussi qu'un son a été joué par brique cassée, et que le buffer dure plus de 0 ms.
+
+## Le programme complet
+
+Ce programme compile avec `-std=c11 -Wall -Wextra -Werror` et il est exécuté par les tests du dépôt.
+
+<Example example="tutorials/08-sound-states" version="3.0" />
+
+## Compiler et lancer
+
+```sh
+make -C examples/tutorials/08-sound-states CSFML=3.0 CSFML_PREFIX=system   # ou CSFML_PREFIX=$HOME/csfml-3.0
+cd examples/tutorials/08-sound-states && ./build/3.0/example
+```
+
+Pour compiler à la main, ajoute `-I examples/common` (le fichier `test_mode.h`) et lie : `-lcsfml-graphics -lcsfml-window -lcsfml-system -lcsfml-audio -lm`.
+
+## Ce que tu as appris
+
+- Charger un son avec `sfSoundBuffer`, le jouer avec `sfSound`.
+- Ne pas dépendre de la carte son dans un test.
+- Représenter les états d'un jeu avec un `enum` et les faire évoluer.
+- Réagir à une touche **une fois** avec `sfEvtKeyPressed`.
+
+## Erreurs fréquentes
+
+- Détruire le buffer avant le son. Voir [qui possède quoi](/guides/concepts/ownership/).
+- Passer `NULL` à `sfSound_create` si le fichier n'a pas été chargé.
+- Aucun bruit : voir [pas de son](/guides/troubleshooting/no-sound/).
+- Tester le statut du son dans un test sans carte son : il diffère selon la version.
+- Mettre à jour la balle dans tous les états : elle continue à bouger dans le menu.
+
+## Exercices facultatifs
+
+Il n'y a pas de corrigé : essaie, casse, recommence.
+
+- Ajoute un état « pause » avec la touche `P`.
+- Joue le son aussi quand la balle touche la raquette.
+- Utilise un fichier plus court (cherche-en un `.ogg` libre de droits).
+
+## Suite
+
+- Précédent : [Étape 7 : texte et score](/3-0/tutorials/07-text-score/)
+- Suivant : [Étape 9 : le jeu complet](/3-0/tutorials/09-final/)
+- Même étape en [CSFML 2.6](/2-6/tutorials/08-sound-states/).

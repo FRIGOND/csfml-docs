@@ -1,0 +1,123 @@
+---
+title: "Casse-briques 5 : les collisions"
+description: "Faire rebondir la balle sur la raquette et sur les briques, et détruire les briques touchées. (CSFML 2.6)"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Example from '@/components/Example.astro';
+import TestedBadge from '@/components/TestedBadge.astro';
+
+<TestedBadge version="2.6" />
+
+Tutoriel du **casse-briques** (CSFML 2.6), étape 5 sur 9. Cette page a une jumelle pour [CSFML 3.0](/3-0/tutorials/05-collisions/) : même plan, avec les différences d'API expliquées.
+
+## Objectif
+
+Faire rebondir la balle sur la raquette et sur les briques, et détruire les briques touchées.
+
+## Prérequis
+
+[Étape 4](/2-6/tutorials/04-input/) : la raquette bouge.
+
+## Pas à pas
+
+### Le rectangle englobant
+
+Pour savoir si deux objets se touchent, on compare leurs **rectangles englobants** (*bounding boxes*). [`sfRectangleShape_getGlobalBounds`](/2-6/reference/graphics/rectangle-shape/#sfRectangleShape_getGlobalBounds) (et [`sfCircleShape_getGlobalBounds`](/2-6/reference/graphics/circle-shape/#sfCircleShape_getGlobalBounds)) renvoie un `sfFloatRect` : la position et la taille du plus petit rectangle qui contient la forme, **dans l'écran**.
+
+En 2.6, un `sfFloatRect` contient quatre nombres : `left`, `top`, `width`, `height`. On lit `r.left`, `r.height`, etc.
+
+### Le test de collision
+
+[`sfFloatRect_intersects`](/2-6/reference/graphics/rect/#sfFloatRect_intersects) dit si deux rectangles se recouvrent. Son 3e argument est facultatif : si tu lui donnes l'adresse d'un `sfFloatRect`, il y met la **zone de recouvrement**. On l'utilise pour les briques. Passe `NULL` si tu n'en as pas besoin.
+
+```c
+if (!sfFloatRect_intersects(&bb, &rb, &inter))
+    continue;
+```
+
+### Rebond sur une brique
+
+Si la zone de recouvrement est plus **étroite** que **haute**, la balle est entrée par le côté : on inverse sa vitesse horizontale. Sinon elle est entrée par le haut ou le bas : on inverse la vitesse verticale.
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 3.0">
+
+```c
+if (inter.size.x < inter.size.y)
+```
+
+  </TabItem>
+  <TabItem label="CSFML 2.6">
+
+```c
+if (inter.width < inter.height)
+```
+
+  </TabItem>
+</Tabs>
+
+La balle n'est pas un vrai disque pour ce test, mais un carré : c'est une approximation, suffisante ici.
+
+### Rebond sur la raquette
+
+Selon l'endroit touché, la balle repart plus ou moins de côté. `rel` vaut `-1` au bord gauche de la raquette, `0` au centre, `+1` au bord droit :
+
+```c
+g->ball.vel.x = rel * BALL_SPEED * 0.8f;
+g->ball.vel.y = -sqrtf(BALL_SPEED * BALL_SPEED
+    - g->ball.vel.x * g->ball.vel.x);
+```
+
+On choisit `vel.x`, puis on calcule `vel.y` pour que la **vitesse totale** reste `BALL_SPEED` (théorème de Pythagore). `sqrtf` vient de `<math.h>` et demande l'option `-lm` à la compilation.
+
+### Briques détruites et balle perdue
+
+Chaque brique a un champ `alive`. Une brique touchée passe à `0` : on ne la dessine plus et on ne la teste plus. Si la balle tombe sous la fenêtre, on la remet en jeu (les vies viennent à l'étape 9). On traite **une seule** brique par image, pour éviter un double rebond.
+
+En mode test, la raquette suit la balle toute seule, et la vérification contrôle que le nombre de briques détruites et vivantes fait bien 50.
+
+## Le programme complet
+
+Ce programme compile avec `-std=c11 -Wall -Wextra -Werror` et il est exécuté par les tests du dépôt.
+
+<Example example="tutorials/05-collisions" version="2.6" />
+
+## Compiler et lancer
+
+```sh
+make -C examples/tutorials/05-collisions CSFML=2.6 CSFML_PREFIX=system   # ou CSFML_PREFIX=$HOME/csfml-2.6
+cd examples/tutorials/05-collisions && ./build/2.6/example
+```
+
+Pour compiler à la main, ajoute `-I examples/common` (le fichier `test_mode.h`) et lie : `-lcsfml-graphics -lcsfml-window -lcsfml-system -lm`.
+
+## Ce que tu as appris
+
+- Obtenir le rectangle d'un objet avec `getGlobalBounds`.
+- Tester une collision avec `sfFloatRect_intersects`.
+- Se servir de la zone de recouvrement pour choisir l'axe du rebond.
+- Calculer un angle de rebond qui garde la vitesse constante.
+- Marquer un objet « mort » sans le détruire.
+
+## Erreurs fréquentes
+
+- Utiliser `getPosition` à la place de `getGlobalBounds` : tu n'as pas la taille.
+- Traiter plusieurs briques dans la même image : la balle rebondit deux fois et traverse.
+- Un `dt` trop grand : la balle peut traverser une brique d'un seul pas (c'est pourquoi on limite `dt`).
+- Oublier `-lm` : « référence indéfinie vers `sqrtf` » ([erreurs d'édition de liens](/guides/troubleshooting/link-errors/)).
+- Lire `r.position.x` sur un `sfFloatRect` en 2.6 : le champ n'existe pas (`r.left`).
+
+## Exercices facultatifs
+
+Il n'y a pas de corrigé : essaie, casse, recommence.
+
+- Donne plus de points aux briques du haut.
+- Fais en sorte que la balle ne puisse jamais être renvoyée parfaitement à la verticale.
+- Utilise [`sfFloatRect_contains`](/2-6/reference/graphics/rect/#sfFloatRect_contains) à la place de `sfFloatRect_intersects` pour tester si le centre de la balle est dans une brique (que se passe-t-il aux coins ?).
+
+## Suite
+
+- Précédent : [Étape 4 : le clavier](/2-6/tutorials/04-input/)
+- Suivant : [Étape 6 : les sprites](/2-6/tutorials/06-sprites/)
+- Même étape en [CSFML 3.0](/3-0/tutorials/05-collisions/).

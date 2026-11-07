@@ -1,0 +1,117 @@
+---
+title: "Casse-briques 2 : les formes"
+description: "Dessiner la raquette, la balle et 50 briques (10 colonnes, 5 lignes) avec des formes. (CSFML 2.6)"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Example from '@/components/Example.astro';
+import TestedBadge from '@/components/TestedBadge.astro';
+
+<TestedBadge version="2.6" />
+
+Tutoriel du **casse-briques** (CSFML 2.6), étape 2 sur 9. Cette page a une jumelle pour [CSFML 3.0](/3-0/tutorials/02-shapes/) : même plan, avec les différences d'API expliquées.
+
+## Objectif
+
+Dessiner la raquette, la balle et 50 briques (10 colonnes, 5 lignes) avec des formes.
+
+## Prérequis
+
+[Étape 1](/2-6/tutorials/01-window/) : une fenêtre qui s'ouvre et se ferme.
+
+## Pas à pas
+
+### Une structure pour l'état du jeu
+
+Plus le jeu grandit, plus il y a de variables. On les regroupe dans une structure et on la passe par adresse aux fonctions :
+
+```c
+typedef struct {
+    sfRenderWindow *window;
+    sfRectangleShape *paddle;
+    sfCircleShape *ball;
+    sfRectangleShape *bricks[BRICK_COUNT];
+} game_t;
+```
+
+`game_t g = {0};` met tous les pointeurs à `NULL`. C'est utile : à la fin, `destroy_game` sait quels objets existent vraiment.
+
+### Les formes
+
+- [`sfRectangleShape_create`](/2-6/reference/graphics/rectangle-shape/#sfRectangleShape_create) crée un rectangle ; on règle ensuite sa taille avec [`sfRectangleShape_setSize`](/2-6/reference/graphics/rectangle-shape/#sfRectangleShape_setSize) et sa position avec [`sfRectangleShape_setPosition`](/2-6/reference/graphics/rectangle-shape/#sfRectangleShape_setPosition).
+- [`sfCircleShape_create`](/2-6/reference/graphics/circle-shape/#sfCircleShape_create) crée un cercle ; [`sfCircleShape_setRadius`](/2-6/reference/graphics/circle-shape/#sfCircleShape_setRadius) donne son rayon.
+- [`sfRectangleShape_setFillColor`](/2-6/reference/graphics/rectangle-shape/#sfRectangleShape_setFillColor) choisit la couleur de remplissage.
+
+Une position dans CSFML est toujours un `sfVector2f` (deux `float`). L'origine `(0, 0)` est le **coin en haut à gauche** de la fenêtre, et `y` grandit **vers le bas**.
+
+```c
+sfCircleShape_setRadius(g->ball, BALL_R);
+sfCircleShape_setOrigin(g->ball, (sfVector2f){BALL_R, BALL_R});
+```
+
+Par défaut, la position d'une forme est son coin en haut à gauche. Avec [`sfCircleShape_setOrigin`](/2-6/reference/graphics/circle-shape/#sfCircleShape_setOrigin) au centre, la position de la balle devient **son centre**. C'est plus pratique pour les rebonds.
+
+### Placer les 50 briques
+
+Une seule boucle suffit. Pour la brique numéro `i`, la colonne est `i % COLS` et la ligne est `i / COLS` (division entière).
+
+```c
+int col = index % COLS;
+int row = index / COLS;
+```
+
+La position est ensuite `BRICKS_LEFT + col * (BRICK_W + BRICK_GAP)` en `x`, et de la même façon en `y`. Chaque ligne a sa couleur, prise dans le tableau `ROW_COLORS`.
+
+### Dessiner
+
+On dessine chaque forme avec [`sfRenderWindow_drawRectangleShape`](/2-6/reference/graphics/render-window/#sfRenderWindow_drawRectangleShape) ou [`sfRenderWindow_drawCircleShape`](/2-6/reference/graphics/render-window/#sfRenderWindow_drawCircleShape). Le dernier argument (`NULL`) sert à des réglages avancés (`sfRenderStates`) dont on n'a pas besoin ici. **L'ordre compte** : ce qui est dessiné en dernier est au-dessus.
+
+### Libérer
+
+[`sfRectangleShape_destroy`](/2-6/reference/graphics/rectangle-shape/#sfRectangleShape_destroy) et [`sfCircleShape_destroy`](/2-6/reference/graphics/circle-shape/#sfCircleShape_destroy) libèrent les formes. Comme `create_bricks` peut échouer à mi-chemin, `destroy_game` teste chaque pointeur avant de détruire. En 2.6, `sfRenderTexture_destroy(NULL)` plante (testé), les autres `destroy` acceptent `NULL`. Tester avant de détruire est donc plus prudent.
+
+La vérification du mode test contrôle que la dernière brique tient dans la fenêtre, au-dessus de la raquette, et que la balle est centrée (voir [`sfRectangleShape_getGlobalBounds`](/2-6/reference/graphics/rectangle-shape/#sfRectangleShape_getGlobalBounds)).
+
+## Le programme complet
+
+Ce programme compile avec `-std=c11 -Wall -Wextra -Werror` et il est exécuté par les tests du dépôt.
+
+<Example example="tutorials/02-shapes" version="2.6" />
+
+## Compiler et lancer
+
+```sh
+make -C examples/tutorials/02-shapes CSFML=2.6 CSFML_PREFIX=system   # ou CSFML_PREFIX=$HOME/csfml-2.6
+cd examples/tutorials/02-shapes && ./build/2.6/example
+```
+
+Pour compiler à la main, ajoute `-I examples/common` (le fichier `test_mode.h`) et lie : `-lcsfml-graphics -lcsfml-window -lcsfml-system`.
+
+## Ce que tu as appris
+
+- Regrouper l'état du jeu dans une structure `game_t`.
+- Créer, régler et dessiner `sfRectangleShape` et `sfCircleShape`.
+- Le repère de l'écran : origine en haut à gauche, `y` vers le bas.
+- Calculer une grille avec `%` et `/`.
+- Tester chaque `create` et libérer seulement ce qui existe.
+
+## Erreurs fréquentes
+
+- Dessiner avant `sfRenderWindow_clear` : l'image est effacée.
+- Oublier `sfRenderWindow_display` : écran vide ([fenêtre noire](/guides/troubleshooting/black-window/)).
+- Détruire une forme deux fois, ou détruire la fenêtre avant d'avoir fini de l'utiliser. Voir [qui possède quoi](/guides/concepts/ownership/).
+- Confondre `x` et `y`, ou croire que `y` monte vers le haut.
+
+## Exercices facultatifs
+
+Il n'y a pas de corrigé : essaie, casse, recommence.
+
+- Ajoute une 6e ligne de briques d'une autre couleur.
+- Ajoute un contour blanc à la raquette (cherche `sfRectangleShape_setOutlineThickness`).
+- Change l'espacement des briques : que doit-on modifier pour qu'elles restent dans la fenêtre ?
+
+## Suite
+
+- Précédent : [Étape 1 : la fenêtre](/2-6/tutorials/01-window/)
+- Suivant : [Étape 3 : le mouvement](/2-6/tutorials/03-movement/)
+- Même étape en [CSFML 3.0](/3-0/tutorials/02-shapes/).

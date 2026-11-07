@@ -1,0 +1,197 @@
+---
+title: "Compiler pour les deux versions"
+description: "Un seul code source pour CSFML 2.6 et 3.0 : choix des includes, fonctions de compatibilité, options de compilation (compilé et testé)."
+sidebar:
+  order: 6
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Example from '@/components/Example.astro';
+import TestedBadge from '@/components/TestedBadge.astro';
+
+<TestedBadge version="3.0" />
+
+
+Tu peux écrire **un seul code source** qui compile avec CSFML 2.6 et CSFML 3.0. Cette page montre une méthode ; tout ce qui est décrit ici a été compilé et exécuté (CSFML 3.0.0 et 2.6.1, `gcc -std=c11 -Wall -Wextra -Werror`).
+
+:::caution[À réserver à ceux qui en ont besoin]
+Maintenir deux versions coûte du travail. Si tu n'as pas besoin de la 2.6, passe simplement à la 3.0 avec la [checklist](/3-0/migration/checklist/).
+:::
+
+## Ce qui ne peut pas être commun
+
+Le **chemin des includes** (`SFML/` contre `CSFML/`) et la signature de quelques fonctions (`sfRenderWindow_create`, `sfSprite_create`, `sfText_create`, `sfSound_create`, les paires de nombres, les rectangles). Il faut donc une petite couche de compatibilité.
+
+## Deviner la version
+
+`CSFML/Config.h` (3.0) et `SFML/Config.h` (2.6) définissent tous deux `CSFML_VERSION_MAJOR` (valeur `3` ou `2`). Mais ces macros n'existent qu'**après** l'include, et le chemin de l'include dépend de la version : il faut d'abord choisir l'include. Deux moyens :
+
+1. **Le Makefile décide** : il passe `-DAPP_CSFML=3` ou `-DAPP_CSFML=2`. C'est le plus sûr.
+2. **`__has_include`** (compilateurs gcc et clang) : le fichier regarde si `<SFML/Config.h>` ou `<CSFML/Config.h>` existe. `SFML/Config.h` n'existe que dans CSFML 2.6 : le SFML 3 installé sur le système ne contient que des `.hpp` dans `SFML/`.
+
+:::danger[Piège de __has_include]
+`__has_include` voit **tous** les dossiers d'include, y compris ceux du système. Sur une machine où CSFML 3 est installé dans le système (`/usr/include/CSFML`), tester d'abord `<CSFML/Config.h>` choisit la 3.0 **même si tu compiles avec `-I` vers un préfixe 2.6** : le programme compile avec les mauvais headers (testé : aucune erreur) puis ne se lie pas correctement avec les bibliothèques 2.6. Dans le fichier ci-dessous, on teste donc `<SFML/Config.h>` en premier, et on ajoute une vérification de `CSFML_VERSION_MAJOR` après l'include. Si deux versions de CSFML sont installées, utilise `-DAPP_CSFML`.
+:::
+
+## Le fichier de compatibilité
+
+```c title="compat.h"
+#ifndef COMPAT_H
+#define COMPAT_H
+
+/* Version voulue : de preference donnee par le Makefile (-DAPP_CSFML=3
+ * ou -DAPP_CSFML=2). Sinon on devine avec __has_include, qui voit aussi
+ * les headers du systeme : c'est moins sur. */
+#if !defined(APP_CSFML) && defined(__has_include)
+# if __has_include(<SFML/Config.h>)
+#  define APP_CSFML 2
+# elif __has_include(<CSFML/Config.h>)
+#  define APP_CSFML 3
+# endif
+#endif
+#ifndef APP_CSFML
+# error "CSFML introuvable : verifie les options -I"
+#endif
+
+#if APP_CSFML == 3
+# include <CSFML/Audio.h>
+# include <CSFML/Graphics.h>
+#else
+# include <SFML/Audio.h>
+# include <SFML/Graphics.h>
+#endif
+
+/* Garde-fou : les headers trouves doivent etre ceux de la bonne version. */
+#if CSFML_VERSION_MAJOR != APP_CSFML
+# error "headers CSFML melanges : retire l'ancien chemin -I"
+#endif
+
+static inline sfRenderWindow *app_window(unsigned int w, unsigned int h,
+    const char *title)
+{
+#if APP_CSFML == 3
+    sfVideoMode mode = {{w, h}, 32};
+
+    return sfRenderWindow_create(mode, title, sfTitlebar | sfClose,
+        sfWindowed, NULL);
+#else
+    sfVideoMode mode = {w, h, 32};
+
+    return sfRenderWindow_create(mode, title, sfTitlebar | sfClose, NULL);
+#endif
+}
+
+static inline sfSprite *app_sprite(const sfTexture *texture)
+{
+#if APP_CSFML == 3
+    return sfSprite_create(texture);
+#else
+    sfSprite *sprite = sfSprite_create();
+
+    if (sprite != NULL)
+        sfSprite_setTexture(sprite, texture, sfTrue);
+    return sprite;
+#endif
+}
+
+static inline sfText *app_text(const sfFont *font)
+{
+#if APP_CSFML == 3
+    return sfText_create(font);
+#else
+    sfText *text = sfText_create();
+
+    if (text != NULL)
+        sfText_setFont(text, font);
+    return text;
+#endif
+}
+
+static inline sfSound *app_sound(const sfSoundBuffer *buffer)
+{
+#if APP_CSFML == 3
+    return sfSound_create(buffer);
+#else
+    sfSound *sound = sfSound_create();
+
+    if (sound != NULL)
+        sfSound_setBuffer(sound, buffer);
+    return sound;
+#endif
+}
+
+static inline float app_rect_right(sfFloatRect r)
+{
+#if APP_CSFML == 3
+    return r.position.x + r.size.x;
+#else
+    return r.left + r.width;
+#endif
+}
+#endif
+```
+
+Les fonctions `app_*` cachent les différences d'API que l'on a vues dans [création d'objets](/3-0/migration/objects-creation/) et [types](/3-0/migration/types/). Ajoute-en une quand tu en as besoin (pour les événements, une fonction `app_event_x(const sfEvent*)` qui renvoie `event->mouseButton.x` ou `event->mouseButton.position.x`, par exemple : cet exemple n'a pas été compilé).
+
+## Un programme qui l'utilise
+
+```c title="main.c"
+#include <stdio.h>
+#include "compat.h"
+
+int main(void)
+{
+    sfRenderWindow *window = app_window(320, 200, "compat");
+    sfImage *image = sfImage_createFromColor(
+#if APP_CSFML == 3
+        (sfVector2u){16, 16},
+#else
+        16, 16,
+#endif
+        sfWhite);
+    sfTexture *texture = image ? sfTexture_createFromImage(image, NULL) : NULL;
+    sfSprite *sprite = texture ? app_sprite(texture) : NULL;
+    int status = 1;
+
+    if (window && sprite) {
+        sfRenderWindow_clear(window, sfBlack);
+        sfRenderWindow_drawSprite(window, sprite, NULL);
+        sfRenderWindow_display(window);
+        printf("CSFML %d : bord droit du sprite = %.0f\n", APP_CSFML,
+            app_rect_right(sfSprite_getGlobalBounds(sprite)));
+        status = 0;
+    }
+    if (sprite) sfSprite_destroy(sprite);
+    if (texture) sfTexture_destroy(texture);
+    if (image) sfImage_destroy(image);
+    if (window) sfRenderWindow_destroy(window);
+    return status;
+}
+```
+
+Résultat du programme, compilé deux fois : `CSFML 3 : bord droit du sprite = 16` avec la 3.0.0, et `CSFML 2 : bord droit du sprite = 16` avec la 2.6.1.
+
+## Compiler
+
+```sh
+# CSFML 3.0 (préfixe local)
+gcc -std=c11 -Wall -Wextra -Werror -DAPP_CSFML=3 -I$HOME/csfml-3.0/include main.c -o app3 \
+    -L$HOME/csfml-3.0/lib -Wl,-rpath,$HOME/csfml-3.0/lib \
+    -lcsfml-graphics -lcsfml-window -lcsfml-audio -lcsfml-system
+
+# CSFML 2.6 (préfixe local) : le header Event.h est déprécié -> on n'en fait pas une erreur
+gcc -std=c11 -Wall -Wextra -Werror -Wno-error=deprecated-declarations -DAPP_CSFML=2 \
+    -I$HOME/csfml-2.6/include main.c -o app2 \
+    -L$HOME/csfml-2.6/lib -Wl,-rpath,$HOME/csfml-2.6/lib \
+    -lcsfml-graphics -lcsfml-window -lcsfml-audio -lcsfml-system
+```
+
+Les noms des bibliothèques sont les mêmes dans les deux versions. En 2.6, `-Werror` seul échoue : le type `sfMouseWheelEvent` du header `Event.h` est déprécié, et le compilateur avertit même si tu ne l'utilises pas.
+
+Dans un Makefile, une variable `CSFML = 3` (ou `2`) peut calculer `-DAPP_CSFML=$(CSFML)` et le chemin du préfixe. Le Makefile commun des exemples de ce dépôt (`examples/common/example.mk`) fonctionne de cette façon avec `CSFML=3.0|2.6` et `CSFML_PREFIX`.
+
+## Limites
+
+- Les tests ont été faits avec **gcc 15** sous Linux. `__has_include` existe aussi dans clang ; avec un compilateur qui ne le connaît pas, utilise `-DAPP_CSFML`.
+- Un projet qui utilise les événements, les rectangles, les vecteurs partout demande beaucoup de fonctions `app_*` : au-delà d'un petit nombre, il est plus simple de choisir une seule version.
+- Les macros `#define sfTrue true` (pour faire passer du code 2.6 en 3.0) ne sont pas recommandées : elles cachent les vrais changements (`sfFullscreen`, champs d'événements).

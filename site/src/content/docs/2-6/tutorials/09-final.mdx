@@ -1,0 +1,127 @@
+---
+title: "Casse-briques 9 : le jeu complet"
+description: "Assembler le jeu complet : 3 vies, balle qui accélère, service sur la raquette, et un code découpé en petites fonctions. (CSFML 2.6)"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Example from '@/components/Example.astro';
+import TestedBadge from '@/components/TestedBadge.astro';
+
+<TestedBadge version="2.6" />
+
+Tutoriel du **casse-briques** (CSFML 2.6), étape 9 sur 9. Cette page a une jumelle pour [CSFML 3.0](/3-0/tutorials/09-final/) : même plan, avec les différences d'API expliquées.
+
+## Objectif
+
+Assembler le jeu complet : 3 vies, balle qui accélère, service sur la raquette, et un code découpé en petites fonctions.
+
+## Prérequis
+
+[Étape 8](/2-6/tutorials/08-sound-states/) : le son et les états.
+
+## Pas à pas
+
+### Ce qui est nouveau
+
+- **Trois vies** (`LIVES`). Quand la balle tombe, on perd une vie : s'il en reste, le jeu passe dans le nouvel état `STATE_SERVE` ; sinon `STATE_LOST`.
+- **Service** : avant de lancer, la balle reste posée sur la raquette (`stick_ball`). Entrée la lance.
+- **Accélération** : chaque brique cassée augmente la vitesse de 1 %, jusqu'à `MAX_SPEED`.
+- Un texte « Vies » à côté du score.
+
+### Le code est rangé en sections
+
+Le fichier est découpé par thèmes, avec des commentaires `/* ---- ... ---- */` :
+
+| Section | Rôle |
+|---|---|
+| Types | `ball_t`, `paddle_t`, `brick_t`, `textures_t`, `texts_t`, `game_t` |
+| Textures et sprites | création des images, textures, sprites |
+| Textes et son | police, textes, son |
+| Destruction | tout libérer, dans l'ordre inverse de la création |
+| États et messages | `set_state`, `new_game`, `press_enter` |
+| Physique | rebond, collisions |
+| Entrées | clavier, événements, partie scriptée |
+| Mise à jour / Affichage | `update_game`, `draw_game` |
+| Vérifications | tests du mode test |
+
+Chaque fonction fait **20 lignes ou moins** et a **un seul rôle**. Les regroupements `texts_t` et `textures_t` évitent les structures géantes.
+
+### Les états
+
+```c
+typedef enum {
+    STATE_MENU,
+    STATE_SERVE,
+    STATE_PLAY,
+    STATE_WON,
+    STATE_LOST
+} state_t;
+```
+
+`set_state` change l'état **et** met à jour le message à l'écran : on ne l'oublie jamais.
+
+```c
+static void set_state(game_t *g, state_t state)
+{
+    g->state = state;
+    sfText_setUnicodeString(g->texts.message, MESSAGES[state]);
+```
+
+Comme les états sont numérotés dans l'ordre, `g->state < STATE_WON` signifie « la partie n'est pas finie » et `g->state < STATE_PLAY` signifie « le jeu attend le joueur ».
+
+### Une partie scriptée
+
+En mode test, le « joueur » est un petit programme :
+
+- il appuie sur Entrée dès que le jeu attend (`MENU` ou `SERVE`) ;
+- la raquette vise la balle avec un décalage qui change à chaque renvoi (sinon la balle ne ferait que monter et descendre) ;
+- chaque image joue 240 pas de simulation.
+
+La partie doit être **gagnée** : les 50 briques sont détruites, le score vaut 500, il reste au moins une vie, et il y a eu un son par brique. Avec `EXAMPLE_FRAMES=60`, cela prend environ la moitié du temps disponible ; il faut au minimum 30 images.
+
+### Pour aller plus loin
+
+Tu as maintenant un jeu complet. Quelques idées pour continuer : plusieurs niveaux, briques à deux coups, bonus qui tombent, meilleur score sauvegardé dans un fichier, musique de fond avec `sfMusic`. Les [exemples du livre de recettes](/2-6/cookbook/graphics/shapes/) montrent d'autres fonctions.
+
+## Le programme complet
+
+Ce programme compile avec `-std=c11 -Wall -Wextra -Werror` et il est exécuté par les tests du dépôt.
+
+<Example example="tutorials/09-final" version="2.6" />
+
+## Compiler et lancer
+
+```sh
+make -C examples/tutorials/09-final CSFML=2.6 CSFML_PREFIX=system   # ou CSFML_PREFIX=$HOME/csfml-2.6
+cd examples/tutorials/09-final && ./build/2.6/example
+```
+
+Pour compiler à la main, ajoute `-I examples/common` (le fichier `test_mode.h`) et lie : `-lcsfml-graphics -lcsfml-window -lcsfml-system -lcsfml-audio -lm`.
+
+## Ce que tu as appris
+
+- Découper un programme en sections et en petites fonctions.
+- Ajouter vies, service et accélération à un jeu existant.
+- Utiliser l'ordre d'un `enum` pour tester des groupes d'états.
+- Écrire un test qui joue une partie entière.
+
+## Erreurs fréquentes
+
+- Une fonction de plus de 20 lignes : coupe-la en deux, avec chacune un rôle.
+- Modifier l'état sans passer par `set_state` : le message affiché ne correspond plus.
+- Oublier de remettre la balle sur la raquette quand on perd une vie.
+- Une fuite mémoire : relance avec valgrind (voir [plantages à l'exécution](/guides/troubleshooting/runtime-crashes/)).
+
+## Exercices facultatifs
+
+Il n'y a pas de corrigé : essaie, casse, recommence.
+
+- Ajoute un niveau 2 avec plus de lignes de briques.
+- Fais tomber un bonus quand une brique de la première ligne est cassée.
+- Enregistre le meilleur score dans un fichier et relis-le au lancement.
+
+## Suite
+
+- Précédent : [Étape 8 : son et états](/2-6/tutorials/08-sound-states/)
+- Suivant : (c'est la dernière étape)
+- Même étape en [CSFML 3.0](/3-0/tutorials/09-final/).

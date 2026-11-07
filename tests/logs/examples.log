@@ -35,7 +35,7 @@ enregistrement possible : 1
 === audio/sound-recorder-capture [3.0]
 7714 echantillons captures a 44100 Hz
 === audio/sound-recorder-capture [2.6]
-7028 echantillons captures a 44100 Hz
+7969 echantillons captures a 44100 Hz
 === graphics/blend-mode [3.0]
 Failed to create input context for window -- TextEntered event won't be able to return unicode
 Setting vertical sync not supported
@@ -60,7 +60,7 @@ add   : 255,255,0 (attendu 255,255,0)
 === graphics/clock-delta-time [3.0]
 Failed to create input context for window -- TextEntered event won't be able to return unicode
 Setting vertical sync not supported
-60 images en 3.67 s (16 im/s), somme des dt = 3.65 s
+60 images en 3.66 s (16 im/s), somme des dt = 3.64 s
 === graphics/clock-delta-time [2.6]
 In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
                  from ~/csfml-2.6/include/SFML/Window/Context.h:33,
@@ -286,26 +286,26 @@ taille des donnees : 20 octets
 int=-42 float=3.5 string=bonjour sfBool=1
 round-trip OK
 === network/tcp-loopback [3.0]
-listener sur le port 47363
+listener sur le port 54119
 le serveur a recu : hello
 OK
 === network/tcp-loopback [2.6]
-listener sur le port 52043
+listener sur le port 57249
 le serveur a recu : hello
 OK
 === network/udp-loopback [3.0]
-serveur lie au port 35763
+serveur lie au port 60082
 recu 5 octets : salut
 OK
 === network/udp-loopback [2.6]
-serveur lie au port 58648
+serveur lie au port 44288
 recu 5 octets : salut
 OK
 === system/clock-time [3.0]
 1.5 s = 1500 ms = 1500000 us
 250 ms = 0.250 s
 2000000 us = 2.0 s
-restart a renvoye 51 ms
+restart a renvoye 52 ms
 temps ecoule depuis : 0 ms
 OK
 === system/clock-time [2.6]
@@ -340,6 +340,195 @@ a + b = (4.0, 6.0)
 |a| = 5.0
 sfVector2i (-5, 12), sfVector2u (800, 600)
 x ^ y = (0.0, 0.0, 1.0)
+=== tutorials/01-window [3.0]
+Failed to create input context for window -- TextEntered event won't be able to return unicode
+Setting vertical sync not supported
+taille de la fenetre : 800x600
+=== tutorials/01-window [2.6]
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from 2.6/main.c:1:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+Failed to create input context for window -- TextEntered event won't be able to return unicode
+Setting vertical sync not supported
+taille de la fenetre : 800x600
+=== tutorials/02-shapes [3.0]
+Failed to create input context for window -- TextEntered event won't be able to return unicode
+Setting vertical sync not supported
+derniere brique : x=704..774, bas=184
+balle : centre x=400
+=== tutorials/02-shapes [2.6]
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from 2.6/main.c:1:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+Failed to create input context for window -- TextEntered event won't be able to return unicode
+Setting vertical sync not supported
+derniere brique : x=704..774, bas=184
+balle : centre x=400
+=== tutorials/03-movement [3.0]
+Failed to create input context for window -- TextEntered event won't be able to return unicode
+Setting vertical sync not supported
+balle : x=700 y=115, 1 rebond(s)
+=== tutorials/03-movement [2.6]
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from 2.6/main.c:1:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+Failed to create input context for window -- TextEntered event won't be able to return unicode
+Setting vertical sync not supported
+balle : x=700 y=115, 1 rebond(s)
+=== tutorials/04-input [3.0]
+Failed to create input context for window -- TextEntered event won't be able to return unicode
+Setting vertical sync not supported
+balle : x=700 y=115, 1 rebond(s)
+raquette : x=575
+=== tutorials/04-input [2.6]
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from 2.6/main.c:1:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+Failed to create input context for window -- TextEntered event won't be able to return unicode
+Setting vertical sync not supported
+balle : x=700 y=115, 1 rebond(s)
+raquette : x=575
+=== tutorials/05-collisions [3.0]
+Failed to create input context for window -- TextEntered event won't be able to return unicode
+Setting vertical sync not supported
+briques detruites : 1, balles perdues : 0
+=== tutorials/05-collisions [2.6]
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from 2.6/main.c:1:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+Failed to create input context for window -- TextEntered event won't be able to return unicode
+Setting vertical sync not supported
+briques detruites : 1, balles perdues : 0
+=== tutorials/06-sprites [3.0]
+Failed to create input context for window -- TextEntered event won't be able to return unicode
+Setting vertical sync not supported
+briques detruites : 1, balles perdues : 0
+texture de la balle : 16x16, centre a=255, coin a=0
+=== tutorials/06-sprites [2.6]
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from 2.6/main.c:1:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+Failed to create input context for window -- TextEntered event won't be able to return unicode
+Setting vertical sync not supported
+briques detruites : 1, balles perdues : 0
+texture de la balle : 16x16, centre a=255, coin a=0
+=== tutorials/07-text-score [3.0]
+Failed to create input context for window -- TextEntered event won't be able to return unicode
+Setting vertical sync not supported
+briques detruites : 1, balles perdues : 0
+texture de la balle : 16x16, centre a=255, coin a=0
+texte : "Score : 10", premier caractere du titre : U+00C9
+=== tutorials/07-text-score [2.6]
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from 2.6/main.c:1:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+Failed to create input context for window -- TextEntered event won't be able to return unicode
+Setting vertical sync not supported
+briques detruites : 1, balles perdues : 0
+texture de la balle : 16x16, centre a=255, coin a=0
+texte : "Score : 10", premier caractere du titre : U+00C9
+=== tutorials/08-sound-states [3.0]
+Failed to create input context for window -- TextEntered event won't be able to return unicode
+Setting vertical sync not supported
+briques detruites : 1
+texture de la balle : 16x16, centre a=255, coin a=0
+texte : "Score : 10", premier caractere du titre : U+00C9
+etat final : 3 (3 = perdu), 1 son(s), son de 24002 ms
+=== tutorials/08-sound-states [2.6]
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from 2.6/main.c:2:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+Failed to create input context for window -- TextEntered event won't be able to return unicode
+Setting vertical sync not supported
+briques detruites : 1
+texture de la balle : 16x16, centre a=255, coin a=0
+texte : "Score : 10", premier caractere du titre : U+00C9
+etat final : 3 (3 = perdu), 1 son(s), son de 24002 ms
+=== tutorials/09-final [3.0]
+Failed to create input context for window -- TextEntered event won't be able to return unicode
+Setting vertical sync not supported
+etat 3 (victoire = 3), score 500, vies 3, 50 son(s)
+texte : "Score : 500", son de 24002 ms
+=== tutorials/09-final [2.6]
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from 2.6/main.c:2:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+Failed to create input context for window -- TextEntered event won't be able to return unicode
+Setting vertical sync not supported
+etat 3 (victoire = 3), score 500, vies 3, 50 son(s)
+texte : "Score : 500", son de 24002 ms
 === window/basic-window [3.0]
 Failed to create input context for window -- TextEntered event won't be able to return unicode
 Setting vertical sync not supported

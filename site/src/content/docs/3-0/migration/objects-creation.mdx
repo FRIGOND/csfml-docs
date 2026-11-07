@@ -1,0 +1,178 @@
+---
+title: "Migration : la création des objets"
+description: "sfSprite_create, sfText_create et sfSound_create exigent maintenant leur ressource ; textures et cibles de rendu prennent des vecteurs."
+sidebar:
+  order: 3
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Example from '@/components/Example.astro';
+import TestedBadge from '@/components/TestedBadge.astro';
+
+<TestedBadge version="3.0" />
+
+
+En 3.0, un sprite, un texte et un son **ne peuvent plus être créés vides** : on donne tout de suite la ressource qu'ils utilisent (la texture, la police, le buffer).
+
+| Ancien (2.6.1) | Nouveau (3.0.0) | Effet |
+|---|---|---|
+| `sfSprite* sfSprite_create(void)` | `sfSprite* sfSprite_create(const sfTexture* texture)` | Casse |
+| `sfText* sfText_create(void)` | `sfText* sfText_create(const sfFont* font)` | Casse |
+| `sfSound* sfSound_create(void)` | `sfSound* sfSound_create(const sfSoundBuffer* buffer)` | Casse |
+| `sfTexture* sfTexture_create(unsigned int width, unsigned int height)` | `sfTexture* sfTexture_create(sfVector2u size)` | Casse |
+| `sfImage* sfImage_create(unsigned int width, unsigned int height)` | `sfImage* sfImage_create(sfVector2u size)` | Casse |
+| `sfImage* sfImage_createFromColor(unsigned int width, unsigned int height, sfColor color)` | `sfImage* sfImage_createFromColor(sfVector2u size, sfColor color)` | Casse |
+| `sfRenderTexture* sfRenderTexture_create(unsigned int width, unsigned int height, sfBool depthBuffer)` | `sfRenderTexture* sfRenderTexture_create(sfVector2u size, const sfContextSettings* settings)` | Casse |
+| `sfSoundBuffer* sfSoundBuffer_createFromSamples(const sfInt16* samples, sfUint64 sampleCount, unsigned int channelCount, unsigned int sampleRate)` | `sfSoundBuffer* sfSoundBuffer_createFromSamples(const int16_t* samples, uint64_t sampleCount, unsigned int channelCount, unsigned int sampleRate, sfSoundChannel* channelMapData, size_t channelMapSize)` | Casse |
+
+## La règle
+
+| Objet | Ressource exigée | Si tu passes `NULL` |
+|---|---|---|
+| `sfSprite_create(texture)` | une `sfTexture` valide | arrêt du programme par une assertion (paquet Ubuntu) ou plantage (build maison Release) |
+| `sfText_create(font)` | une `sfFont` valide | idem |
+| `sfSound_create(buffer)` | un `sfSoundBuffer` valide | idem |
+
+Mesures (tests locaux, CSFML 3.0.0) : avec le **paquet Ubuntu**, `sfSprite_create(NULL)` affiche `Assertion 'texture' failed` et s'arrête (code 134) ; avec un **build maison en Release** (assertions retirées), le programme plante (segfault, code 139). `sfSprite_setTexture(sprite, NULL, …)`, lui, est ignoré sans message, en 3.0.0 comme en 2.6.1. En 2.6.1, nous n'avons observé aucun message d'avertissement pour un pointeur `NULL`.
+
+:::caution[Non vérifié]
+Les assertions de `sfText_create(NULL)` et `sfSound_create(NULL)` n'ont pas été exécutées une par une : le comportement décrit pour elles vient de la lecture du code source et du fait que le paquet Ubuntu est compilé avec les assertions actives (1 appel à `__assert_fail` dans la bibliothèque graphique). Dans tous les cas, ne passe jamais `NULL`.
+:::
+
+## Le motif à suivre
+
+**Charge la ressource, teste-la, puis crée l'objet.**
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6">
+
+```c
+sfTexture *tex = sfTexture_createFromFile("duck.png", NULL);
+sfSprite *spr = sfSprite_create();
+sfSprite_setTexture(spr, tex, sfTrue);
+sfIntRect rect = {0, 0, 110, 110};
+rect.left += 110;
+sfSprite_setTextureRect(spr, rect);
+```
+
+  </TabItem>
+  <TabItem label="CSFML 3.0">
+
+```c
+sfTexture *tex = sfTexture_createFromFile("duck.png", NULL);
+if (tex == NULL)
+    return 84;
+sfSprite *spr = sfSprite_create(tex);          /* NULL interdit : assert */
+sfIntRect rect = {{0, 0}, {110, 110}};
+rect.position.x += 110;
+sfSprite_setTextureRect(spr, rect);
+```
+
+  </TabItem>
+</Tabs>
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6">
+
+```c
+sfFont *font = sfFont_createFromFile("arial.ttf");
+sfText *txt = sfText_create();
+sfText_setFont(txt, font);
+sfText_setString(txt, "Score: 0");
+sfText_setColor(txt, sfWhite);
+```
+
+  </TabItem>
+  <TabItem label="CSFML 3.0">
+
+```c
+sfFont *font = sfFont_createFromFile("arial.ttf");
+if (font == NULL)
+    return 84;
+sfText *txt = sfText_create(font);              /* NULL interdit : assert */
+sfText_setString(txt, "Score: 0");
+sfText_setFillColor(txt, sfWhite);
+```
+
+  </TabItem>
+</Tabs>
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6">
+
+```c
+sfSoundBuffer *buf = sfSoundBuffer_createFromFile("shot.ogg");
+sfSound *snd = sfSound_create();
+sfSound_setBuffer(snd, buf);
+sfSound_play(snd);
+sfMusic *mus = sfMusic_createFromFile("theme.ogg");
+sfMusic_setLoop(mus, sfTrue);
+sfMusic_play(mus);
+```
+
+  </TabItem>
+  <TabItem label="CSFML 3.0">
+
+```c
+sfSoundBuffer *buf = sfSoundBuffer_createFromFile("shot.ogg");
+if (buf == NULL)
+    return 84;
+sfSound *snd = sfSound_create(buf);             /* NULL interdit : assert */
+sfSound_play(snd);
+sfMusic *mus = sfMusic_createFromFile("theme.ogg");
+if (mus == NULL)
+    return 84;
+sfMusic_setLooping(mus, true);
+sfMusic_play(mus);
+```
+
+  </TabItem>
+</Tabs>
+
+Les fonctions `sfSprite_setTexture`, `sfText_setFont` et `sfSound_setBuffer` existent toujours dans les deux versions : elles servent à **changer** de ressource plus tard.
+
+## Ce qui ne change pas
+
+`sfTexture_createFromFile`, `sfTexture_createFromImage`, `sfFont_createFromFile`, `sfSoundBuffer_createFromFile` et `sfMusic_createFromFile` gardent les mêmes paramètres (comparaison automatique des deux fichiers d'API) et renvoient toujours `NULL` en cas d'échec. Teste leur résultat comme avant.
+
+## Textures et cibles de rendu
+
+Ici, la taille devient un `sfVector2u`. `sfRenderTexture_create` reçoit en plus un pointeur de réglages (`NULL` donne les réglages par défaut) et ne prend plus de booléen `depthBuffer`. `sfRenderTexture_createWithSettings` est supprimée.
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 2.6">
+
+```c
+sfTexture *t = sfTexture_create(64, 64);
+sfRenderTexture *rt = sfRenderTexture_create(800, 600, sfFalse);
+```
+
+  </TabItem>
+  <TabItem label="CSFML 3.0">
+
+```c
+sfTexture *t = sfTexture_create((sfVector2u){64, 64});
+sfRenderTexture *rt = sfRenderTexture_create((sfVector2u){800, 600}, NULL);
+```
+
+  </TabItem>
+</Tabs>
+
+## Les tampons de sons en mémoire
+
+```c
+sfSoundBuffer* sfSoundBuffer_createFromSamples(const sfInt16* samples, sfUint64 sampleCount, unsigned int channelCount, unsigned int sampleRate)
+sfSoundBuffer* sfSoundBuffer_createFromSamples(const int16_t* samples, uint64_t sampleCount, unsigned int channelCount, unsigned int sampleRate, sfSoundChannel* channelMapData, size_t channelMapSize)
+```
+
+(la première ligne est la signature 2.6.1, la seconde la 3.0.0)
+
+Il faut maintenant donner une **carte des canaux** (`sfSoundChannel`). Ce changement n'a pas été compilé dans nos tests : lis le header `Audio/SoundChannel.h` avant de le faire. Même changement pour `sfSoundStream_create`.
+
+## Durée de vie : rien ne change, mais c'est plus important
+
+Le sprite garde l'adresse de sa texture, le texte celle de sa police, le son celle de son buffer. Détruis dans l'ordre inverse de la création. Voir [qui possède quoi](/guides/concepts/ownership/).
+
+## `destroy` avec `const`
+
+Les `_destroy` prennent maintenant un pointeur `const` (par exemple `void sfSprite_destroy(const sfSprite* sprite)`). Ton code existant reste valide. En 3.0.0, appeler `destroy(NULL)` est sans effet pour les 40 fonctions testées ; en 2.6.1, `sfRenderTexture_destroy(NULL)` plante (une fonction sur 42 testées).

@@ -1,0 +1,166 @@
+---
+title: "Casse-briques 6 : les sprites"
+description: "Remplacer les formes par des sprites. (CSFML 3.0)"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Example from '@/components/Example.astro';
+import TestedBadge from '@/components/TestedBadge.astro';
+
+<TestedBadge version="3.0" />
+
+Tutoriel du **casse-briques** (CSFML 3.0), étape 6 sur 9. Cette page a une jumelle pour [CSFML 2.6](/2-6/tutorials/06-sprites/) : même plan, avec les différences d'API expliquées.
+
+## Objectif
+
+Remplacer les formes par des sprites. Les textures sont fabriquées par le programme lui-même : aucun fichier image n'est nécessaire.
+
+## Prérequis
+
+[Étape 5](/3-0/tutorials/05-collisions/) : le jeu avec collisions.
+
+## Pas à pas
+
+### Image, texture, sprite : qui fait quoi ?
+
+- Un `sfImage` est un tableau de pixels **en mémoire** (le processeur). On peut lire et écrire ses pixels.
+- Un `sfTexture` est une image **dans la carte graphique**. C'est ce que l'on dessine.
+- Un `sfSprite` est un rectangle qui **affiche** une texture, avec une position, une couleur, une échelle…
+
+Plusieurs sprites peuvent partager la **même** texture : nos 50 briques utilisent une seule texture.
+
+### Fabriquer une image
+
+[`sfImage_createFromColor`](/3-0/reference/graphics/image/#sfImage_createFromColor) crée une image d'une seule couleur ; [`sfImage_setPixel`](/3-0/reference/graphics/image/#sfImage_setPixel) change un pixel. Pour la balle, on crée une image transparente, puis on écrit en blanc les pixels qui sont dans un disque.
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 3.0">
+
+```c
+sfImage *image = sfImage_createFromColor((sfVector2u){size, size},
+    sfTransparent);
+```
+
+  </TabItem>
+  <TabItem label="CSFML 2.6">
+
+```c
+sfImage *image = sfImage_createFromColor(size, size, sfTransparent);
+```
+
+  </TabItem>
+</Tabs>
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 3.0">
+
+```c
+sfImage_setPixel(image, (sfVector2u){x, y}, sfWhite);
+```
+
+  </TabItem>
+  <TabItem label="CSFML 2.6">
+
+```c
+sfImage_setPixel(image, x, y, sfWhite);
+```
+
+  </TabItem>
+</Tabs>
+
+En 3.0, la taille et les coordonnées sont des `sfVector2u` (un seul argument).
+
+### De l'image à la texture
+
+[`sfTexture_createFromImage`](/3-0/reference/graphics/texture/#sfTexture_createFromImage) copie les pixels dans la carte graphique. Une fois la texture créée, l'image ne sert plus : on la détruit tout de suite avec [`sfImage_destroy`](/3-0/reference/graphics/image/#sfImage_destroy).
+
+```c
+texture = sfTexture_createFromImage(image, NULL);
+sfImage_destroy(image);
+```
+
+### Créer un sprite
+
+<Tabs syncKey="csfml-version">
+  <TabItem label="CSFML 3.0">
+
+```c
+sfSprite *sprite = sfSprite_create(texture);
+
+if (sprite != NULL)
+    sfSprite_setColor(sprite, color);
+return sprite;
+```
+
+  </TabItem>
+  <TabItem label="CSFML 2.6">
+
+```c
+sfSprite *sprite = sfSprite_create();
+
+if (sprite == NULL)
+    return NULL;
+sfSprite_setTexture(sprite, texture, sfTrue);
+sfSprite_setColor(sprite, color);
+return sprite;
+```
+
+  </TabItem>
+</Tabs>
+
+En 3.0, `sfSprite_create` **exige** une texture. Lui passer `NULL` arrête le programme (assertion) dans le paquet Ubuntu, et plante dans un build maison. C'est pourquoi on teste le `create` de la texture avant.
+
+[`sfSprite_setColor`](/3-0/reference/graphics/sprite/#sfSprite_setColor) **teinte** le sprite : la couleur est multipliée avec les pixels de la texture. Une texture blanche prend ainsi la couleur de sa ligne. La texture des briques est un dégradé de gris (plus sombre vers le bas) : multiplié par la couleur de la ligne, il donne du relief.
+
+### Durée de vie : détruire dans le bon ordre
+
+Un sprite **garde l'adresse** de sa texture (il ne la copie pas). Il faut donc détruire **les sprites avant les textures**. Voir [qui possède quoi](/guides/concepts/ownership/).
+
+### Collisions et affichage
+
+Le reste du jeu ne change presque pas : on remplace `sfRectangleShape_getGlobalBounds` par [`sfSprite_getGlobalBounds`](/3-0/reference/graphics/sprite/#sfSprite_getGlobalBounds), et le dessin se fait avec [`sfRenderWindow_drawSprite`](/3-0/reference/graphics/render-window/#sfRenderWindow_drawSprite). [`sfSprite_setOrigin`](/3-0/reference/graphics/sprite/#sfSprite_setOrigin) place l'origine de la balle en son centre, comme à l'étape 2.
+
+La vérification du mode test relit la texture de la balle ([`sfTexture_copyToImage`](/3-0/reference/graphics/texture/#sfTexture_copyToImage)) : le pixel du centre doit être opaque et celui du coin transparent.
+
+## Le programme complet
+
+Ce programme compile avec `-std=c11 -Wall -Wextra -Werror` et il est exécuté par les tests du dépôt.
+
+<Example example="tutorials/06-sprites" version="3.0" />
+
+## Compiler et lancer
+
+```sh
+make -C examples/tutorials/06-sprites CSFML=3.0 CSFML_PREFIX=system   # ou CSFML_PREFIX=$HOME/csfml-3.0
+cd examples/tutorials/06-sprites && ./build/3.0/example
+```
+
+Pour compiler à la main, ajoute `-I examples/common` (le fichier `test_mode.h`) et lie : `-lcsfml-graphics -lcsfml-window -lcsfml-system -lm`.
+
+## Ce que tu as appris
+
+- La différence entre `sfImage`, `sfTexture` et `sfSprite`.
+- Créer une image pixel par pixel, puis une texture.
+- Teinter un sprite avec `sfSprite_setColor`.
+- Détruire les sprites avant leurs textures.
+
+## Erreurs fréquentes
+
+- Détruire la texture alors que le sprite l'utilise encore (lecture invalide, repérée par valgrind). Voir [qui possède quoi](/guides/concepts/ownership/).
+- Passer `NULL` à `sfSprite_create` en 3.0.
+- Oublier de détruire l'image après `sfTexture_createFromImage` : fuite mémoire.
+- Un sprite blanc ou invisible : voir [fenêtre noire](/guides/troubleshooting/black-window/).
+
+## Exercices facultatifs
+
+Il n'y a pas de corrigé : essaie, casse, recommence.
+
+- Ajoute un petit reflet sur la raquette en changeant quelques pixels de son image.
+- Charge `examples/assets/sfml_logo.png` avec `sfTexture_createFromFile` et affiche-le en fond.
+- Fais clignoter la balle avec `sfSprite_setColor` toutes les secondes.
+
+## Suite
+
+- Précédent : [Étape 5 : les collisions](/3-0/tutorials/05-collisions/)
+- Suivant : [Étape 7 : texte et score](/3-0/tutorials/07-text-score/)
+- Même étape en [CSFML 2.6](/2-6/tutorials/06-sprites/).

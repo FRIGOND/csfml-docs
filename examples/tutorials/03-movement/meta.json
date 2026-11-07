@@ -1,0 +1,32 @@
+{
+  "title": "Mouvement et rebonds",
+  "summary": "Déplace la balle avec le delta time (sfClock) et la fait rebondir sur les murs.",
+  "functions": [
+    "sfRectangleShape_setSize",
+    "sfRectangleShape_setPosition",
+    "sfRectangleShape_setFillColor",
+    "sfRectangleShape_create",
+    "sfCircleShape_create",
+    "sfClock_create",
+    "sfCircleShape_setRadius",
+    "sfCircleShape_setOrigin",
+    "sfRectangleShape_destroy",
+    "sfCircleShape_destroy",
+    "sfClock_destroy",
+    "sfRenderWindow_destroy",
+    "sfCircleShape_setPosition",
+    "sfTime_asSeconds",
+    "sfClock_restart",
+    "sfCircleShape_getGlobalBounds",
+    "sfRenderWindow_clear",
+    "sfRenderWindow_drawRectangleShape",
+    "sfRenderWindow_drawCircleShape",
+    "sfRenderWindow_display",
+    "sfRenderWindow_isOpen",
+    "sfRenderWindow_pollEvent",
+    "sfRenderWindow_close",
+    "sfRenderWindow_create",
+    "sfRenderWindow_setFramerateLimit"
+  ],
+  "assets": []
+}
