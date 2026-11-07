@@ -103,3 +103,72 @@ for meta_path in sorted(__import__("glob").glob(os.path.join(ROOT, "examples/*/*
         write(os.path.join(DOCS, vd, "cookbook", mod, name + ".mdx"), text)
         cook[v] += 1
 print("référence :", stats, "| cookbook :", cook)
+
+# ---- annexe de migration 2.6.1 -> 3.0.0 (calculée depuis les deux fichiers d'API) ----
+def migration_annex():
+    a = json.load(open(os.path.join(ROOT, "api", VERS["2.6"])))
+    b = json.load(open(os.path.join(ROOT, "api", VERS["3.0"])))
+    fa = {f["name"]: f for f in a["functions"]}
+    fb = {f["name"]: f for f in b["functions"]}
+    tmap = {r"\bsfBool\b": "bool", r"\bsfTrue\b": "true", r"\bsfFalse\b": "false", r"\bsfInt8\b": "int8_t", r"\bsfUint8\b": "uint8_t",
+            r"\bsfInt16\b": "int16_t", r"\bsfUint16\b": "uint16_t", r"\bsfInt32\b": "int32_t", r"\bsfUint32\b": "uint32_t",
+            r"\bsfInt64\b": "int64_t", r"\bsfUint64\b": "uint64_t", r"\b_Bool\b": "bool"}
+    def norm(s):
+        for k, v in tmap.items():
+            s = re.sub(k, v, s)
+        return re.sub(r"\s+", " ", s).strip()
+    removed = sorted(set(fa) - set(fb))
+    added = sorted(set(fb) - set(fa))
+    def noname(f):
+        return norm(f["returns"]) + "(" + ",".join(norm(p["type"]) for p in f["params"]) + ")"
+    typeonly, real, constonly, nameonly = [], [], [], []
+    for n in sorted(set(fa) & set(fb)):
+        sa, sb = fa[n]["signature"], fb[n]["signature"]
+        if sa == sb:
+            continue
+        if norm(sa) == norm(sb):
+            typeonly.append(n)
+        elif noname(fa[n]) == noname(fb[n]):
+            nameonly.append(n)
+        elif noname(fa[n]).replace("const ", "") == noname(fb[n]).replace("const ", ""):
+            constonly.append(n)
+        else:
+            real.append(n)
+    def esc(s):
+        return s.replace("|", "\\|")
+    def mod(f):
+        return f["module"]
+    L = ["---", "title: \"Annexe : changements de l'API (générée)\"",
+         "description: \"Fonctions supprimées, ajoutées et modifiées entre CSFML 2.6.1 et 3.0.0, calculées depuis les headers.\"", "---", "", GEN,
+         f"Comparaison **automatique** des headers de CSFML {a['csfml_version']} et {b['csfml_version']} (`tools/gen_api.py` puis `tools/gen_site_pages.py`). "
+         "Aucun renommage n'est deviné : une fonction renommée apparaît à la fois en « supprimée » et en « ajoutée ». "
+         "Les includes changent aussi (`<SFML/…>` devient `<CSFML/…>`) : voir la [vue d'ensemble](/3-0/migration/overview/).", "",
+         "| | 2.6.1 | 3.0.0 |", "|---|---|---|",
+         f"| Fonctions | {len(fa)} | {len(fb)} |",
+         f"| Supprimées | {len(removed)} | |", f"| Ajoutées | | {len(added)} |",
+         f"| Signature réellement modifiée (paramètres, types, retour) | {len(real)} | |",
+         f"| Seul `const` est ajouté ou retiré (surtout les `*_destroy`) | {len(constonly)} | |",
+         f"| Seul le nom d'un paramètre change | {len(nameonly)} | |",
+         f"| Signature modifiée seulement par les types (sfBool→bool, sfUint8→uint8_t…) | {len(typeonly)} | |", ""]
+    L += [f"## Supprimées en 3.0.0 ({len(removed)})", ""]
+    for m in MODS:
+        names = [n for n in removed if fa[n]["module"].lower() == m]
+        if names:
+            L += [f"### {MODS[m]}", ""] + [f"- `{n}`" for n in names] + [""]
+    L += [f"## Ajoutées en 3.0.0 ({len(added)})", ""]
+    for m in MODS:
+        names = [n for n in added if fb[n]["module"].lower() == m]
+        if names:
+            L += [f"### {MODS[m]}", ""] + [f"- [`{n}`](/3-0/reference/{m}/{page_of(fb[n]['header'])[1]}/#{n})" for n in names] + [""]
+    L += [f"## Signature modifiée ({len(real)})", "", "| Fonction | 2.6.1 | 3.0.0 |", "|---|---|---|"]
+    L += [f"| [`{n}`](/3-0/reference/{fb[n]['module'].lower()}/{page_of(fb[n]['header'])[1]}/#{n}) | `{esc(fa[n]['signature'])}` | `{esc(fb[n]['signature'])}` |" for n in real]
+    L += ["", f"## Seul `const` change ({len(constonly)})", "",
+          "Le paramètre devient (ou cesse d'être) `const` : sans conséquence pour l'appelant. " + ", ".join(f"`{n}`" for n in constonly) + ".",
+          "", f"## Seul le nom d'un paramètre change ({len(nameonly)})", "", ", ".join(f"`{n}`" for n in nameonly) or "—", "",
+          f"## Seuls les types changent ({len(typeonly)})", "",
+          "Ces fonctions gardent la même forme ; seuls `sfBool`, `sfTrue`, `sfUint8`… deviennent `bool`, `true`, `uint8_t`… : " +
+          ", ".join(f"`{n}`" for n in typeonly) + "."]
+    write(os.path.join(DOCS, "3-0", "migration", "api-changes.mdx"), "\n".join(L) + "\n")
+    return len(removed), len(added), len(real), len(constonly), len(nameonly), len(typeonly)
+
+print("annexe migration (supprimées, ajoutées, modifiées, types seuls) :", migration_annex())
