@@ -159,3 +159,13 @@ Par module (2.6.1) : System 26, Window 99, Graphics 470, Audio 119, Network 136 
 - 2.6.1 : 11 fonctions `CSFML_DEPRECATED`. 3.0.0 : 0 (alors que master en marque 40).
 
 Le JSON contient pour chaque fonction : nom, module, header:ligne, signature exacte, paramètres (type, nom, doc), retour, `\brief` et doc brute, drapeau deprecated ; pour les types : struct/union/enum/typedef avec champs et valeurs d'enum ; les constantes globales et `CSFML_VERSION_*`.
+
+## A.4 — Tests P1 25, 26, 27 (exemples avant/après de research/04 §4)
+
+Détail par extrait : `tests/RESULTATS-migration.md` (programmes générés dans `tests/p1-migration/`, log `tests/logs/migration.log`). Fait par un sous-agent ; résumé relu par l'agent principal, non rejoué.
+
+| N° | Test | Verdict | Constat |
+|---|---|---|---|
+| 25 | Les 8 AVANT compilent en 2.6.1, les 8 APRÈS en 3.0.0 | ✅ 16/16 | `-std=c11 -Wall -Wextra`. Seul avertissement : `-Wdeprecated-declarations` (`Event.h:133`) sur les AVANT 4.2 à 4.8 en 2.6.1. Contexte ajouté dans les wrappers (déclarations factices, includes) ; extraits non modifiés. |
+| 26 | Les AVANT échouent en 3.0.0 (include changé) et inversement | ✅ | 8/8 AVANT en échec en 3.0.0 ; 8/8 APRÈS en échec en 2.6.1. Piège silencieux : `{800,600,32}` et `{0,0,110,110}` ne donnent qu'un `-Wmissing-braces` (visible seulement avec `-Wall`). |
+| 27 | Exécution fenêtre+sprite+texte et son sous Xvfb | ✅ | exit 0 (timeout 20). Son : 0 octet « definitely lost ». Fenêtre : 1 646 octets perdus en 8 blocs, toutes les piles dans `libfreetype` (`FT_Glyph_To_Bitmap` via `sf::Font::loadGlyph`) : fuite interne à SFML/FreeType, pas du code utilisateur. |
