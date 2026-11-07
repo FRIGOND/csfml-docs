@@ -39,6 +39,13 @@ export default defineConfig({
         starlightSidebarTopics([
           { label: 'CSFML 3.0', link: '/3-0/getting-started/first-window/', icon: 'rocket', items: sidebarFor('3.0') },
           { label: 'CSFML 2.6', link: '/2-6/getting-started/first-window/', icon: 'puzzle', items: sidebarFor('2.6') },
+          { label: 'Guides (3.0 et 2.6)', link: '/guides/install/', icon: 'open-book', items: [
+            group('Installer et compiler', 'Install and build', 'guides/install'),
+            group('Concepts', 'Concepts', 'guides/concepts'),
+            group('Dépannage', 'Troubleshooting', 'guides/troubleshooting'),
+            group('Epitech', 'Epitech', 'guides/epitech'),
+            group('Aide', 'Help', 'guides/help'),
+          ] },
         ]),
       ],
     }),
