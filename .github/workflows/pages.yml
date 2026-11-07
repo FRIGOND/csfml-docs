@@ -1,0 +1,62 @@
+# Construit le site Starlight et le publie sur GitHub Pages (gratuit, dépôt public).
+# Réglage à faire une fois : Settings > Pages > Source = « GitHub Actions ».
+name: Site (build + déploiement GitHub Pages)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: "3.12"
+      - id: pages
+        uses: actions/configure-pages@v6.0.0
+      - name: Installer les dépendances
+        run: npm ci
+        working-directory: site
+      - name: Construire le site
+        working-directory: site
+        env:
+          # Pages d'un dépôt de projet : https://<owner>.github.io/<repo>/
+          SITE_URL: ${{ format('https://{0}.github.io', github.repository_owner) }}
+          SITE_BASE: ${{ format('/{0}', github.event.repository.name) }}
+        run: npm run build
+      - name: Vérifier les liens et ancres internes
+        working-directory: site
+        run: python3 ../tools/check-site.py dist "/${{ github.event.repository.name }}"
+      - uses: actions/upload-pages-artifact@v5.0.0
+        with:
+          path: site/dist
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5.0.1

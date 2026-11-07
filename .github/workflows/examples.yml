@@ -1,0 +1,54 @@
+# Compile et exécute tous les exemples avec CSFML 3.0.0 et CSFML 2.6.1 (compilés depuis les tags),
+# sous Xvfb + rendu logiciel, puis sous valgrind.
+name: Exemples (3.0 et 2.6)
+
+on:
+  push:
+    branches: [main]
+    paths: ["examples/**", "tools/**", "api/**", ".github/workflows/examples.yml"]
+  pull_request:
+    paths: ["examples/**", "tools/**", "api/**", ".github/workflows/examples.yml"]
+  workflow_dispatch:
+  schedule:
+    - cron: "0 5 * * 1"   # lundi : détecte une régression de l'environnement
+
+permissions:
+  contents: read
+
+jobs:
+  examples:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { v: "3.0", csfml: "3.0.0", sfml: "3.0.2" }
+          - { v: "2.6", csfml: "2.6.1", sfml: "2.6.1" }
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Dépendances système
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends cmake build-essential xvfb valgrind \
+            libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev \
+            libfreetype-dev libopenal-dev libflac-dev libvorbis-dev libogg-dev libegl1-mesa-dev \
+            libdrm-dev libgbm-dev mesa-utils libgl1-mesa-dri
+      - name: Cache CSFML ${{ matrix.csfml }}
+        id: cache
+        uses: actions/cache@v6.1.0
+        with:
+          path: ~/csfml-${{ matrix.v }}
+          key: csfml-${{ matrix.csfml }}-sfml-${{ matrix.sfml }}-${{ runner.os }}-${{ hashFiles('tools/build-csfml.sh') }}
+      - name: Compiler SFML ${{ matrix.sfml }} + CSFML ${{ matrix.csfml }}
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: tools/build-csfml.sh ${{ matrix.csfml }} ${{ matrix.sfml }} "$HOME/csfml-${{ matrix.v }}"
+      - name: Exécuter les exemples
+        run: tools/run-all-examples.sh --version ${{ matrix.v }}
+      - name: Exécuter sous valgrind
+        run: tools/run-all-examples.sh --valgrind --version ${{ matrix.v }}
+      - name: Logs
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: examples-${{ matrix.v }}-log
+          path: tests/logs/examples.log

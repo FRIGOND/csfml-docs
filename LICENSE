@@ -1,0 +1,24 @@
+Ce dépôt a deux licences :
+
+1. Documentation (texte, site) : Creative Commons Attribution 4.0 International (CC BY 4.0)
+   https://creativecommons.org/licenses/by/4.0/legalcode
+   Vous pouvez copier et adapter en citant ce projet.
+
+2. Code (examples/, tools/, site/ hors contenu) : licence zlib
+
+   Copyright (c) 2026 les contributeurs du projet
+
+   Ce logiciel est fourni « tel quel », sans aucune garantie. Les auteurs ne sont en aucun cas
+   responsables des dommages résultant de son utilisation.
+
+   Il est permis à quiconque de l'utiliser à toute fin, y compris commerciale, de le modifier et de
+   le redistribuer librement, sous ces restrictions :
+
+   1. L'origine de ce logiciel ne doit pas être présentée de façon erronée ; vous ne devez pas
+      prétendre l'avoir écrit. Si vous l'utilisez dans un produit, une mention dans la documentation
+      serait appréciée mais n'est pas obligatoire.
+   2. Les versions modifiées doivent être clairement indiquées comme telles et ne doivent pas être
+      présentées comme le logiciel original.
+   3. Cette notice ne peut être ni retirée ni modifiée.
+
+Les ressources de examples/assets/ ont leurs propres licences : voir examples/assets/LICENSE.md.
