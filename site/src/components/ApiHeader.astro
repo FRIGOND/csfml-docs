@@ -1,0 +1,66 @@
+---
+// Page de référence d'un header : types, constantes et TOUTES les fonctions déclarées dans ce header,
+// générées depuis api/csfml-<version>.json (libclang). Aucune signature n'est écrite à la main.
+import { Code } from '@astrojs/starlight/components';
+import { loadApi } from '../lib/api.mjs';
+import notes from '../data/notes.json';
+import TestedBadge from './TestedBadge.astro';
+
+const { header, version } = Astro.props; // header ex. 'CSFML/Graphics/Sprite.h' ; version '3.0' | '2.6'
+const api = loadApi(version);
+const fns = api.functions.filter((f) => f.header === header);
+const types = api.types.filter((t) => t.header === header);
+const vars = api.variables.filter((v) => v.header === header);
+if (fns.length + types.length + vars.length === 0) throw new Error(`ApiHeader: rien dans ${header} (${version})`);
+const opaque = types.filter((t) => t.kind === 'struct' && t.opaque).map((t) => t.name);
+const defs = types.filter((t) => (t.kind === 'enum' || t.kind === 'union' || (t.kind === 'struct' && !t.opaque)));
+const aliases = types.filter((t) => t.kind === 'typedef' && !/^(struct|enum|union) /.test(t.underlying));
+const seen = new Set();
+const uniqDefs = defs.filter((t) => { const k = t.kind + t.name; if (seen.has(k)) return false; seen.add(k); return true; });
+const noteFor = (name) => (notes[name]?.[version] ?? []);
+---
+<p><TestedBadge version={version} /> · <code>#include &lt;{header}&gt;</code></p>
+
+{opaque.length > 0 && (<p>Types opaques (on ne voit pas leurs champs, on ne les manipule que par pointeur) : {opaque.map((n, i) => <><code>{n}</code>{i < opaque.length - 1 ? ', ' : ''}</>)}.</p>)}
+
+{(uniqDefs.length > 0 || aliases.length > 0 || vars.length > 0) && <h2 id="types">Types et constantes</h2>}
+{uniqDefs.map((t) => (
+  <div>
+    <h3 id={t.name}><code>{t.kind} {t.name}</code></h3>
+    {t.brief && <p>{t.brief}</p>}
+    {t.kind === 'enum' ? (
+      <table><thead><tr><th>Valeur</th><th>Nombre</th><th>Description</th></tr></thead>
+        <tbody>{(t.values ?? []).map((v) => <tr><td><code>{v.name}</code></td><td>{v.value}</td><td>{v.doc}</td></tr>)}</tbody></table>
+    ) : (
+      <table><thead><tr><th>Champ</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>{(t.fields ?? []).map((f) => <tr><td><code>{f.name}</code></td><td><code>{f.type}</code></td><td>{f.doc}</td></tr>)}</tbody></table>
+    )}
+  </div>
+))}
+{aliases.map((t) => <p><code>typedef {t.underlying} {t.name}</code>{t.brief ? ` — ${t.brief}` : ''}</p>)}
+{vars.length > 0 && (<ul>{vars.map((v) => <li><code>{v.type} {v.name}</code>{v.brief ? ` — ${v.brief}` : ''}</li>)}</ul>)}
+
+{fns.length > 0 && <h2 id="functions">Fonctions ({fns.length})</h2>}
+{fns.map((fn) => {
+  const params = fn.params.filter((p) => p.name);
+  return (
+  <section>
+    <h3 id={fn.name}><code>{fn.name}</code></h3>
+    <Code code={fn.signature} lang="c" />
+    {fn.brief ? <p><em>Doc officielle (anglais) :</em> {fn.brief}</p> : <p><span class="badge-tested badge-unverified">résumé absent des headers</span></p>}
+    {params.length > 0 && (
+      <table><thead><tr><th>Paramètre</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>{params.map((p) => <tr><td><code>{p.name}</code></td><td><code>{p.type}</code></td><td>{p.doc}</td></tr>)}</tbody></table>
+    )}
+    {fn.return_doc && <p>Retour (<code>{fn.returns}</code>) : {fn.return_doc}</p>}
+    {fn.deprecated && <p><span class="badge-tested badge-unverified">déprécié</span></p>}
+    {noteFor(fn.name).length > 0 && (
+      <aside aria-label="Notes vérifiées" class="starlight-aside starlight-aside--tip">
+        <p class="starlight-aside__title" aria-hidden="true">Notes vérifiées par test</p>
+        <div class="starlight-aside__content"><ul>{noteFor(fn.name).map((n) => <li>{n.text} <small>({n.test})</small></li>)}</ul></div>
+      </aside>
+    )}
+    <small>{fn.header}:{fn.line}</small>
+  </section>
+  );
+})}

@@ -1,0 +1,31 @@
+{
+  "sfSprite_create": {
+    "3.0": [
+      {"text": "Le sprite garde un pointeur sur la texture (pas de copie) : la texture doit vivre au moins aussi longtemps. Détruire la texture puis dessiner donne « Invalid read » sous valgrind.", "test": "P1 n°19"},
+      {"text": "Passer NULL : paquet Ubuntu = assert + abort (Sprite.cpp:42) ; build Release maison (NDEBUG) = segfault.", "test": "P1 n°31"}
+    ]
+  },
+  "sfText_create": { "3.0": [{"text": "Le texte garde un pointeur sur la police : détruire la police puis appeler sfText_getLocalBounds donne « Invalid read ».", "test": "P1 n°20"}] },
+  "sfText_setString": { "3.0": [{"text": "L'UTF-8 n'est pas interprété : \"été\" (5 octets) donne 5 points de code dont U+FFFFFFFF. Pour les accents, utiliser sfText_setUnicodeString avec des sfChar32.", "test": "P1 n°18"}], "2.6": [{"text": "Même piège attendu en 2.6 (non testé séparément).", "test": "non vérifié"}] },
+  "sfText_setUnicodeString": { "3.0": [{"text": "Un littéral U\"été\" est accepté sans cast (-std=c11, aucun avertissement) : 3 points de code.", "test": "P2 n°81"}] },
+  "sfText_getString": { "3.0": [{"text": "Renvoie un pointeur interne à l'objet : deux appels successifs donnent la même adresse et le contenu change après setString. Copier la chaîne si on la garde.", "test": "P2 n°72"}] },
+  "sfSound_create": { "3.0": [{"text": "Le son garde un pointeur sur le buffer (sfSound_getBuffer(s) == b). Aucune erreur valgrind observée en détruisant le buffer pendant 200 ms : ne pas en conclure que c'est permis.", "test": "P1 n°21"}] },
+  "sfFont_createFromMemory": { "3.0": [{"text": "Le buffer doit rester valide tant que la police est utilisée : après free(buf), demander un glyphe donne « Invalid read » (FreeType).", "test": "P1 n°22"}] },
+  "sfMusic_createFromMemory": { "3.0": [{"text": "Le buffer doit rester valide pendant la lecture : après free(buf), « Invalid read » dans le thread audio sous valgrind (sans valgrind, ça « marche » : comportement indéfini).", "test": "P1 n°23"}] },
+  "sfKeyboard_getDescription": { "3.0": [{"text": "Le header déclare const char*, mais la chaîne est allouée (strdup) : sans free, valgrind signale « definitely lost ». Caster pour free : free((void *)d).", "test": "P1 n°24"}] },
+  "sfRenderWindow_create": {
+    "3.0": [{"text": "Sans variable DISPLAY : message « Failed to open X11 display… » puis abort (exit 134) ; la fonction ne renvoie pas NULL dans ce cas.", "test": "P1 n°32"}],
+    "2.6": [{"text": "Sans DISPLAY : même comportement qu'en 3.0 (message puis abort, exit 134).", "test": "P1 lot 4"}]
+  },
+  "sfRenderWindow_waitEvent": { "3.0": [{"text": "Avec un timeout de 200 ms et la file vide, renvoie false après ≈ 207 ms. sfTime_Zero attend sans limite.", "test": "P1 n°17"}] },
+  "sfRenderTexture_destroy": { "2.6": [{"text": "sfRenderTexture_destroy(NULL) provoque un segfault en 2.6.1 (les 41 autres destroy(NULL) sont sans effet).", "test": "P2 n°91"}] },
+  "sfSprite_destroy": { "3.0": [{"text": "sfSprite_destroy(NULL) est sans effet (les 40 fonctions destroy testées).", "test": "P2 n°62"}] },
+  "sfClock_restart": { "3.0": [{"text": "Renvoie le temps écoulé avant la remise à zéro (0.10 s mesuré après 100 ms).", "test": "P2 n°87"}] },
+  "sfImage_saveToMemory": { "3.0": [{"text": "Remplit un sfBuffer créé par l'appelant avec sfBuffer_create() : taille 76 octets pour une image 2×2 en PNG.", "test": "P2 n°67"}] },
+  "sfIpAddress_fromString": {
+    "3.0": [{"text": "Résout \"localhost\" en 127.0.0.1 ; une chaîne invalide donne une adresse dont toString est vide.", "test": "P2 n°79"}],
+    "2.6": [{"text": "Une chaîne invalide donne \"0.0.0.0\" avec toString.", "test": "exemple network/ip-address"}]
+  },
+  "sfRenderWindow_capture": { "2.6": [{"text": "Déprécié dans les headers 2.6.1 : préférer sfTexture_updateFromRenderWindow puis sfTexture_copyToImage.", "test": "exemple graphics/screenshot"}] },
+  "sfVideoMode_getDesktopMode": { "3.0": [{"text": "sfVideoMode s'écrit {{largeur, hauteur}, bpp} ; l'ancienne forme {800, 600, 32} compile avec -Wmissing-braces et donne les bonnes valeurs.", "test": "P1 n°29"}] }
+}

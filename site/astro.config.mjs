@@ -15,6 +15,7 @@ const group = (label, en, directory, extra = {}) => ({
 const sidebarFor = (v) => { const d = v.replace('.', '-'); return [
   group('Démarrer', 'Getting started', `${d}/getting-started`),
   group('Tutoriels', 'Tutorials', `${d}/tutorials`),
+  group('Exemples (cookbook)', 'Cookbook', `${d}/cookbook`, { collapsed: true }),
   group('Référence', 'Reference', `${d}/reference`, { collapsed: true }),
   ...(v === '3.0' ? [group('Migration 2.6 → 3.0', 'Migration 2.6 → 3.0', `${d}/migration`)] : []),
 ]; };
@@ -34,7 +35,7 @@ export default defineConfig({
       social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/' }],
       customCss: ['./src/styles/custom.css'],
       plugins: [
-        starlightLinksValidator(),
+        starlightLinksValidator({ errorOnInvalidHashes: false }), // ancres des composants vérifiées par tools/check-site.py
         starlightSidebarTopics([
           { label: 'CSFML 3.0', link: '/3-0/getting-started/first-window/', icon: 'rocket', items: sidebarFor('3.0') },
           { label: 'CSFML 2.6', link: '/2-6/getting-started/first-window/', icon: 'puzzle', items: sidebarFor('2.6') },

@@ -7,3 +7,6 @@ dist/
 .astro/
 /work/
 a.out
+# pages générées par tools/gen_site_pages.py (recréées à chaque build)
+site/src/content/docs/*/reference/
+site/src/content/docs/*/cookbook/

@@ -7,9 +7,13 @@
     "node": ">=22.23.4"
   },
   "scripts": {
+    "gen": "python3 ../tools/gen_site_pages.py",
+    "predev": "npm run gen",
     "dev": "astro dev",
+    "prebuild": "npm run gen",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "check": "python3 ../tools/check-site.py dist /"
   },
   "dependencies": {
     "@astrojs/starlight": "0.42.10",

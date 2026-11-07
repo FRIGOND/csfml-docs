@@ -1,0 +1,9 @@
+---
+// Index alphabétique de toutes les fonctions d'une version, avec lien vers la page et l'ancre.
+import { loadApi, functionPage } from '../lib/api.mjs';
+const { version } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '') + '/';
+const fns = [...loadApi(version).functions].sort((a, b) => a.name.localeCompare(b.name));
+---
+<p>{fns.length} fonctions.</p>
+<ul class="api-index">{fns.map((f) => <li><a href={functionPage(version, f.name, base)}><code>{f.name}</code></a></li>)}</ul>
