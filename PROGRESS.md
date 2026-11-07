@@ -7,13 +7,11 @@
 - Phase B (infra) : examples/ (Makefile commun, test_mode.h, meta.json), tools/run-all-examples.sh (--valgrind, --only, --version). Exemples faits : window/basic-window, graphics/screenshot.
 - Phase C : prototype Starlight dans site/ (build OK, captures vues) — EN ATTENTE DE VALIDATION UTILISATEUR (« go »).
 
-## En cours (sous-agents Sonnet, pas de commit de leur part)
-- Exemples Graphics + Window → examples/graphics, examples/window ; compte rendu tests/logs/examples-graphics-window.md
-- Exemples System + Audio + Network → examples/system|audio|network ; compte rendu tests/logs/examples-system-audio-network.md
-- À faire à leur retour : `tools/run-all-examples.sh` (+ `--valgrind`), relire les comptes rendus, supprimer fuite FreeType via tests/valgrind.supp si nécessaire, commit.
+## Fait (phase B exemples)
+- 31 exemples x 2 versions = 62 programmes (window 7, graphics 11, system 3, audio 5, network 5) : `tools/run-all-examples.sh` et `--valgrind` : 62 réussis, 0 échoué. Suppression FreeType dans tests/valgrind.supp.
 
 ## Reste
-- Phase B : tutoriels casse-briques (8 étapes) ; P2 restants et P3 selon budget.
+- Phase B : tutoriels casse-briques (8 étapes, examples/tutorials/) ; P2 restants et P3 selon budget.
 - Phase C : présenter le prototype (arborescence, 3 pages, thème, recherche, sélecteur) puis STOP → « go ».
 - Phase D (après go) : site complet, pages de référence générées, CI GitHub Actions, README/CONTRIBUTING/LICENSE/CHANGELOG, script de mise à jour.
 - Phase E : contrôle final + relecture indépendante.
