@@ -19,7 +19,7 @@ Un `sfSound` garde un pointeur vers son `sfSoundBuffer` : ne détruis pas le buf
 
 ## 4. Y a-t-il un périphérique audio ?
 
-Sans périphérique (serveur, conteneur, WSL sans son), le programme ne plante pas, mais il est muet, et des messages apparaissent sur stderr :
+Sans périphérique (serveur, conteneur ; WSL sans son : non testé), le programme ne plante pas, mais il est muet, et des messages apparaissent sur stderr (test n°34, avec PulseAudio/ALSA rendus inaccessibles) :
 
 - 3.0.0 : `miniaudio ERROR: [PulseAudio] Failed to connect PulseAudio context`, `Failed to get audio playback devices: Resource does not exist`, `Failed to initialize sound: No engine available`.
 - 2.6.1 : `Failed to open the audio device`.

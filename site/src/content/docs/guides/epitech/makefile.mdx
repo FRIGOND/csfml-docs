@@ -47,4 +47,4 @@ Le Makefile minimal qui a donné ce résultat (`NAME`, `SRC`, `OBJ = $(SRC:.c=.o
 
 ## Piège avec `CC`
 
-Dans l'image Epitech, `CC=clang` est défini dans l'environnement. `CC = gcc` écrit dans ton Makefile prend le dessus ; `CC ?= gcc` laisse l'environnement gagner. Les deux compilateurs doivent accepter ton code.
+Dans le Dockerfile public d'Epitech, `CC=clang` est défini dans l'environnement (lu sur GitHub, `research/01` §6 ; non vérifié ici, et je ne sais pas si ton poste ou ton correcteur l'utilise). `CC = gcc` écrit dans ton Makefile prend le dessus ; `CC ?= gcc` laisse l'environnement gagner. Les deux compilateurs doivent accepter ton code.

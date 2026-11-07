@@ -108,7 +108,7 @@ return sprite;
   </TabItem>
 </Tabs>
 
-En 3.0, `sfSprite_create` **exige** une texture. Lui passer `NULL` arrête le programme (assertion) dans le paquet Ubuntu, et plante dans un build maison. C'est pourquoi on teste le `create` de la texture avant.
+En 3.0, `sfSprite_create` **exige** une texture. Lui passer `NULL` arrête le programme (assertion) dans le paquet Ubuntu, et plante dans un build maison (test n°31). C'est pourquoi on teste le `create` de la texture avant.
 
 [`sfSprite_setColor`](/3-0/reference/graphics/sprite/#sfSprite_setColor) **teinte** le sprite : la couleur est multipliée avec les pixels de la texture. Une texture blanche prend ainsi la couleur de sa ligne. La texture des briques est un dégradé de gris (plus sombre vers le bas) : multiplié par la couleur de la ligne, il donne du relief.
 

@@ -5,7 +5,7 @@ sidebar:
   order: 1
 ---
 
-Le correcteur automatique compile ton code dans une image **Docker** (*conteneur* : un mini-système isolé). Savoir quelle version de CSFML s'y trouve est essentiel, car le code 2.6 et le code 3.0 ne sont pas compatibles (voir [conventions](/guides/concepts/api-conventions/)).
+Epitech publie des images **Docker** (*conteneur* : un mini-système isolé) pour tester du code. **Je ne sais pas quelle image ou quelle version de CSFML utilise ton correcteur ni ton poste : c'est non vérifié.** Cette page dit seulement ce que contiennent deux images publiques. Savoir quelle version de CSFML tu as réellement est essentiel, car le code 2.6 et le code 3.0 ne sont pas compatibles (voir [conventions](/guides/concepts/api-conventions/)) : compare avec le sujet de ton projet et demande à l'équipe pédagogique.
 
 ## Ce qui a été vérifié
 
@@ -18,7 +18,7 @@ Méthode (tests/RESULTATS.md, A.2) : Docker n'étant pas utilisable sur la machi
 
 À retenir :
 
-- L'image actuelle (`latest`) a **CSFML 3.0.0** : utilise `#include <CSFML/Graphics.h>` et les signatures 3.0.
+- L'image publique taguée `latest` contenait **CSFML 3.0.0** le 2026-11-07 (signatures 3.0, `#include <CSFML/Graphics.h>`). Cela ne prouve pas que ton correcteur utilise cette image : si c'est le cas, c'est la 3.0 qui s'applique, sinon vérifie.
 - L'image `ubuntu24` a la **2.6.0** (et non la 2.6.1). Les différences entre 2.6.0 et 2.6.1 n'ont pas été étudiées.
 - `latest` contient aussi `pkgconf`, `valgrind`, `cmake`, `make`, gcc 15 et 16 et clang 21 (même source).
 - Le Dockerfile public fixe `CC=clang` dans l'environnement (rapport `research/01` §6, lu sur GitHub). Un Makefile qui écrit `CC = gcc` l'emporte ; un Makefile qui ne touche pas à `CC` compilera avec clang dans cette image. Teste avec les deux compilateurs.
@@ -31,7 +31,7 @@ Méthode (tests/RESULTATS.md, A.2) : Docker n'étant pas utilisable sur la machi
 
 ## Comment vérifier chez toi
 
-Si Docker est installé et que tu es dans le groupe `docker` :
+Si Docker est installé et que tu es dans le groupe `docker` (non testé ici, voir plus bas) :
 
 ```sh
 docker run --rm epitechcontent/epitest-docker:latest dpkg -l libcsfml-dev

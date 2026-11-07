@@ -21,7 +21,7 @@ Pour afficher seulement les vraies fuites :
 valgrind --leak-check=full --show-leak-kinds=definite --error-exitcode=42 ./app
 ```
 
-Résultat mesuré avec un programme qui ouvre et ferme juste une fenêtre (CSFML 3.0.0, build local, Xvfb) : `definitely lost: 0 bytes`, `ERROR SUMMARY: 0 errors`, mais `still reachable: 259,204 bytes in 3,671 blocks`. Ce « still reachable » vient des bibliothèques système (OpenGL, X11), pas de ton code. Ce qui compte, ce sont les lignes **definitely lost** et les erreurs `Invalid read/write`.
+Résultat mesuré (test n°27, tests/RESULTATS.md) avec un programme qui ouvre et ferme juste une fenêtre (CSFML 3.0.0, build local, Xvfb) : `definitely lost: 0 bytes`, `ERROR SUMMARY: 0 errors`, mais `still reachable: 259,204 bytes in 3,671 blocks`. Ce « still reachable » vient des bibliothèques système (OpenGL, X11), pas de ton code. Ce qui compte, ce sont les lignes **definitely lost** et les erreurs `Invalid read/write`.
 
 ## Bruit connu
 

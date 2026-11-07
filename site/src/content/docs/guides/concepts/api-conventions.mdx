@@ -60,7 +60,7 @@ Attention : `sfFree` n'est pas dans les parapluies. Avec seulement `<CSFML/Syste
 ## `NULL` en retour et en paramètre
 
 - Les fonctions `create…` qui lisent un fichier renvoient `NULL` en cas d'échec : **teste toujours** le retour.
-- Passer `NULL` à une fonction qui attend un objet est une erreur de ta part. En 3.0 le paquet Ubuntu déclenche une `assert` (le programme s'arrête, voir [plantages](/guides/troubleshooting/runtime-crashes/)).
+- Passer `NULL` à une fonction qui attend un objet est une erreur de ta part. En 3.0 le paquet Ubuntu 26.04 déclenche une `assert` (test n°31 ; le programme s'arrête, voir [plantages](/guides/troubleshooting/runtime-crashes/)).
 
 ## Résumé des différences de forme (vérifiées dans les headers)
 

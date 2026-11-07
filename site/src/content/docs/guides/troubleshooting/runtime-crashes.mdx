@@ -11,7 +11,7 @@ Un plantage veut presque toujours dire : un pointeur `NULL` ou un objet déjà d
 
 ## `Assertion 'texture' failed` (Sprite.cpp:42) puis abort
 
-Message du paquet Ubuntu 3.0.0 pour `sfSprite_create(NULL)` : `Assertion 'texture' failed` à `./src/CSFML/Graphics/Sprite.cpp:42`, abandon (exit 134).
+Message du paquet Ubuntu 3.0.0 pour `sfSprite_create(NULL)` (test n°31) : `Assertion 'texture' failed` à `./src/CSFML/Graphics/Sprite.cpp:42`, abandon (exit 134).
 
 **Cause** : en 3.0, `sfSprite_create(const sfTexture*)` exige une texture non `NULL`. Le plus souvent le chargement a échoué plus tôt et tu n'as pas testé le retour de `sfTexture_createFromFile`.
 
@@ -29,7 +29,7 @@ Autre exemple, avec le même paquet : `sfClock_getElapsedTime(NULL)` donne `Cloc
 
 ## `Failed to open X11 display` puis abort
 
-Message : `Failed to open X11 display; make sure the DISPLAY environment variable is set correctly`, puis **abort (exit 134)**. `sfRenderWindow_create` ne renvoie pas `NULL` : le programme s'arrête dans la bibliothèque (paquet système et build local ; 3.0.0 et 2.6.1). Tester le retour ne sert donc à rien ici.
+Message (test n°32) : `Failed to open X11 display; make sure the DISPLAY environment variable is set correctly`, puis **abort (exit 134)**. `sfRenderWindow_create` ne renvoie pas `NULL` : le programme s'arrête dans la bibliothèque (paquet système et build local ; 3.0.0 et 2.6.1). Tester le retour ne sert donc à rien ici.
 
 **Solution** : fournir un affichage (Xvfb). Voir [sans écran](/guides/troubleshooting/headless-xvfb/).
 
