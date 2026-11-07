@@ -46,15 +46,18 @@ def clean_comment(raw):
         lines.append(l)
     return "\n".join(lines).strip()
 
+INLINE = re.compile(r"\\(?:a|e|p|c|b|em|ref)\s+(\S+)")
+
 def parse_doc(text):
     brief, params, ret, rest = "", {}, "", []
-    cur = None
+    cur = None; brief_open = False
     for l in text.splitlines():
+        l = INLINE.sub(r"\1", l) if not re.match(r"\\(brief|param|return|returns)\b", l) else l[:l.find(" ")+1] + INLINE.sub(r"\1", l[l.find(" ")+1:])
         m = re.match(r"\\(brief|param|return|returns)\b\s*(.*)", l)
         if m:
             k, v = m.groups()
             if k == "brief":
-                brief, cur = v, ("brief", None)
+                brief, cur = v, ("brief", None); brief_open = True
             elif k == "param":
                 pm = re.match(r"(\w+)\s*(.*)", v)
                 if pm:
@@ -65,7 +68,9 @@ def parse_doc(text):
         if l.startswith("\\"):
             cur = None; rest.append(l); continue
         if cur and l:
-            if cur[0] == "brief": brief += " " + l
+            if cur[0] == "brief":
+                if brief_open and l[0].islower(): brief += " " + l
+                else: brief_open = False
             elif cur[0] == "param": params[cur[1]] += " " + l
             else: ret += " " + l
         elif not l:
@@ -87,10 +92,13 @@ for c in tu.cursor.get_children():
     brief, pdoc, rdoc = parse_doc(doc)
     k = c.kind
     if k == ci.CursorKind.FUNCTION_DECL:
-        params = [{"name": a.spelling, "type": a.type.spelling, "doc": pdoc.get(a.spelling, "")} for a in c.get_arguments()]
-        sig = f'{c.result_type.spelling} {c.spelling}(' + (", ".join(f'{p["type"]} {p["name"]}'.strip() for p in params) or "void") + ")"
+        params = [{"name": a.spelling, "type": a.type.spelling.replace("_Bool", "bool"), "doc": pdoc.get(a.spelling, "")} for a in c.get_arguments()]
+        def decl(p):
+            t = p["type"].replace("_Bool", "bool")
+            return t.replace("(*)", f"(*{p['name']})", 1) if "(*)" in t else f'{t} {p["name"]}'.strip()
+        sig = f'{c.result_type.spelling.replace("_Bool", "bool")} {c.spelling}(' + (", ".join(decl(p) for p in params) or "void") + ")"
         functions.append({"name": c.spelling, "module": module, "header": r, "line": c.location.line,
-                          "returns": c.result_type.spelling, "return_doc": rdoc, "params": params,
+                          "returns": c.result_type.spelling.replace("_Bool", "bool"), "return_doc": rdoc, "params": params,
                           "signature": sig, "brief": brief, "doc": doc, "deprecated": is_deprecated(c)})
     elif k in (ci.CursorKind.STRUCT_DECL, ci.CursorKind.UNION_DECL, ci.CursorKind.ENUM_DECL, ci.CursorKind.TYPEDEF_DECL):
         if k == ci.CursorKind.TYPEDEF_DECL:
