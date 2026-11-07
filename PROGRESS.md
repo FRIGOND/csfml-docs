@@ -29,3 +29,14 @@
 - Reste : relecture/intégration des agents, `run-all-examples.sh --valgrind`, `npm run build && npm run check`,
   badge « testé sur » une fois par page, EN optionnel, Phase E (audit indépendant, RESULTATS.md, limites connues).
 - Reprise : lire ce fichier puis `git status` ; si une limite d'usage coupe, dire « reprends ».
+
+## Audit complet des pages (démarré 2026-11-07)
+Plan : (1) tools/audit-pages.py (noms/signatures/options CMake vs JSON) → tests/logs/audit-complet/auto.md ;
+(2) blocs de code (importés via <Example> ou écrits à la main) ; (3) affirmations factuelles vs tests/RESULTATS.md ;
+(4) relecture débutant par 2 sous-agents (rapports par page dans tests/logs/audit-complet/) ; (5) corrections ;
+(6) tests/AUDIT-COMPLET.md ; (7) npm run build + check + run-all-examples + commit + push + vérif workflows.
+Périmètre : 66 pages écrites à la main (liste dans l'en-tête de tests/AUDIT-COMPLET.md). Reprise : « reprends » → lire ce fichier.
+Étape en cours : (1) script de vérification.
+- Fait : tools/audit-pages.py (0 ERREUR, liste blanche ALLOW + chiffres recomptés), tools/audit-blocks.py, tools/audit-claims.py ; sorties dans tests/logs/audit-complet/{auto,blocs,affirmations}.md.
+- En cours : 2 relecteurs en arrière-plan (guides+en / tutoriels+migration) → rapports tests/logs/audit-complet/<page>.md. Moi : correction des affirmations « Epitech utilise… » et paragraphes SANS MARQUE.
+- Reste : corrections issues des rapports, tests/AUDIT-COMPLET.md, build+check, run-all-examples, commit, push, workflows.
