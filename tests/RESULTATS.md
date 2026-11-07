@@ -92,3 +92,12 @@ Script : `tests/run-p1-window.sh` (log : `tests/logs/p1-window.log`). Bibliothè
 | 21 | Sound vs buffer détruit | ⚠️ | `sfSound_getBuffer(s) == b` vrai (pointeur gardé, pas de copie) ; mais aucune erreur valgrind observée après `sfSoundBuffer_destroy` (lecture 200 ms). Comportement indéfini non démontré ; ne pas affirmer « crash ». |
 | 24 | `sfKeyboard_getDescription` | ✅ avec nuance | le header déclare `const char*` (3.0.0) ; la source fait `strdup(...)`. Sans `free` : valgrind `2 bytes in 1 blocks are definitely lost` ; avec `free` : 0 erreur. Écrire `char *d = ...` donne `-Wdiscarded-qualifiers` : il faut `free((void *)d)` ou garder un `const char *` et caster au `free`. |
 | 32 | Sans `DISPLAY`, `sfRenderWindow_create` | ✅ | message `Failed to open X11 display; make sure the DISPLAY environment variable is set correctly` puis **abort** (exit 134), pas de retour NULL : paquet système **et** build local |
+
+## A.4 — Tests P1 (lot 4 : buffers en mémoire, audio sans périphérique, Xvfb 2.6)
+
+| N° | Test | Verdict | Constat |
+|---|---|---|---|
+| 22 | `sfFont_createFromMemory` : le buffer doit rester vivant | ✅ | valgrind : `Invalid read of size 8` (`memmove` ← `sf::MemoryInputStream::read` ← FreeType ← `sf::Font::loadGlyph`) quand on demande un glyphe après `free(buf)` |
+| 23 | `sfMusic_createFromMemory` : idem | ✅ | valgrind : `Invalid read of size 1` dans le thread audio (`Music::onGetData` ← libvorbisfile). Sans valgrind le programme « marche » (offset 0.99 s) : comportement indéfini masqué. |
+| 33 | Xvfb + `LIBGL_ALWAYS_SOFTWARE=1` : fenêtre + display | ✅ | 3.0.0 et 2.6.1 : `window=<ptr>`, exit 0. Bruit stderr Mesa : `amdgpu_device_initialize failed` (inoffensif). Messages SFML : `Failed to create input context ... TextEntered`, `Setting vertical sync not supported`. |
+| 34 | Audio sans périphérique | ⚠️ messages différents du rapport | **3.0.0** (PulseAudio/ALSA rendus inaccessibles) : `miniaudio ERROR: [PulseAudio] Failed to connect PulseAudio context`, `Failed to get audio playback devices: Resource does not exist`, `Failed to initialize sound: No engine available` ; `sfMusic_createFromFile` et `sfSoundBuffer_createFromFile` retournent un pointeur valide, `sfMusic_getStatus` = 2 (Playing), pas de crash, exit 0. Le message « Using NULL audio backend » du rapport n'a **pas** été observé dans cette configuration. **2.6.1** (OpenAL, driver pulse indisponible) : `Failed to open the audio device` (×2 par objet), objets créés, `sfMusic_getStatus` = 0 (Stopped), pas de crash, exit 0. |
