@@ -135,3 +135,27 @@ Sources : `tests/p2/` (`gen_destroy.py`, `p2_misc.c`, `t63.c`, `t82.c`, `t86.c`,
 | 102 | Pas de `CSFMLConfig.cmake` | ✅ | `dpkg -L libcsfml-dev` : aucun fichier cmake ; le préfixe local ne contient que `lib/cmake/SFML` |
 | 110 | Epitech `latest` : CSFML 3.0.0 | ✅ | voir A.2 |
 | 111 | `epitest-docker:ubuntu24` : CSFML 2.6.0 | ✅ | voir A.2 (tag existant, `libcsfml-dev 2.6.0-3build1`) |
+
+## A.5 — Référence API générée depuis les headers (libclang)
+
+Outil : `tools/gen_api.py <préfixe> <CSFML|SFML> <version>` → `api/csfml-3.0.0.json` et `api/csfml-2.6.1.json`.
+Binding Python : roue `libclang` 18.1.1 (PyPI) extraite dans `~/local/py` (pas de venv/pip ni sudo disponibles) ;
+`export PYTHONPATH=$HOME/local/py/libclang-18.1.1.data/platlib`. 0 erreur clang sur les deux versions.
+
+| Version | Fonctions (libclang) | Fonctions (regex indépendante) | Types (entrées / noms uniques) | Constantes | Fonctions avec `\brief` | `CSFML_DEPRECATED` |
+|---|---|---|---|---|---|---|
+| CSFML 3.0.0 (headers `CSFML/`) | **926** | 926 (✅ identiques) | 258 / 141 | 23 | 880 (46 sans) | 0 |
+| CSFML 2.6.1 (headers `SFML/`) | **850** | 850 (✅ identiques) | 249 / — | 21 | 806 | 11 |
+
+Par module (3.0.0) : System 21, Window 103, Graphics 467, Audio 191, Network 144 = 926 → **identique à research/03 §5**.
+Par module (2.6.1) : System 26, Window 99, Graphics 470, Audio 119, Network 136 = 850.
+
+**Écarts avec research/03 (tranchés par les headers réels) :**
+- Fonctions 3.0.0 : 926, module par module identique ✅.
+- Types nommés 3.0.0 : le rapport dit 133/134 ; libclang donne **141 noms uniques** (88 struct, 31 enum, 1 union, 138 typedef ; certains noms existent en `struct` + `typedef`). Écart de 7 à 8 : le rapport ne comptait pas la même chose (à recompter avec la définition exacte « noms de typedef + enums nommés »).
+- Constantes : 23 ✅.
+- **`\brief` : 916 (agent 07) / 1083 (agent 10)** ne s'opposent pas : `git grep '\brief'` dans `include/` donne **950 au tag 3.0.0** et **1083 sur master** ; au tag 3.0.0, **880 fonctions sur 926 ont un `\brief`** (et 12 blocs `\code`). 916 ne correspond à aucun comptage reproductible ici.
+- Les 46 fonctions sans `\brief` en 3.0.0 incluent `sfIntRect_contains/intersects` et les `sfRenderTexture_draw*` : leur résumé devra être écrit à la main (marqué « non vérifié »).
+- 2.6.1 : 11 fonctions `CSFML_DEPRECATED`. 3.0.0 : 0 (alors que master en marque 40).
+
+Le JSON contient pour chaque fonction : nom, module, header:ligne, signature exacte, paramètres (type, nom, doc), retour, `\brief` et doc brute, drapeau deprecated ; pour les types : struct/union/enum/typedef avec champs et valeurs d'enum ; les constantes globales et `CSFML_VERSION_*`.

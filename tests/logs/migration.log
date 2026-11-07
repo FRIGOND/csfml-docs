@@ -738,3 +738,21 @@ Setting vertical sync not supported
 frames ok
 run rc=0
 --- valgrind
+valgrind rc=9
+frames ok
+==87276== 208 bytes in 1 blocks are definitely lost in loss record 2,735 of 2,769
+==87276== 352 bytes in 1 blocks are definitely lost in loss record 2,742 of 2,769
+==87276== 1,086 bytes in 6 blocks are definitely lost in loss record 2,751 of 2,769
+==87276==    definitely lost: 1,646 bytes in 8 blocks
+==87276==    indirectly lost: 0 bytes in 0 blocks
+==87276== ERROR SUMMARY: 3 errors from 3 contexts (suppressed: 0 from 0)
+##### t27_sound
+build rc=0
+status snd=2 mus=2
+run rc=0
+--- valgrind
+valgrind rc=0
+status snd=2 mus=2
+==87453==    definitely lost: 0 bytes in 0 blocks
+==87453==    indirectly lost: 0 bytes in 0 blocks
+==87453== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
