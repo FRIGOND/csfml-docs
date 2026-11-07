@@ -1,0 +1,73 @@
+
+=== 3  système 3.0.0 : clock.c compile et tourne
+0.10
+exit=0
+
+=== 4  <SFML/Graphics.h> avec 3.0.0
+/tmp/tmp.Jr4hrrQz0S/old.c:1:10: fatal error: SFML/Graphics.h: Aucun fichier ou dossier de ce nom
+    1 | #include <SFML/Graphics.h>
+      |          ^~~~~~~~~~~~~~~~~
+
+=== 5a lien graphics+window+system
+exit=0
+
+=== 5b lien sans system
+/usr/bin/x86_64-linux-gnu-ld.bfd : /tmp/cce29tEp.o : dans la fonction « main » :
+link.c:(.text+0x58) : référence indéfinie vers « sfClock_create »
+/usr/bin/x86_64-linux-gnu-ld.bfd : link.c:(.text+0x68) : référence indéfinie vers « sfClock_destroy »
+
+=== 6  -l avant la source
+/usr/bin/x86_64-linux-gnu-ld.bfd : /tmp/ccnxlTJv.o : dans la fonction « main » :
+clock.c:(.text+0xd) : référence indéfinie vers « sfClock_create »
+/usr/bin/x86_64-linux-gnu-ld.bfd : clock.c:(.text+0x1b) : référence indéfinie vers « sfMilliseconds »
+
+=== 9  RUNPATH des libs locales 3.0
+ 0x000000000000001d (RUNPATH)            Bibliothèque runpath :[$ORIGIN]
+ 0x000000000000001d (RUNPATH)            Bibliothèque runpath :[$ORIGIN]
+
+=== 10 rpath vers préfixe local
+	libcsfml-system.so.3.0 => ~/csfml-3.0/lib/libcsfml-system.so.3.0 (0x0000732dba287000)
+	libsfml-system.so.3.0 => ~/csfml-3.0/lib/libsfml-system.so.3.0 (0x0000732dba262000)
+0.10
+
+=== 15 headers parapluie -std=c11 -pedantic (3.0.0 système)
+exit=0
+
+=== 16a sfBool/sfInt64 en 3.0.0
+bool.c:3:16: error: unknown type name ‘sfBool’; did you mean ‘bool’?
+bool.c:3:25: error: ‘sfTrue’ undeclared (first use in this function); did you mean ‘sfTime’?
+bool.c:3:33: error: unknown type name ‘sfInt64’
+
+=== 16b bool/int64_t en 3.0.0
+exit=0
+
+=== 29 sfVideoMode m={800,600,32}
+videomode.c: In function ‘main’:
+videomode.c:3:32: warning: missing braces around initializer [-Wmissing-braces]
+    3 | int main(void){sfVideoMode m = {800, 600, 32};
+      |                                ^
+      |                                 {       }
+size=800,600 bpp=32
+
+=== 30 ancien appel create à 4 args
+create_old.c:3:44: error: incompatible type for argument 4 of ‘sfRenderWindow_create’
+/usr/include/CSFML/Graphics/RenderWindow.h:63:30: note: expected ‘sfWindowState’ but argument is of type ‘void *’
+create_old.c:3:3: error: too few arguments to function ‘sfRenderWindow_create’; expected 5, have 4
+/usr/include/CSFML/Graphics/RenderWindow.h:59:36: note: declared here
+
+=== 31a NULL en 3.0.0
+exit=0
+
+=== 31b NULL en 2.6.1 (préfixe local)
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from null26.c:1:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+exit=0

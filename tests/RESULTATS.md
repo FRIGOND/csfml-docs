@@ -44,3 +44,26 @@ Script : `tools/build-csfml.sh <csfml-tag> <sfml-tag> <prefix>` (SFML puis CSFML
 - Recette de research/02 §3.5 validée telle quelle pour 3.0.0 (avec `-DSFML_DIR=` à la place de `SFML_ROOT`).
 - Choix : SFML 2.6.2 avec CSFML 2.6.1 (dernière 2.6.x). Ubuntu et l'image `ubuntu24` d'Epitech ont SFML 2.6.1 et CSFML 2.6.0.
 - Docs : les deux préfixes ont leurs `.pc` ; sans `pkgconf` installé ils ne sont pas encore testés.
+
+## A.4 — Tests P1 (lot 1 : compilation, liens, symboles, sans fenêtre)
+
+Script : `tests/run-p1-compile.sh` (sources dans `tests/p1/`, sortie complète dans `tests/logs/p1-compile.log`).
+Outils locaux sans sudo : `tools/env.sh` (Xvfb et pkgconf extraits de .deb dans `~/local/root`).
+
+| N° | Test | Verdict | Constat |
+|---|---|---|---|
+| 3 | Paquet système 3.0.0 : programme System compile et tourne | ✅ | affiche `0.10`, exit 0 |
+| 4 | `#include <SFML/Graphics.h>` échoue en 3.0.0 | ✅ | `fatal error: SFML/Graphics.h: Aucun fichier ou dossier de ce nom` |
+| 5 | Il faut lier chaque lib (`-lcsfml-system` nécessaire) | ✅ | sans lui : `référence indéfinie vers « sfClock_create »` ; avec les 3 : OK |
+| 6 | `-l` avant la source échoue | ✅ | `référence indéfinie vers « sfClock_create »` et `« sfMilliseconds »` |
+| 9 | Libs locales avec `RUNPATH=$ORIGIN` | ✅ | `libcsfml-graphics.so.3.0.0` et `libsfml-graphics.so.3.0.2` |
+| 10 | `-Wl,-rpath` vers préfixe local, sans `LD_LIBRARY_PATH` | ✅ | `ldd` : libs résolues dans `~/csfml-3.0/lib` ; sortie `0.10` |
+| 15 | Headers parapluie en `-std=c11 -Wall -Wextra -pedantic` | ✅ | aucun avertissement (3.0.0 système) |
+| 16 | `sfBool`/`sfTrue`/`sfInt64` n'existent plus | ✅ | `unknown type name ‘sfBool’`, `‘sfTrue’ undeclared`, `unknown type name ‘sfInt64’` ; `bool`/`int64_t` : OK |
+| 29 | `sfVideoMode m = {800, 600, 32};` | ❌ **contredit** | compile avec `-Wmissing-braces` et donne les **bonnes** valeurs (`size=800,600 bpp=32`) grâce à l'élision d'accolades. Le rapport (04 §3) disait « mauvais résultat » : faux. À corriger : c'est un simple avertissement, la forme correcte est `{{800, 600}, 32}`. |
+| 30 | Ancien appel à 4 arguments de `sfRenderWindow_create` | ✅ | `too few arguments ... expected 5, have 4` et `incompatible type for argument 4 ... expected ‘sfWindowState’` |
+| 31 | NULL → assert en 3.0.0 | ⚠️ **nuancé** | `sfSprite_create(NULL)` : **paquet Ubuntu** → `Assertion \`texture' failed` (`./src/CSFML/Graphics/Sprite.cpp:42`), abort, exit 134 ; **build local Release** (`-DNDEBUG`) → **segfault** (exit 139). `sfSprite_setTexture(NULL, NULL, true)` : aucun effet, exit 0, sans message, en 3.0.0 comme en 2.6.1. En 2.6.1, aucun message « trying to use null » observé. |
+
+Rappel dans les pages : sur un build maison en Release, les `assert` de CSFML sont retirés ; tester le retour de `create*` ne suffit pas pour `sfSprite_create(NULL)`, il faut ne jamais passer NULL.
+
+Le paquet système a bien 1 appel à `__assert_fail` dans `libcsfml-graphics` ; le build local n'en a aucun.
