@@ -19,3 +19,13 @@
 ## Bloquants / à signaler
 - docker inaccessible (groupe docker) : contourné.
 - Test pluriel/singulier Pagefind non fait (navigateur nécessaire).
+
+## Phase D (en cours) — mise à jour 2026-11-07
+- Fait et commité : référence générée (3.0 et 2.6), cookbook (31 exemples/version), annexe de migration, vérificateur de liens,
+  workflows GitHub Actions (`pages.yml`, `examples.yml`), README/LICENSE/CONTRIBUTING/CHANGELOG, `tools/update-csfml.sh`.
+- Agents en arrière-plan (non commités, à relire) : guides (`site/src/content/docs/guides/**`),
+  tutoriels casse-briques + migration (`examples/tutorials/`, `site/.../tutorials`, `3-0/migration/`).
+- Les workflows n'ont PAS été exécutés (pas de GitHub ici) : à valider au premier push.
+- Reste : relecture/intégration des agents, `run-all-examples.sh --valgrind`, `npm run build && npm run check`,
+  badge « testé sur » une fois par page, EN optionnel, Phase E (audit indépendant, RESULTATS.md, limites connues).
+- Reprise : lire ce fichier puis `git status` ; si une limite d'usage coupe, dire « reprends ».
