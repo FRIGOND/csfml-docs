@@ -31,3 +31,16 @@ Docker Hub (flux tar, extraction de `/var/lib/dpkg/status` et des `Config.h`). �
 **Conséquences :**
 1. Le poids de 3.0.0 est confirmé pour l'environnement actuel Epitech. 2.6 garde un poids égal (décision utilisateur) à cause de Fedora et des anciens projets.
 2. **Correction au rapport** : l'ancien environnement Epitech et Ubuntu 24.04 ont la 2.6.**0**, pas la 2.6.1. La doc 2.6 doit signaler les différences 2.6.0 → 2.6.1 (voir research/01 et 10). Voir research/CORRECTIONS.md.
+
+## A.3 — Builds locaux sans sudo
+
+Script : `tools/build-csfml.sh <csfml-tag> <sfml-tag> <prefix>` (SFML puis CSFML, partagées, `CMAKE_INSTALL_LIBDIR=lib`, rpath `$ORIGIN`).
+
+| Prefix | CSFML | SFML | Résultat |
+|---|---|---|---|
+| `~/csfml-3.0` | 3.0.0 (commit 24c8ddb) | 3.0.2 | ✅ compile et installe du premier coup ; `include/CSFML`, `lib/libcsfml-*.so.3.0.0`, `.pc`, `lib/cmake/SFML` |
+| `~/csfml-2.6` | 2.6.1 (commit e153a8a) | 2.6.2 | ✅ compile et installe ; `include/SFML` (headers C en 2.6), `lib/libcsfml-*.so.2.6.1`, `.pc` |
+
+- Recette de research/02 §3.5 validée telle quelle pour 3.0.0 (avec `-DSFML_DIR=` à la place de `SFML_ROOT`).
+- Choix : SFML 2.6.2 avec CSFML 2.6.1 (dernière 2.6.x). Ubuntu et l'image `ubuntu24` d'Epitech ont SFML 2.6.1 et CSFML 2.6.0.
+- Docs : les deux préfixes ont leurs `.pc` ; sans `pkgconf` installé ils ne sont pas encore testés.
