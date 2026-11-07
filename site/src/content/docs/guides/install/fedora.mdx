@@ -1,0 +1,38 @@
+---
+title: Installer sur Fedora
+description: Fedora fournit CSFML 2.6.1. Voici ce que cela implique et comment obtenir la 3.0 si besoin.
+sidebar:
+  order: 2
+---
+
+## Le paquet de Fedora
+
+```sh
+sudo dnf install CSFML-devel
+```
+
+D'après le rapport de recherche (`research/01-versions.md` §5, consulté sur packages.fedoraproject.org le 2026-11-07), Fedora 43 et suivantes fournissent **CSFML 2.6.1** au-dessus de SFML 2.6.2. Les headers sont dans `/usr/include/SFML/` et les fichiers `.pc` sont fournis.
+
+Conséquence importante : la plupart des pages de cette documentation montrent la **3.0**. Avec Fedora, utilise les onglets « CSFML 2.6 » ou le site [CSFML 2.6](/2-6/getting-started/first-window/). Le code n'est pas le même (voir [conventions de l'API](/guides/concepts/api-conventions/)).
+
+:::caution[Non vérifié]
+Je n'ai pas de machine Fedora : ni la commande `dnf`, ni la version exacte, ni l'emplacement des fichiers n'ont été testés ici. Tout vient de la lecture de la page du paquet. Vérifie avec `rpm -q CSFML-devel`. De même, aucune image Fedora d'Epitech n'a été identifiée (tests/RESULTATS.md, A.2).
+:::
+
+## Obtenir la 3.0 sur Fedora
+
+Il faut compiler SFML 3 puis CSFML 3 depuis les sources, dans ton dossier personnel, sans `sudo` pour l'installation. La recette vérifiée (sur Ubuntu) est dans [depuis les sources](/guides/install/from-source/).
+
+Deux points propres à Fedora, à connaître :
+
+- Fedora utilise `lib64` : CSFML installe ses bibliothèques dans `lib` mais ses fichiers `.pc` dans le « libdir » choisi par CMake. Il est donc prudent de passer `-DCMAKE_INSTALL_LIBDIR=lib` aux deux builds (c'est ce que fait notre script).
+- Les paquets `-devel` des dépendances (X11, freetype, FLAC, vorbis, OpenGL, udev) doivent être installés ; leurs noms exacts sous Fedora ne sont pas vérifiés.
+
+:::caution[Non vérifié]
+Le piège `lib64` est déduit de la lecture des fichiers CMake de CSFML (research/02 §3.4) ; je ne l'ai pas observé sur Fedora. Les noms de paquets Fedora pour les dépendances sont aussi non testés.
+:::
+
+## Ensuite
+
+- [Compiler un programme](/guides/install/compiling/)
+- [Vérifier ton installation](/guides/install/check-your-setup/) : le programme de diagnostic fonctionne avec la 2.6 comme avec la 3.0.

@@ -1,0 +1,36 @@
+---
+title: Installer sur Arch Linux
+description: Installer CSFML avec pacman et ce qu'on sait (et ne sait pas) de la version obtenue.
+sidebar:
+  order: 3
+---
+
+## La commande
+
+```sh
+sudo pacman -S csfml
+```
+
+D'après le rapport de recherche (`research/01-versions.md` §5, API archlinux.org consultée le 2026-11-07), le paquet `csfml` du dépôt `extra` est en **3.0.0**, et dépend de `sfml` 3.1.0. Tu utilises donc les headers `<CSFML/...>` et le code de la version 3.0 de ce site : voir [ouvrir une fenêtre en 3.0](/3-0/getting-started/first-window/).
+
+:::caution[Non vérifié]
+Je n'ai pas de machine Arch. La commande, la version et le fait que CSFML 3.0.0 fonctionne au-dessus de SFML 3.1.0 viennent de la lecture de la page du paquet, pas d'un test. Les tests de ce site ont été faits avec SFML 3.0.2 (CSFML 3.0.0) et SFML 2.6.2 (CSFML 2.6.1).
+:::
+
+## Vérifier
+
+```sh
+pacman -Q csfml sfml
+pkg-config --modversion csfml-graphics
+```
+
+La seconde commande demande que `pkg-config` soit installé (paquet `pkgconf`). Sur la machine de test (Ubuntu), elle affiche `3.0.0` avec le paquet système.
+
+## Si tu veux une autre version
+
+Compile depuis les sources : [depuis les sources](/guides/install/from-source/). Cette recette a été testée sur Ubuntu, pas sur Arch.
+
+## Ensuite
+
+- [Compiler un programme](/guides/install/compiling/)
+- [Vérifier ton installation](/guides/install/check-your-setup/)

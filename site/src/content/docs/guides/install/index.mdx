@@ -1,0 +1,56 @@
+---
+title: Installer CSFML
+description: Choisir la version de CSFML et la méthode d'installation selon ta distribution, avec le tableau des versions packagées.
+sidebar:
+  order: 0
+---
+
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+**CSFML** est la version C de SFML (une bibliothèque graphique et audio). Pour l'utiliser, il faut installer ses **headers** (les fichiers `.h` : *header* = en-tête, la déclaration des fonctions) et ses **bibliothèques** (les fichiers `.so` : le code déjà compilé).
+
+## Quelle version choisir ?
+
+Deux versions comptent aujourd'hui :
+
+| Version | Dossier des headers | Booléens | Remarque |
+|---|---|---|---|
+| CSFML 3.0.0 | `<CSFML/Graphics.h>` | `bool` | Version de l'environnement Epitech actuel (voir [Epitech](/guides/epitech/environment/)). |
+| CSFML 2.6.x | `<SFML/Graphics.h>` | `sfBool` | Version de Fedora, de Debian 13 et d'Ubuntu 24.04. |
+
+Le code écrit pour l'une ne compile pas avec l'autre (voir [conventions de l'API](/guides/concepts/api-conventions/) et la [migration](/3-0/migration/overview/)). Choisis la version de **ton environnement de rendu**. Si tu hésites, prends la 3.0.
+
+## Versions packagées par les distributions
+
+| Distribution | Paquet | CSFML | SFML dessous |
+|---|---|---|---|
+| Ubuntu 26.04 | `libcsfml-dev` | 3.0.0 | 3.0.2 |
+| Ubuntu 24.04 | `libcsfml-dev` | 2.6.0 | 2.6.1 |
+| Debian 13 (stable) | `libcsfml-dev` | 2.6.1 | 2.6.2 |
+| Debian testing | `libcsfml-dev` | 3.0.0 | 3.1.0 |
+| Fedora 43 et suivantes | `CSFML-devel` | 2.6.1 | 2.6.2 |
+| Arch Linux | `csfml` | 3.0.0 | 3.1.0 |
+| Homebrew (macOS) | `csfml` | 3.0.0 | 3.0.2 |
+
+Seule la ligne **Ubuntu 26.04** (installée sur la machine de test : `dpkg -l libcsfml-dev` donne `3.0.0-1`) et les deux images Epitech (lues dans les couches Docker, voir [Environnement](/guides/epitech/environment/)) ont été vérifiées directement.
+
+:::caution[Non vérifié]
+Les autres lignes viennent du rapport de recherche `research/01-versions.md` (§5), qui les a lues sur Repology, Debian, Launchpad, packages.fedoraproject.org, archlinux.org et formulae.brew.sh le 2026-11-07. Ces versions changent avec le temps et je n'ai pas installé ces distributions. Vérifie avec la commande de ta distribution avant de t'y fier.
+:::
+
+Note : la 2.6.0 d'Ubuntu 24.04 n'est pas la 2.6.1. Les différences exactes entre les deux n'ont pas été étudiées.
+
+## Choisir sa méthode
+
+<CardGrid>
+  <LinkCard title="Ubuntu / Debian" href="/guides/install/ubuntu-debian/" description="apt install libcsfml-dev" />
+  <LinkCard title="Fedora" href="/guides/install/fedora/" description="Paquet en 2.6.1, ou build 3.0 depuis les sources" />
+  <LinkCard title="Arch Linux" href="/guides/install/arch/" description="pacman -S csfml" />
+  <LinkCard title="macOS et Windows" href="/guides/install/macos-windows/" description="Survol honnête, peu testé" />
+  <LinkCard title="Depuis les sources" href="/guides/install/from-source/" description="Sans sudo, dans ton dossier personnel (testé)" />
+  <LinkCard title="WSL" href="/guides/install/wsl/" description="Linux dans Windows" />
+</CardGrid>
+
+Règle simple : **paquet de la distribution** si la version te convient, **build depuis les sources** si tu n'as pas `sudo` ou si tu veux une autre version.
+
+Ensuite : [compiler un programme](/guides/install/compiling/) puis [vérifier ton installation](/guides/install/check-your-setup/).

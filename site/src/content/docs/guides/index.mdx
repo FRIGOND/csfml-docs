@@ -1,0 +1,33 @@
+---
+title: Guides
+description: Installer CSFML, comprendre ses conventions, résoudre les erreurs courantes et préparer un projet Epitech. Valable pour CSFML 3.0 et 2.6.
+sidebar:
+  order: 0
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+Ces guides valent pour **CSFML 3.0.0 et CSFML 2.6.1**. Quand le code diffère entre les deux versions, la page l'indique avec des onglets. Chaque affirmation technique vient d'un test réel ou d'un header ; ce qui n'a pas pu être vérifié est signalé par un encadré « Non vérifié ».
+
+:::note[Doc non officielle]
+Cette documentation est écrite par la communauté. Elle n'est liée ni à SFML, ni à Epitech.
+:::
+
+## Par où commencer ?
+
+<CardGrid>
+  <LinkCard title="Installer CSFML" description="Quelle version, quelle méthode, quelle commande selon ta distribution." href="/guides/install/" />
+  <LinkCard title="Vérifier mon installation" description="Un petit programme qui affiche la version et ouvre une fenêtre." href="/guides/install/check-your-setup/" />
+  <LinkCard title="Compiler un programme" description="gcc, les options -l, l'ordre, pkg-config, un Makefile." href="/guides/install/compiling/" />
+  <LinkCard title="Les concepts" description="Conventions de l'API, propriété des objets, boucle de jeu, événements." href="/guides/concepts/" />
+  <LinkCard title="Dépannage" description="Une page par message d'erreur ou symptôme : cause, solution, vérification." href="/guides/troubleshooting/" />
+  <LinkCard title="Epitech" description="Environnement de correction, Makefile, coding style, avant de rendre." href="/guides/epitech/" />
+  <LinkCard title="Glossaire et FAQ" description="Les mots du métier en français et en anglais, et les questions fréquentes." href="/guides/help/glossary/" />
+  <LinkCard title="À propos de cette doc" description="Méthode, limites, licences, comment signaler une erreur." href="/guides/help/about/" />
+</CardGrid>
+
+## Et le reste du site ?
+
+- Référence complète des fonctions : [CSFML 3.0](/3-0/reference/) et [CSFML 2.6](/2-6/reference/).
+- Premier programme : [ouvrir une fenêtre en 3.0](/3-0/getting-started/first-window/) ou [en 2.6](/2-6/getting-started/first-window/).
+- Passer de 2.6 à 3.0 : [guide de migration](/3-0/migration/overview/).

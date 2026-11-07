@@ -1,0 +1,54 @@
+---
+title: Installer sur Ubuntu et Debian
+description: Installer CSFML avec apt, voir quelle version tu obtiens, et savoir où sont les fichiers.
+sidebar:
+  order: 1
+---
+
+import TestedBadge from '@/components/TestedBadge.astro';
+
+<TestedBadge version="3.0" />
+
+## La commande
+
+```sh
+sudo apt install libcsfml-dev
+```
+
+`-dev` signifie *development* : le paquet contient les headers et les fichiers dont le compilateur a besoin. Il tire aussi les bibliothèques d'exécution.
+
+## Quelle version obtiens-tu ?
+
+| Système | CSFML installée | Headers |
+|---|---|---|
+| Ubuntu 26.04 | 3.0.0 (SFML 3.0.2) | `/usr/include/CSFML/` |
+| Ubuntu 24.04 | 2.6.0 (SFML 2.6.1) | `/usr/include/SFML/` |
+| Debian 13 | 2.6.1 | `/usr/include/SFML/` |
+
+Vérifié sur Ubuntu 26.04 : `dpkg -l libcsfml-dev` donne `3.0.0-1` et `libsfml-dev` donne `3.0.2+dfsg-2`. Les chemins des headers pour les images Epitech (`/usr/include/CSFML` en 26.04, `/usr/include/SFML` en 24.04) viennent de la lecture des couches Docker (tests/RESULTATS.md, A.2). Les lignes Debian 13 et Ubuntu 24.04 hors image Epitech : voir la [page d'index](/guides/install/).
+
+Pour connaître ta version :
+
+```sh
+dpkg -l libcsfml-dev
+```
+
+## Ce que le paquet installe (Ubuntu 26.04)
+
+- les headers dans `/usr/include/CSFML/` ;
+- les bibliothèques `libcsfml-system`, `-window`, `-graphics`, `-audio`, `-network` (une par module) ;
+- des fichiers `csfml-*.pc` pour `pkg-config` : `csfml-all`, `-audio`, `-graphics`, `-network`, `-system`, `-window` (constaté avec `ls /usr/lib/x86_64-linux-gnu/pkgconfig`).
+
+Pas besoin de `-I` ni de `-L` avec le paquet système : ce sont des chemins que `gcc` connaît déjà. Pour la suite, lis [compiler un programme](/guides/install/compiling/).
+
+## Pièges
+
+- **Les deux versions en même temps** : si tu as aussi un préfixe maison (voir [depuis les sources](/guides/install/from-source/)), le compilateur peut prendre les headers de l'un et les bibliothèques de l'autre. Vérifie avec `ldd ./ton_programme | grep csfml`.
+- **Pas d'écran** (SSH, conteneur) : le programme s'arrête avec `Failed to open X11 display`. Voir [sans écran](/guides/troubleshooting/headless-xvfb/).
+- **Documentation hors ligne** : le paquet `libcsfml-doc` existe (suggéré par `libcsfml-dev`, d'après `apt-cache depends`).
+
+:::caution[Non vérifié]
+Je n'ai pas testé l'installation sur Debian ni sur Ubuntu 24.04. Seule la machine Ubuntu 26.04 a servi aux tests.
+:::
+
+Suite : [vérifier ton installation](/guides/install/check-your-setup/).
