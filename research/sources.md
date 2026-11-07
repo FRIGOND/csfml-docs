@@ -1,0 +1,267 @@
+# Sources
+
+Fusion des listes des agents (dédoublonnée par URL). Consultées le 2026-11-07 sauf mention contraire.
+Les sources locales (headers des tags git, /usr/include/CSFML, paquets installés) sont citées dans chaque fichier.
+
+## Primaires
+
+- https://github.com/SFML/CSFML/releases — page des releases CSFML — 3.0.0 publiée le 2026-01-14 — consulté le 2026-11-07
+- https://api.github.com/repos/SFML/CSFML/releases — API GitHub, dates `published_at` et fichiers joints CSFML — 2026-01-14 (dernière) — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/releases/tag/3.0.0 — notes de version CSFML 3.0.0 — 2026-01-14 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/releases/tag/2.6.0 — notes de version CSFML 2.6.0 (ajout pkg-config #188) — 2024-02-04 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/releases/tag/2.6.1 — notes de version CSFML 2.6.1 (chemin d'installation pkg-config #234) — 2024-05-19 — consulté le 2026-11-07
+- https://api.github.com/repos/SFML/CSFML/milestones?state=all — jalons CSFML (3.0.1 et 2.6.2 ouverts, pas de 3.1) — non datée — consulté le 2026-11-07
+- https://api.github.com/repos/SFML/CSFML/issues?state=open — tickets ouverts CSFML (#395, #398, #374) — non datée — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/pull/398 — PR « Remove LIB_SUFFIX reference », ouverte — 2025-05-15 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/issues/395 — demande d'un fichier de config CMake officiel pour CSFML — 2025-02-23 — consulté le 2026-11-07
+- https://github.com/SFML/SFML/releases — page des releases SFML — 3.1.0 publiée le 2026-04-16 — consulté le 2026-11-07
+- https://api.github.com/repos/SFML/SFML/releases — API GitHub, dates `published_at` SFML et notes 3.1.0 — 2026-04-16 — consulté le 2026-11-07
+- https://www.sfml-dev.org/download/ — page de téléchargement SFML (3.1.0 « Latest stable version ») — non datée — consulté le 2026-11-07
+- https://www.sfml-dev.org/download/csfml/ — page de téléchargement CSFML (3.0.0 ; binaires Linux seulement pour 2.0 à 2.2) — non datée — consulté le 2026-11-07
+- https://www.sfml-dev.org/tutorials/3.0/getting-started/build-from-source/ — tutoriel officiel de build SFML 3.0 (dépendances, BUILD_SHARED_LIBS OFF) — non datée — consulté le 2026-11-07
+- https://www.sfml-dev.org/tutorials/3.1/getting-started/build-from-source/ — tutoriel officiel de build SFML 3.1 (harfbuzz, mbedtls, libssh2) — non datée — consulté le 2026-11-07
+- $S/repos/CSFML (clone de https://github.com/SFML/CSFML) — fichiers lus aux tags 2.5, 2.5.1, 2.5.2, 2.6.0, 2.6.1, 3.0.0, master et sur la branche origin/2.6.x : CMakeLists.txt, cmake/Config.cmake, cmake/Macros.cmake, cmake/CompilerWarnings.cmake, CMakePresets.json, readme.md, tools/pkg-config/*.pc.in, tools/nuget/build.linux.sh, .github/workflows/ci.yml, include/** — dernier commit le 2026-11-01 — consulté le 2026-11-07
+- $S/repos/SFML (clone de https://github.com/SFML/SFML) — fichiers lus aux tags 2.6.2, 3.0.2 et 3.1.0 : CMakeLists.txt, cmake/Macros.cmake, cmake/SFMLConfig.cmake.in, src/SFML/{Audio,Graphics,Window,Network}/CMakeLists.txt, tools/pkg-config/sfml-graphics.pc.in, .github/workflows/ci.yml, build.yml — 3.1.0 = 2026-04-16 — consulté le 2026-11-07
+- https://github.com/Epitech/epitest-docker — dépôt de l'image de test Epitech — dernier commit le 2026-10-07 — consulté le 2026-11-07
+- https://raw.githubusercontent.com/Epitech/epitest-docker/master/Dockerfile — Dockerfile actuel (FROM ubuntu:resolute, CC=clang) — 2026-10-07 — consulté le 2026-11-07
+- https://api.github.com/repos/Epitech/epitest-docker/commits — historique des commits (Fedora → mantic 2024-07-23 → noble 2025-09-01 → resolute 2026-08-26) — 2026-10-07 — consulté le 2026-11-07
+- https://api.github.com/repos/Epitech/epitest-docker/commits/46e2f78c — diff « Update to Ubuntu Resolute » — 2026-08-26 — consulté le 2026-11-07
+- https://raw.githubusercontent.com/Epitech/epitest-docker/011f4ef4/Dockerfile — Dockerfile ubuntu:mantic avec libcsfml-dev — 2024-07-23 — consulté le 2026-11-07
+- https://raw.githubusercontent.com/Epitech/epitest-docker/144a883f/Dockerfile — Dockerfile ubuntu:noble avec libcsfml-dev — 2025-09-01 — consulté le 2026-11-07
+- https://hub.docker.com/v2/repositories/epitechcontent/epitest-docker/tags?page_size=10 — tags Docker Hub de l'image Epitech (latest le 2026-10-07, ubuntu24 le 2026-08-26) — 2026-10-07 — consulté le 2026-11-07
+- https://api.launchpad.net/1.0/~epitech/+archive/ubuntu/ppa?ws.op=getPublishedSources&status=Published — contenu du PPA Epitech (22 paquets, pas de CSFML) — 2026-10-07 — consulté le 2026-11-07
+- https://ppa.launchpadcontent.net/epitech/ppa/ubuntu/dists/resolute/main/binary-amd64/Packages.gz — index du PPA Epitech (epitech-cpool 1.22 dépend de libcsfml-dev) — 2026-10-07 — consulté le 2026-11-07
+- https://ppa.launchpadcontent.net/epitech/ppa/ubuntu/dists/noble/main/binary-amd64/Packages.gz — index du PPA Epitech pour noble (epitech-cpool 1.16) — 2026-07-01 — consulté le 2026-11-07
+- https://api.launchpad.net/1.0/ubuntu/+archive/primary?ws.op=getPublishedSources&source_name=libcsfml&exact_match=true — versions Ubuntu de libcsfml par série (resolute 3.0.0-1 publié le 2026-01-18) — 2026-10-15 — consulté le 2026-11-07
+- https://api.launchpad.net/1.0/ubuntu/+archive/primary?ws.op=getPublishedSources&source_name=libsfml&exact_match=true — versions Ubuntu de libsfml par série — 2026-10-15 — consulté le 2026-11-07
+- https://qa.debian.org/madison.php?package=libcsfml-dev&text=on — versions Debian de libcsfml-dev par suite — non datée — consulté le 2026-11-07
+- https://qa.debian.org/madison.php?package=libsfml-dev&text=on — versions Debian de libsfml-dev par suite — non datée — consulté le 2026-11-07
+- https://packages.debian.org/sid/libcsfml-graphics3.0 — paquet sid 3.0.0-1+b2, dépend de libsfml-graphics3.1 — non datée — consulté le 2026-11-07
+- https://www.debian.org/releases/ — versions Debian (13 trixie stable depuis le 2025-08-09, 14 forky testing) — non datée — consulté le 2026-11-07
+- https://packages.fedoraproject.org/pkgs/CSFML/CSFML-devel/ — CSFML-devel 2.6.1 pour Fedora 43, 44, 45 et Rawhide — non datée — consulté le 2026-11-07
+- https://src.fedoraproject.org/rpms/CSFML/raw/rawhide/f/CSFML.spec — spec Fedora CSFML 2.6.1-8 (patch GNUInstallDirs, fichiers installés) — 2026-07-15 — consulté le 2026-11-07
+- https://src.fedoraproject.org/rpms/SFML/raw/rawhide/f/SFML.spec — spec Fedora SFML 2.6.2 (BuildRequires pkgconfig(...)) — non datée — consulté le 2026-11-07
+- https://archlinux.org/packages/search/json/?name=csfml — API Arch : csfml 3.0.0-1, compilé le 2026-04-18 — 2026-04-18 — consulté le 2026-11-07
+- https://archlinux.org/packages/search/json/?name=sfml — API Arch : sfml 3.1.0-2 et ses dépendances — 2026-08-13 — consulté le 2026-11-07
+- https://formulae.brew.sh/api/formula/csfml.json — formule Homebrew csfml 3.0.0 — non datée — consulté le 2026-11-07
+- https://formulae.brew.sh/api/formula/sfml.json — formule Homebrew sfml 3.0.2 — non datée — consulté le 2026-11-07
+- https://packages.msys2.org/api/search?query=csfml — API MSYS2 : mingw-w64-csfml 3.0.0.rc3-2 — compilé le 2026-11-02 — consulté le 2026-11-07
+- https://packages.msys2.org/base/mingw-w64-csfml — page MSYS2 du paquet csfml — non datée — consulté le 2026-11-07
+- https://raw.githubusercontent.com/microsoft/vcpkg/master/ports/csfml/vcpkg.json — port vcpkg csfml : HTTP 404 (inexistant) — non datée — consulté le 2026-11-07
+- https://raw.githubusercontent.com/microsoft/vcpkg/master/ports/sfml/vcpkg.json — port vcpkg sfml 3.1.0 — non datée — consulté le 2026-11-07
+- https://cmake.org/cmake/help/latest/release/4.0.html — notes de version CMake 4.0 (fin de la compatibilité < 3.5, CMAKE_POLICY_VERSION_MINIMUM) — non datée — consulté le 2026-11-07
+- https://cmake.org/cmake/help/latest/module/GNUInstallDirs.html — règles de CMAKE_INSTALL_LIBDIR (lib, lib64, multiarch) — non datée — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/tree/3.0.0/include/CSFML — headers publics du tag 3.0.0 (source de vérité de l'inventaire) — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/tree/3.0.0/src/CSFML — implémentation C++ du tag 3.0.0 (lue pour l'ownership et les retours de pointeurs) — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Config.h — bool/stdint, version, CSFML_DEPRECATED, sfChar32 — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Graphics/Types.h — déclarations des types opaques Graphics — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Graphics/Sprite.h — sfSprite_create(texture), setTexture sans copie — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Graphics/Text.h — sfText_create(font), setFont sans copie — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Graphics/Shader.h — setTextureUniform sans copie, exemple C++ fautif — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Graphics/RenderWindow.h — pollEvent/waitEvent, settings/states NULL — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Graphics/RenderStates.h — struct sfRenderStates et sfRenderStates_default — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Graphics/Rect.h — sfFloatRect {position,size}, contains/intersects par pointeur — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Graphics/Color.h — sfColor et couleurs prédéfinies — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Graphics/Font.h — création de police (doc muette sur la durée de vie) — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/GPUPreference.h — macro GPU discrète (teste SFML_SYSTEM_WINDOWS) — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Window/Event.h — union sfEvent, sfEventType — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Window/Window.h — sfWindow_create, sfContextSettings, setMinimumSize(NULL) — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Window/WindowBase.h — sfWindowStyle, sfWindowState — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Window/Keyboard.h — sfKeyboard_getDescription (« must be freed ») — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Window/Clipboard.h — chaînes ANSI / UTF-32 — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Window/WindowHandle.h — sfWindowHandle selon la plateforme — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Window/Vulkan.h — types Vulkan et fonctions — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/System/Time.h — sfTime int64_t, sfTime_Zero — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/System/Clock.h — start/stop/reset/isRunning — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/System/InputStream.h — callbacks de flux — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/System/Alloc.h — sfFree — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/System/Buffer.h — sfBuffer — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Audio/Sound.h — setBuffer sans copie — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Audio/Music.h — liste de formats obsolète, sfTimeSpan — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Audio/SoundStream.h — callbacks de stream — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Audio/SoundRecorder.h — callbacks d'enregistrement — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Audio/EffectProcessor.h — sfEffectProcessor sans userData — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Network/Ftp.h — réponses FTP, chaînes à libérer — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Network/Http.h — sfHttp, sfHttpRangeNotSatisfiable = 407 — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Network/IpAddress.h — sfIpAddress char[16] — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Network/Packet.h — readString sans taille — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Network/SocketSelector.h — pointeur faible sur les sockets — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/include/CSFML/Network/TcpListener.h — accept (sfTcpSocket**) — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/CallbackStream.hpp — adaptation sfInputStream (copie de la struct, -1 = erreur) — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Window/Clipboard.cpp — buffers globaux statiques — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Window/Joystick.cpp — nom de joystick statique — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Window/Keyboard.cpp — strdup de getDescription — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Window/Window.cpp — create sans retour NULL, setMinimumSize(NULL) — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Window/VideoMode.cpp — tableau statique des modes plein écran — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Window/Vulkan.cpp — extensions Vulkan statiques — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Graphics/RenderWindow.cpp — create, setView (copie), getView — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Graphics/RenderTexture.cpp — settings NULL accepté — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Graphics/Sprite.cpp — assert(texture), degrés — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Graphics/Text.cpp — getString / getUnicodeString — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Graphics/Font.cpp — openFromFile/Memory/Stream, getInfo — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Graphics/FontStruct.hpp — cache de textures de la police — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Graphics/Texture.cpp — copyToImage (new sfImage) — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Graphics/Image.cpp — saveToMemory avec sfBuffer — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Audio/Music.cpp — openFromFile, getChannelMap — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Audio/SoundRecorder.cpp — listes de périphériques statiques — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Audio/SoundStreamStruct.hpp — appel des callbacks de stream — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Network/Ftp.cpp — strdup / malloc des répertoires — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Network/Http.cpp — sendRequest (new sfHttpResponse) — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Network/IpAddress.cpp — fromString résout les noms, toString strcpy — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Network/Packet.cpp — readString sans taille — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/src/CSFML/Network/TcpListener.cpp — accept alloue la socket — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/doc/mainpage.hpp — exemple de la page d'accueil Doxygen (ne compile pas) — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/CMakeLists.txt — find_package(SFML 3.0 …) l.69 — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/2.6.1/include/SFML/Config.h — sfBool, sfInt64… en 2.6.1 — 2024-05-19 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/2.6.1/include/SFML/Window/Event.h — champs x/y/width/height en 2.6.1 — 2024-05-19 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/2.6.1/include/SFML/Window/Window.h — waitEvent sans timeout en 2.6.1 — 2024-05-19 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/compare/3.0.0...master — différences 3.0.0 → master (vues via git diff local) — 2026-11-01 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/master/include/CSFML/Network/Dns.h — sfDns_resolve (« must be freed with sfFree ») — 2026-11-01 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/master/include/CSFML/Network/IpAddress.h — fromString ne résout plus, char[46], resolve déprécié — 2026-11-01 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/master/CMakeLists.txt — find_package(SFML 3.1 …) — 2026-11-01 — consulté le 2026-11-07
+- https://www.sfml-dev.org/documentation/ — index de la doc officielle (SFML C++ uniquement, aucun lien CSFML) — date inconnue — consulté le 2026-11-07
+- https://www.sfml-dev.org/documentation/csfml/ — testée : HTTP 404 — consulté le 2026-11-07
+- https://www.sfml-dev.org/documentation/3.0.0/csfml/ — testée : HTTP 404 — consulté le 2026-11-07
+- https://sfml.github.io/CSFML/ — testée : HTTP 404 — consulté le 2026-11-07
+- https://github.com/SFML/SFML/blob/3.0.2/include/SFML/Graphics/Font.hpp — durée de vie fichier/buffer/stream de police, getInfo() par référence — 2025-09-17 — consulté le 2026-11-07
+- https://github.com/SFML/SFML/blob/3.0.2/include/SFML/Audio/Music.hpp — buffer de musique à garder (streaming) — 2025-09-17 — consulté le 2026-11-07
+- https://github.com/SFML/SFML/blob/3.0.2/include/SFML/Window/WindowBase.hpp — le curseur ne doit pas être détruit pendant son usage (l.468) — 2025-09-17 — consulté le 2026-11-07
+- https://github.com/SFML/SFML/blob/3.0.2/include/SFML/Network/Http.hpp — getField/getBody par référence, RangeNotSatisfiable = 407 — 2025-09-17 — consulté le 2026-11-07
+- https://github.com/SFML/SFML/blob/3.0.2/include/SFML/Network/Ftp.hpp — getMessage/getListing par référence — 2025-09-17 — consulté le 2026-11-07
+- https://github.com/SFML/SFML/blob/3.0.2/include/SFML/Graphics/Text.hpp — getString() par référence — 2025-09-17 — consulté le 2026-11-07
+- https://github.com/SFML/SFML/blob/3.0.2/src/SFML/Audio/SoundFileFactory.cpp — lecteurs audio FLAC/MP3/OGG/WAV — 2025-09-17 — consulté le 2026-11-07
+- https://github.com/SFML/SFML/blob/3.0.2/src/SFML/Audio/SoundStream.cpp — initialize(channelCount, sampleRate, channelMap) — 2025-09-17 — consulté le 2026-11-07
+- https://github.com/SFML/SFML/blob/3.0.2/src/SFML/Graphics/Transformable.cpp — setRotation → wrapUnsigned — 2025-09-17 — consulté le 2026-11-07
+- https://github.com/SFML/SFML/blob/3.0.2/include/SFML/System/Angle.hpp — existence de sf::Angle en C++ — 2025-09-17 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/<tag>/<chemin> — modèle d'URL des fichiers par tag (en-têtes include/SFML en 2.6.1, include/CSFML en 3.0.0) — tags 2024-05-19 et 2026-01-13 — consulté le 2026-11-07
+- https://api.github.com/repos/SFML/CSFML/releases/tags/3.0.0 — API : release 3.0.0 publiée 2026-01-14T09:12:39Z — 2026-01-14 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/commit/c5158c7 — commit du changement de préfixe d'include SFML/ -> CSFML/ — date non relevée — consulté le 2026-11-07
+- https://www.sfml-dev.org/tutorials/3.0/getting-started/migrate/ — guide de migration SFML C++ 2 -> 3 (ne parle pas de CSFML) — 2024-12 — consulté le 2026-11-07
+- https://www.sfml-dev.org/tutorials/3.1/getting-started/migrate/ — renvoie 404 le 2026-11-07 — — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/commit/9a2a909 — « Fix text creation in main page example » — 2026-10-03 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/commit/cdae9a2 — « Replace C++ examples in shader texture uniform docs » — 2026-11-01 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/commit/bf29112 — « Add example program » (création de examples/) — 2023-12-19 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/examples/example.c — seul exemple C officiel — tag 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/master/.github/workflows/ci.yml — job « docs » (build Doxygen sans publication) — 2026-11-01 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/master/CMakePresets.json — preset dev (CSFML_BUILD_EXAMPLES=ON) — 2026-11-01 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/3.0.0/readme.md — section « Learn » (pas de tutoriel CSFML) — 2026-01-13 — consulté le 2026-11-07
+- https://github.com/SFML/CSFML/blob/master/license.md — licence zlib/png CSFML — 2026 — consulté le 2026-11-07
+- https://api.github.com/repos/SFML/CSFML — métadonnées (has_pages false, 382 étoiles) — consulté le 2026-11-07
+- https://www.sfml-dev.org/documentation/csfml/3.0.0/ — 404 — consulté le 2026-11-07
+- https://www.sfml-dev.org/files/CSFML-3.0.0-windows-64-bit.zip — archive officielle (sans doc) — 2026 — consulté le 2026-11-07
+- https://www.sfml-dev.org/files/CSFML-3.0.0-macOS-clang-arm64.tar.gz — archive officielle (sans doc) — 2026 — consulté le 2026-11-07
+- https://www.sfml-dev.org/files/CSFML-2.6.1-windows-64-bit.zip — archive officielle (sans doc) — 2024 — consulté le 2026-11-07
+- https://www.sfml-dev.org/files/CSFML-2.5.1-windows-64-bit.zip — archive officielle (sans doc) — 2021 — consulté le 2026-11-07
+- https://www.sfml-dev.org/download/bindings/ — liste des bindings (CSFML = SFML 3.0, SSW_SFML3) — consulté le 2026-11-07
+- https://www.sfml-dev.org/download/sfml.net/ — SFML.Net (même position « pas de tutoriel ») — consulté le 2026-11-07
+- https://www.sfml-dev.org/tutorials/3.1/ — index tutoriels 3.1 (EN) — consulté le 2026-11-07
+- https://www.sfml-dev.org/fr/tutorials/3.1/ — interface FR, liste EN — consulté le 2026-11-07
+- https://www.sfml-dev.org/tutorials/3.0/ — index tutoriels 3.0 — consulté le 2026-11-07
+- https://www.sfml-dev.org/tutorials/2.6/ — index tutoriels 2.6 — consulté le 2026-11-07
+- https://www.sfml-dev.org/fr/tutorials/2.6/ — tutoriels 2.6 en français — consulté le 2026-11-07
+- https://www.sfml-dev.org/tutorials/3.1/migration/sfml-2/ — guide de migration 2 → 3 (C++ seulement) — consulté le 2026-11-07
+- https://www.sfml-dev.org/learn/ — page « Learn » (pas de mention de CSFML) — consulté le 2026-11-07
+- https://www.sfml-dev.org/license/ — licence zlib/png (bibliothèques) — consulté le 2026-11-07
+- https://www.sfml-dev.org/faq/ — FAQ (troubleshooting, build-use) — consulté le 2026-11-07
+- https://github.com/SFML/SFML-Website — sources du site (MkDocs Material/ProperDocs) — 2026-10-20 (dernier commit) — consulté le 2026-11-07
+- https://raw.githubusercontent.com/SFML/SFML-Website/master/LICENSE — licence CC BY 4.0 du site — consulté le 2026-11-07
+- https://github.com/SFML/SFML-Website/blob/master/pages/download/csfml/index.en.md — source de la page CSFML — consulté le 2026-11-07
+- https://github.com/SFML/SFML-Website/blob/master/pages/download/bindings/index.en.md — source de la page bindings — consulté le 2026-11-07
+- https://github.com/SFML/SFML-Website/blob/master/pages/faq/licensing.md — FAQ licence (exemples sous zlib) — consulté le 2026-11-07
+- https://github.com/SFML/SFML-Website/blob/master/pages/faq/troubleshooting.md — FAQ dépannage (C++, pas de WSL) — consulté le 2026-11-07
+- https://github.com/SFML/SFML/wiki — wiki SFML (clone SFML.wiki.git, 561b104) — 2026-09-11 — consulté le 2026-11-07
+- https://github.com/SFML/SFML/wiki/Projects — ancienne liste de bindings (seule mention CSFML hors checklist) — consulté le 2026-11-07
+- https://github.com/SFML/SFML/wiki/Home — licence du code du wiki (domaine public) — consulté le 2026-11-07
+- https://packages.ubuntu.com/search?keywords=libcsfml-doc&searchon=names&suite=all&section=all — versions Ubuntu — consulté le 2026-11-07
+- https://packages.debian.org/search?keywords=libcsfml-doc&searchon=names&suite=all&section=all — versions Debian — consulté le 2026-11-07
+- https://mdapi.fedoraproject.org/rawhide/pkg/CSFML — Fedora rawhide CSFML 2.6.1-8.fc45 — consulté le 2026-11-07
+- https://mdapi.fedoraproject.org/f43/pkg/CSFML — Fedora 43 CSFML 2.6.1-5.fc43 — consulté le 2026-11-07
+- https://packages.fedoraproject.org/pkgs/CSFML/ — sous-paquets CSFML, CSFML-devel, CSFML-doc — consulté le 2026-11-07
+- https://archlinux.org/packages/?q=csfml — Arch csfml 1:3.0.0-1 (2026-04-18) — consulté le 2026-11-07
+- https://pkgs.alpinelinux.org/packages?name=csfml*&branch=edge — Alpine csfml-doc 2.5.2-r0 (testing) — 2023-07-01 — consulté le 2026-11-07
+- https://sources.debian.org/src/libcsfml/3.0.0-1/ — sources CSFML 3.0.0 consultables en ligne — consulté le 2026-11-07
+- https://en.sfml-dev.org/forums/ — forum officiel (bloqué par Anubis pour l'outil) — consulté le 2026-11-07
+- https://github.com/withastro/starlight/releases — releases Starlight (0.42.10, 2026-11-06) — 2026-11-06 — consulté le 2026-11-07
+- https://starlight.astro.build/ — site officiel Starlight — — consulté le 2026-11-07
+- https://starlight.astro.build/guides/site-search/ — recherche Pagefind de Starlight — — consulté le 2026-11-07
+- https://starlight.astro.build/guides/authoring-content/ — rédaction de contenu, coloration — — consulté le 2026-11-07
+- https://starlight.astro.build/components/code/ — composant Code (Expressive Code, import ?raw) — — consulté le 2026-11-07
+- https://starlight.astro.build/components/using-components/ — composants dans le MDX (Tabs, Aside, Badge…) — — consulté le 2026-11-07
+- https://starlight.astro.build/guides/i18n/ — i18n et pages de repli — — consulté le 2026-11-07
+- https://starlight.astro.build/reference/frontmatter/ — frontmatter et schéma — — consulté le 2026-11-07
+- https://starlight.astro.build/resources/plugins/ — liste des plugins (links-validator, sidebar-topics, llms-txt…) — — consulté le 2026-11-07
+- https://starlight-versions.vercel.app/getting-started/ — plugin communautaire starlight-versions (« early development ») — — consulté le 2026-11-07
+- https://www.lunaria.dev/ — outil de suivi des traductions — — consulté le 2026-11-07
+- https://docs.astro.build/en/guides/deploy/github/ — déploiement Astro sur GitHub Pages (withastro/action, deploy-pages) — — consulté le 2026-11-07
+- https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages — GitHub Pages — — consulté le 2026-11-07
+- https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits — limites de GitHub Pages — — consulté le 2026-11-07
+- https://pagefind.app/docs/multilingual/ — Pagefind multilingue — — consulté le 2026-11-07
+- https://github.com/shikijs/textmate-grammars-themes — grammaires Shiki (langage c) — — consulté le 2026-11-07
+- https://github.com/meta/docusaurus/releases/tag/v3.10.2 — Docusaurus 3.10.2 (2026-07-10) — 2026-07-10 — consulté le 2026-11-07
+- https://docusaurus.io/docs/deployment — déploiement Docusaurus — — consulté le 2026-11-07
+- https://docusaurus.io/docs/versioning — versionnage Docusaurus — — consulté le 2026-11-07
+- https://docusaurus.io/docs/i18n/tutorial — i18n Docusaurus — — consulté le 2026-11-07
+- https://docusaurus.io/docs/markdown-features/code-blocks — blocs de code Docusaurus — — consulté le 2026-11-07
+- https://github.com/FormidableLabs/prism-react-renderer — coloration de Docusaurus — — consulté le 2026-11-07
+- https://github.com/squidfunk/mkdocs-material/releases — releases MkDocs Material (9.8.0, 2026-10-24) — 2026-10-24 — consulté le 2026-11-07
+- https://github.com/squidfunk/mkdocs-material/issues/8523 — annonce de fin de vie (5 mai 2027) — ouverte 2025-11-06 — consulté le 2026-11-07
+- https://squidfunk.github.io/mkdocs-material/setup/setting-up-versioning/ — versionnage avec mike — — consulté le 2026-11-07
+- https://pypi.org/project/mkdocs/#history — historique PyPI MkDocs (1.6.1, 2.0.dev0 à dev6) — 2026-09-15 — consulté le 2026-11-07
+- https://github.com/zensical/zensical/releases — Zensical 0.1.0 bêta — 2026-11-05 — consulté le 2026-11-07
+- https://zensical.org/docs/compatibility/mkdocs/mike/ — versionnage Zensical (fork de mike) — — consulté le 2026-11-07
+- https://github.com/vuejs/vitepress/releases — VitePress (1.6.4, 2.0.0-alpha.21) — 2026-10-25 — consulté le 2026-11-07
+- https://vitepress.dev/guide/deploy — déploiement VitePress — — consulté le 2026-11-07
+- https://vitepress.dev/guide/markdown — Markdown VitePress (inclusion de code <<<) — — consulté le 2026-11-07
+- https://vitepress.dev/guide/i18n — i18n VitePress — — consulté le 2026-11-07
+- https://vitepress.dev/reference/default-theme-search — recherche locale VitePress — — consulté le 2026-11-07
+- https://pygments.org/languages/ — langages Pygments (coloration MkDocs) — — consulté le 2026-11-07
+- https://packages.ubuntu.com/search?keywords=libcsfml-dev — versions de libcsfml-dev par release Ubuntu (24.04 : 2.6.0-3build1, 26.04 : 3.0.0-1) — — consulté le 2026-11-07
+- https://api.github.com/repos/<owner>/<repo>/releases/latest — API des versions d'actions GitHub (modèle) — — consulté le 2026-11-07
+
+## Secondaires
+
+- https://repology.org/project/csfml/versions — [source secondaire] tableau Repology des versions de CSFML par dépôt — non datée — consulté le 2026-11-07
+- https://repology.org/api/v1/project/csfml — [source secondaire] API Repology csfml (agrégateur, recoupé avec les sources primaires) — non datée — consulté le 2026-11-07
+- https://repology.org/api/v1/project/sfml — [source secondaire] API Repology sfml — non datée — consulté le 2026-11-07
+- https://hub.docker.com/r/epitechcontent/epitest-docker — [source secondaire] page Docker Hub de l'image Epitech (vue via la recherche) — non datée — consulté le 2026-11-07
+- (aucune source secondaire utilisée ; une recherche web « CSFML 3.0 documentation online doxygen » n'a renvoyé que des pages de la doc C++ SFML, ex. https://www.sfml-dev.org/documentation/3.0.0/Glyph_8hpp.html — consulté le 2026-11-07)
+- https://gcc.gnu.org/gcc-14/porting_to.html — GCC 14 : fonctions non déclarées et pointeurs incompatibles deviennent des erreurs — 2024 — consulté le 2026-11-07
+- https://gcc.gnu.org/gcc-15/porting_to.html — GCC 15 : changements à connaître en portage (C23 par défaut) — 2025 — consulté le 2026-11-07
+- https://github.com/JustRomeo/DuckHunt/blob/main/Makefile — Makefile étudiant — consulté le 2026-11-07
+- https://github.com/Bazouz660/RaycasterProject/blob/main/Makefile — Makefile — consulté le 2026-11-07
+- https://www.github.com/cyrilcolinet/MUL_my_hunter_2017 — copie ancien sujet (fonctions autorisées) — 2017 — consulté le 2026-11-07
+- https://github.com/ronanboiteau/NormEZ — checker norme non officiel — consulté le 2026-11-07
+- https://github.com/doom/normoulinette — idem — consulté le 2026-11-07
+- https://www.scribd.com/document/615699169/Epitech-c-Coding-Style — copie du guide — consulté le 2026-11-07
+- https://epitech-documentation.readthedocs.io/en/latest/tools_cheatsheet/csfml/ — doc étudiants Epitech (EPITOOLS), CSFML 2.x — page 2021-06-24 — consulté le 2026-11-07
+- https://github.com/epitools2024/EPITECH-DOCUMENTATION — dépôt de la doc ci-dessus — 2022-09-24 — consulté le 2026-11-07
+- https://epitech-2022-technical-documentation.readthedocs.io/en/latest/csfml.html — doc Epitech 2022 (dépôt jess-sys/22Docs en 404) — date inconnue — consulté le 2026-11-07
+- https://enichy.github.io/QuikckStart_CSFML/ — « QuickStart CSFML » (Doxygen, squelette) — 2024-02-09 — consulté le 2026-11-07
+- https://github.com/Enichy/QuikckStart_CSFML — dépôt correspondant — 2024-02-09 — consulté le 2026-11-07
+- https://github.com/marttop/Epidoc — doc Docusaurus non publiée — 2021-07-16 — consulté le 2026-11-07
+- https://github.com/Alex-xp/csfml-docs-ru — traduction russe des headers CSFML 2.x — 2020-11-05 — consulté le 2026-11-07
+- https://medium.com/@sami.hamansourt/introduction-to-csfml-graphical-programming-c8aa995c7b18 — article Medium intro CSFML (403, connu par extraits) — ≈ 2024-10 — consulté le 2026-11-07
+- https://www.youtube.com/results?search_query=csfml+tutorial — résultats YouTube (dates relatives) — consulté le 2026-11-07
+- https://www.youtube.com/watch?v=utHMKoBjU8Y — « Tuto CSFML: 1 - Comment créer une window ? » (The Elite of Segfault) — ≈ 2020 — consulté le 2026-11-07
+- https://www.youtube.com/watch?v=xT-2Xd7V49U — « Tuto CSFML: 2 - Votre premier sprite ! » — ≈ 2020 — consulté le 2026-11-07
+- https://www.youtube.com/watch?v=WKGqcIrpKRY — « Let's Code - Initiation à la CSFML » (Karim Dridi) — ≈ 2021 — consulté le 2026-11-07
+- https://www.youtube.com/watch?v=hkyw9MRfgME — « Let's Code - Initiation à CSFML - Fractales » — ≈ 2021 — consulté le 2026-11-07
+- https://www.youtube.com/watch?v=LQCiefkZDpY — « CSFML #01 Faire un Runner » (Mathieu) — ≈ 2022 — consulté le 2026-11-07
+- https://www.youtube.com/watch?v=CHVhfXS2UrE — « CSFML #07 Norme et optimisation du code » (Mathieu) — ≈ 2023 — consulté le 2026-11-07
+- https://www.youtube.com/watch?v=UIHEXy1xaeU — « SFML in C part 1: The Basics » (General Vagueness) — ≈ 2020 — consulté le 2026-11-07
+- https://github.com/Floriantoine/CSFML-Workshop — exercices CSFML — 2020-11-25 — consulté le 2026-11-07
+- https://github.com/ImOverlord/CSFML-Demo — exemples CSFML (MIT) — 2017-12-15 — consulté le 2026-11-07
+- https://github.com/PierreMauger/CSFML_frag_shader_example — exemple shader CSFML — 2021-05-27 — consulté le 2026-11-07
+- https://github.com/matteoepitech/epivnc — Docker + noVNC pour CSFML hors Linux (MIT) — 2026-02-01 — consulté le 2026-11-07
+- https://raw.githubusercontent.com/matteoepitech/epivnc/main/Dockerfile — base epitechcontent/epitest-docker — consulté le 2026-11-07
+- https://github.com/NemesisX1/CleanSFML — wrapper CSFML — 2020-07-07 — consulté le 2026-11-07
+- https://github.com/JulienTD/BillyScene — wrapper CSFML — 2019-05-07 — consulté le 2026-11-07
+- https://github.com/unwanted666dkjf/SSW_SFML3 — binding C non officiel SFML 3.x — 2026-09-29 — consulté le 2026-11-07
+- https://oprypin.github.io/crsfml/ — doc CrSFML (modèle d'inspiration) — consulté le 2026-11-07
+- https://www.rubydoc.info/gems/ruby-sfml/SFML/C/Window — ruby-sfml (FFI sur CSFML 3) — consulté le 2026-11-07
+- https://github.com/microsoft/WSL/issues/8899 — ticket WSL « can't open display » (générique) — consulté le 2026-11-07
+- https://api.github.com/search/repositories?q=csfml+tutorial — 0 résultat — consulté le 2026-11-07
+- https://api.github.com/search/repositories?q=csfml+documentation — 3 résultats — consulté le 2026-11-07
+- https://api.github.com/search/repositories?q=topic:csfml — 163 dépôts (surtout projets) — consulté le 2026-11-07
+- https://gamefromscratch.com/game-from-scratch-c-and-sfml-edition/ — tutoriel C++ (pas CSFML) — consulté le 2026-11-07
+- https://squidfunk.github.io/mkdocs-material/blog/2026/02/18/mkdocs-2.0/ — article de l'équipe Material sur MkDocs 2.0 (partie prenante) — 2026-02-18, mis à jour 2026-10-02 — consulté le 2026-11-07

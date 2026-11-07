@@ -1,0 +1,9 @@
+build/
+*.o
+*.a
+*.so
+node_modules/
+dist/
+.astro/
+/work/
+a.out
