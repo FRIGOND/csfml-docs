@@ -40,3 +40,6 @@ Périmètre : 66 pages écrites à la main (liste dans l'en-tête de tests/AUDIT
 - Fait : tools/audit-pages.py (0 ERREUR, liste blanche ALLOW + chiffres recomptés), tools/audit-blocks.py, tools/audit-claims.py ; sorties dans tests/logs/audit-complet/{auto,blocs,affirmations}.md.
 - En cours : 2 relecteurs en arrière-plan (guides+en / tutoriels+migration) → rapports tests/logs/audit-complet/<page>.md. Moi : correction des affirmations « Epitech utilise… » et paragraphes SANS MARQUE.
 - Reste : corrections issues des rapports, tests/AUDIT-COMPLET.md, build+check, run-all-examples, commit, push, workflows.
+- Fait (2026-11-07) : tools/test-snippets.py (66 extraits C non issus d'examples/ : compilation -fsyntax-only dans la bonne version, 0 échec), affirmations : 0 SANS MARQUE (formulations « Epitech » corrigées dans install/index, epitech/environment, makefile, faq), chiffres recomptés (140, 40, 42, 926, 850).
+- En attente : rapports des 2 relecteurs (tests/logs/audit-complet/<page>.md). Ensuite : corrections, tests/AUDIT-COMPLET.md, build+check, run-all-examples, push, workflows.
+- Relecteurs relancés après limite d'usage (42 pages sans rapport : voir ls tests/logs/audit-complet). Reprise : relancer SendMessage si besoin, puis corrections + AUDIT-COMPLET.md.

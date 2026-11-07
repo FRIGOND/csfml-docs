@@ -180,6 +180,8 @@ destroy = {v: len([n for n in api[v]["funcs"] if n.endswith("_destroy")]) for v 
 # (page, regex avec 1 groupe numérique, valeur recomptée, commentaire)
 COUNT_CLAIMS = [
     ("3-0/migration/types.mdx", r"\((\d+) fonctions\)", _typeonly(), "fonctions dont seul le type change (sfBool→bool, sfUint8→uint8_t…)"),
+    ("3-0/migration/overview.mdx", r"il touche (\d+) fonctions", _typeonly(), "fonctions dont seul le type change"),
+    ("3-0/migration/objects-creation.mdx", r"sans effet pour les (\d+) fonctions testées", destroy["3.0"], "fonctions *_destroy 3.0"),
     ("guides/help/about.mdx", r"csfml-3\.0\.0\.json` \((\d+) fonctions\)", len(api["3.0"]["funcs"]), "fonctions 3.0"),
     ("guides/help/about.mdx", r"csfml-2\.6\.1\.json` \((\d+) fonctions\)", len(api["2.6"]["funcs"]), "fonctions 2.6"),
     ("guides/concepts/memory.mdx", r"les (\d+) fonctions `\*_destroy` appelées avec `NULL`", destroy["3.0"], "fonctions *_destroy 3.0"),

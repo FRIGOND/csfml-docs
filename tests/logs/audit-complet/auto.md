@@ -259,6 +259,8 @@ Généré par `python3 tools/audit-pages.py` (relançable). ERREUR = à corriger
 | Page | Dans la page | Recompté | Sens | Verdict |
 |---|---|---|---|---|
 | 3-0/migration/types.mdx | 140 | 140 | fonctions dont seul le type change (sfBool→bool, sfUint8→uint8_t…) | OK |
+| 3-0/migration/overview.mdx | 140 | 140 | fonctions dont seul le type change | OK |
+| 3-0/migration/objects-creation.mdx | 40 | 40 | fonctions *_destroy 3.0 | OK |
 | guides/help/about.mdx | 926 | 926 | fonctions 3.0 | OK |
 | guides/help/about.mdx | 850 | 850 | fonctions 2.6 | OK |
 | guides/concepts/memory.mdx | 40 | 40 | fonctions *_destroy 3.0 | OK |
