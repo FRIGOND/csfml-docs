@@ -54,7 +54,7 @@ return text;
   </TabItem>
 </Tabs>
 
-En 3.0, `sfText_create` **exige** la police (`NULL` interdit : assertion).
+En 3.0, `sfText_create` **exige** la police (`NULL` interdit ; l'assertion a été constatée pour `sfSprite_create`, pas testée pour `sfText_create`).
 
 Comme le sprite pour la texture, le texte **garde l'adresse** de sa police. On détruit donc les textes **avant** la police.
 

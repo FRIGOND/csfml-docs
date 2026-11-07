@@ -34,7 +34,7 @@ Conséquence pratique : range la texture et le sprite dans la même structure, e
 - Police : si tu libères le buffer puis demandes un glyphe, valgrind signale `Invalid read of size 8` (n°22).
 - Musique : `Invalid read of size 1` dans le thread audio (n°23). Sans valgrind, le programme semblait marcher : c'est un comportement indéfini masqué.
 
-Garde donc le buffer en vie tant que la police ou la musique existe. De même, `sfFont_createFromFile` et `sfMusic_createFromFile` relisent le fichier : il doit rester accessible.
+Garde donc le buffer en vie tant que la police ou la musique existe. De même, `sfFont_createFromFile` et `sfMusic_createFromFile` relisent probablement le fichier plus tard : garde-le accessible (non vérifié dans les headers ; le cas `createFromMemory` est, lui, confirmé par valgrind).
 
 ## Règle 4 : chaînes renvoyées, à copier ou à libérer
 

@@ -186,3 +186,27 @@ Site : `site/` (Astro 7.4.7, Starlight 0.42.10, starlight-sidebar-topics 0.9.0, 
 | — | Garde-fou signatures | ✅ | `<ApiFunction name="sfSprite_inexistante">` → `Error: ApiFunction: sfSprite_inexistante absente des headers de CSFML 3.0`. |
 | — | Rendu | ✅ | Captures Firefox headless (bureau 1280 px, mobile 390 px) lues : sidebar, recherche, mode clair/sombre (sélecteur « Auto »), langue, code C coloré avec bouton copier, tableaux de paramètres. Sur mobile : bloc de code à défilement horizontal. |
 | — | Point à corriger en phase D | ⚠️ | le badge « Testé sur » est répété sous chaque fonction : une fois par page suffit. Les descriptions des paramètres viennent des headers (anglais). |
+
+## Phase D/E — contrôle final (2026-11-07)
+
+| Contrôle | Résultat |
+|---|---|
+| Exemples (62) + tutoriels (18 étapes), CSFML 3.0.0 et 2.6.1, Xvfb | 80/80 OK, aussi sous valgrind (fuites « definite » = 0, suppression FreeType documentée) |
+| Build du site (Astro/Starlight) | 559 pages |
+| Liens et ancres internes (`tools/check-site.py`) | 77 091 liens, 0 problème |
+| Rendu mobile (390 px, Firefox headless) | texte et tableaux OK, pas de scroll horizontal de page |
+| Audit indépendant (`tests/logs/audit-independant.md`) | 27 pages + 80 fonctions contrôlées contre les headers réels : aucune fonction/paramètre faux ; 6 pages avec affirmations non marquées → corrigées ou marquées « non vérifié » ; défauts du générateur (`_Bool`, pointeur de fonction, brief trop long, texte tronqué) → corrigés dans `tools/gen_api.py` |
+
+Contesté : l'audit estime ~115 fonctions « types seuls » au lieu de 140 ; 140 vient du script (`tools/gen_site_pages.py`, JSON des headers), recomptage approximatif de l'auditeur non retenu.
+
+### Limites connues
+- Workflows GitHub Actions **non exécutés** (pas de GitHub ici) : à valider au premier push.
+- Non testé : Debian, Fedora, Arch, macOS, Windows, WSL, SFML 3.1, vrai bureau Wayland, vraies touches clavier (Xvfb), audio réel.
+- Version 2.6 testée = 2.6.1 compilée depuis le tag ; l'image Epitech Ubuntu 24.04 a 2.6.0.
+- Pages EN : seulement l'accueil et « première fenêtre » ; le reste est en français.
+- Test Pagefind (pluriel/singulier) non fait. Avertissement de build « collection i18n vide » : bénin.
+- `examples/assets/LICENSE.md` : licences d'assets à re-vérifier.
+- Le résumé « Doc officielle » est en anglais (copié des headers).
+
+### Prévisualiser en local
+`source tools/env.sh && cd site && npm ci && npm run dev` (http://localhost:4321/) ; build : `npm run build && npm run check`.

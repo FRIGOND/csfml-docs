@@ -327,7 +327,7 @@ sfMusic_play(mus);
 sfSoundBuffer *buf = sfSoundBuffer_createFromFile("shot.ogg");
 if (buf == NULL)
     return 84;
-sfSound *snd = sfSound_create(buf);             /* NULL interdit : assert */
+sfSound *snd = sfSound_create(buf);             /* NULL interdit */
 sfSound_play(snd);
 sfMusic *mus = sfMusic_createFromFile("theme.ogg");
 if (mus == NULL)
