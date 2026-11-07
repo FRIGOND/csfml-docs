@@ -101,3 +101,14 @@ Script : `tests/run-p1-window.sh` (log : `tests/logs/p1-window.log`). Bibliothè
 | 23 | `sfMusic_createFromMemory` : idem | ✅ | valgrind : `Invalid read of size 1` dans le thread audio (`Music::onGetData` ← libvorbisfile). Sans valgrind le programme « marche » (offset 0.99 s) : comportement indéfini masqué. |
 | 33 | Xvfb + `LIBGL_ALWAYS_SOFTWARE=1` : fenêtre + display | ✅ | 3.0.0 et 2.6.1 : `window=<ptr>`, exit 0. Bruit stderr Mesa : `amdgpu_device_initialize failed` (inoffensif). Messages SFML : `Failed to create input context ... TextEntered`, `Setting vertical sync not supported`. |
 | 34 | Audio sans périphérique | ⚠️ messages différents du rapport | **3.0.0** (PulseAudio/ALSA rendus inaccessibles) : `miniaudio ERROR: [PulseAudio] Failed to connect PulseAudio context`, `Failed to get audio playback devices: Resource does not exist`, `Failed to initialize sound: No engine available` ; `sfMusic_createFromFile` et `sfSoundBuffer_createFromFile` retournent un pointeur valide, `sfMusic_getStatus` = 2 (Playing), pas de crash, exit 0. Le message « Using NULL audio backend » du rapport n'a **pas** été observé dans cette configuration. **2.6.1** (OpenAL, driver pulse indisponible) : `Failed to open the audio device` (×2 par objet), objets créés, `sfMusic_getStatus` = 0 (Stopped), pas de crash, exit 0. |
+
+**Note (lot 4, 2.6.1)** : `-Wall -Wextra` + `#include <SFML/Graphics.h>` (CSFML 2.6.1 compilée localement) émet `warning: type is deprecated [-Wdeprecated-declarations]` depuis le header (`SFML/Window/Event.h:133`, type `sfMouseWheelEvent`), même sans l'utiliser. Un projet en `-Werror` ne compile donc pas en 2.6.1 sans `-Wno-deprecated-declarations`. À confirmer sur 2.6.0 (paquet Ubuntu 24.04) en phase 2 ; important pour la section Epitech.
+Sans `DISPLAY`, 2.6.1 se comporte comme 3.0.0 : message `Failed to open X11 display...` puis abort (exit 134). SFML 3.0.2 ne contient aucune mention de Wayland (`strings libsfml-window.so | grep -ci wayland` = 0) : X11 seulement (via XWayland).
+
+## A.4 — Tests P1 (lot 5 : build statique, SFML_ROOT)
+
+| N° | Test | Verdict | Constat |
+|---|---|---|---|
+| 7 | Build SFML 3.0.2 sans sudo, partagée | ✅ | fait par `tools/build-csfml.sh` : `libsfml-*.so.3.0.2`, `lib/cmake/SFML`, `lib/pkgconfig/sfml-*.pc` présents |
+| 8 | CSFML 3.0.0 trouve SFML via `SFML_ROOT` | ✅ | testé dans le test 11 (`-DSFML_ROOT=<préfixe>`, sans `SFML_DIR`) ; le build principal utilisait `-DSFML_DIR` |
+| 11 | SFML 3 statique par défaut ; CSFML ne la trouve pas | ✅ | SFML installée avec `libsfml-*-s.a` (statique par défaut). Configuration de CSFML 3.0.0 : `CMake Error at …/SFMLConfig.cmake:185: Requested SFML configuration (Shared) was not found. Set SFML_STATIC_LIBRARIES to ON for static libraries`, puis `find_package(SFML) … NOT FOUND` (`CMakeLists.txt:69`). Avec `-DCSFML_LINK_SFML_STATICALLY=ON` : configuration réussie (génération OK, build non lancé). |

@@ -1,0 +1,765 @@
+=== 4.1 avant  natif rc=0
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_avant.c:2:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_avant.c: In function ‘block’:
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_avant.c:14:17: warning: unused variable ‘full’ [-Wunused-variable]
+   14 | sfRenderWindow *full = sfRenderWindow_create(sfVideoMode_getDesktopMode(), "full", sfFullscreen, NULL);
+      |                 ^~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_avant.c:13:17: warning: unused variable ‘win’ [-Wunused-variable]
+   13 | sfRenderWindow *win = sfRenderWindow_create(mode, "my_hunter", sfResize | sfClose, NULL);
+      |                 ^~~
+
+--- croisé rc=1
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_avant_inc3.c:5:8: error: unknown type name ‘sfBool’; did you mean ‘_Bool’?
+    5 | extern sfBool paused; extern const sfTexture *tileset;
+      |        ^~~~~~
+      |        _Bool
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_avant_inc3.c: In function ‘block’:
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_avant_inc3.c:12:20: warning: missing braces around initializer [-Wmissing-braces]
+   12 | sfVideoMode mode = {800, 600, 32};
+      |                    ^
+      |                     {       }
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_avant_inc3.c:13:84: error: incompatible type for argument 4 of ‘sfRenderWindow_create’
+   13 | sfRenderWindow *win = sfRenderWindow_create(mode, "my_hunter", sfResize | sfClose, NULL);
+      |                                                                                    ^~~~
+      |                                                                                    |
+      |                                                                                    void *
+In file included from ~/csfml-3.0/include/CSFML/Graphics.h:44,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_avant_inc3.c:2:
+~/csfml-3.0/include/CSFML/Graphics/RenderWindow.h:63:30: note: expected ‘sfWindowState’ but argument is of type ‘void *’
+   63 |     sfWindowState            state,
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_avant_inc3.c:13:23: error: too few arguments to function ‘sfRenderWindow_create’; expected 5, have 4
+   13 | sfRenderWindow *win = sfRenderWindow_create(mode, "my_hunter", sfResize | sfClose, NULL);
+      |                       ^~~~~~~~~~~~~~~~~~~~~
+~/csfml-3.0/include/CSFML/Graphics/RenderWindow.h:59:36: note: declared here
+   59 | CSFML_GRAPHICS_API sfRenderWindow* sfRenderWindow_create(
+      |                                    ^~~~~~~~~~~~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_avant_inc3.c:14:98: error: incompatible type for argument 4 of ‘sfRenderWindow_create’
+   14 | sfRenderWindow *full = sfRenderWindow_create(sfVideoMode_getDesktopMode(), "full", sfFullscreen, NULL);
+      |                                                                                                  ^~~~
+      |                                                                                                  |
+      |                                                                                                  void *
+~/csfml-3.0/include/CSFML/Graphics/RenderWindow.h:63:30: note: expected ‘sfWindowState’ but argument is of type ‘void *’
+   63 |     sfWindowState            state,
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_avant_inc3.c:14:24: error: too few arguments to function ‘sfRenderWindow_create’; expected 5, have 4
+   14 | sfRenderWindow *full = sfRenderWindow_create(sfVideoMode_getDesktopMode(), "full", sfFullscreen, NULL);
+      |                        ^~~~~~~~~~~~~~~~~~~~~
+~/csfml-3.0/include/CSFML/Graphics/RenderWindow.h:59:36: note: declared here
+   59 | CSFML_GRAPHICS_API sfRenderWindow* sfRenderWindow_create(
+      |                                    ^~~~~~~~~~~~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_avant_inc3.c:14:17: warning: unused variable ‘full’ [-Wunused-variable]
+   14 | sfRenderWindow *full = sfRenderWindow_create(sfVideoMode_getDesktopMode(), "full", sfFullscreen, NULL);
+      |                 ^~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_avant_inc3.c:13:17: warning: unused variable ‘win’ [-Wunused-variable]
+   13 | sfRenderWindow *win = sfRenderWindow_create(mode, "my_hunter", sfResize | sfClose, NULL);
+      |                 ^~~
+
+=== 4.1 apres  natif rc=0
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_apres.c: In function ‘block’:
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_apres.c:14:17: warning: unused variable ‘full’ [-Wunused-variable]
+   14 | sfRenderWindow *full = sfRenderWindow_create(sfVideoMode_getDesktopMode(), "full", sfDefaultStyle, sfFullscreen, NULL);
+      |                 ^~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_apres.c:13:17: warning: unused variable ‘win’ [-Wunused-variable]
+   13 | sfRenderWindow *win = sfRenderWindow_create(mode, "my_hunter", sfResize | sfClose, sfWindowed, NULL);
+      |                 ^~~
+
+--- croisé rc=1
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_apres_inc2.c:2:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_apres_inc2.c: In function ‘block’:
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_apres_inc2.c:12:1: warning: braces around scalar initializer
+   12 | sfVideoMode mode = {{800, 600}, 32};
+      | ^~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_apres_inc2.c:12:1: note: (near initialization for ‘mode.width’)
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_apres_inc2.c:12:27: warning: excess elements in scalar initializer
+   12 | sfVideoMode mode = {{800, 600}, 32};
+      |                           ^~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_apres_inc2.c:12:27: note: (near initialization for ‘mode.width’)
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_apres_inc2.c:12:1: warning: missing initializer for field ‘bitsPerPixel’ of ‘sfVideoMode’ [-Wmissing-field-initializers]
+   12 | sfVideoMode mode = {{800, 600}, 32};
+      | ^~~~~~~~~~~
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:33:
+~/csfml-2.6/include/SFML/Window/VideoMode.h:45:18: note: ‘bitsPerPixel’ declared here
+   45 |     unsigned int bitsPerPixel; ///< Video mode pixel depth, in bits per pixels
+      |                  ^~~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_apres_inc2.c:13:84: error: ‘sfWindowed’ undeclared (first use in this function); did you mean ‘sfWindow’?
+   13 | sfRenderWindow *win = sfRenderWindow_create(mode, "my_hunter", sfResize | sfClose, sfWindowed, NULL);
+      |                                                                                    ^~~~~~~~~~
+      |                                                                                    sfWindow
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_apres_inc2.c:13:84: note: each undeclared identifier is reported only once for each function it appears in
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_apres_inc2.c:13:23: error: too many arguments to function ‘sfRenderWindow_create’; expected 4, have 5
+   13 | sfRenderWindow *win = sfRenderWindow_create(mode, "my_hunter", sfResize | sfClose, sfWindowed, NULL);
+      |                       ^~~~~~~~~~~~~~~~~~~~~                                                    ~~~~
+In file included from ~/csfml-2.6/include/SFML/Graphics.h:46:
+~/csfml-2.6/include/SFML/Graphics/RenderWindow.h:55:36: note: declared here
+   55 | CSFML_GRAPHICS_API sfRenderWindow* sfRenderWindow_create(sfVideoMode mode, const char* title, sfUint32 style, const sfContextSettings* settings);
+      |                                    ^~~~~~~~~~~~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_apres_inc2.c:14:100: error: passing argument 4 of ‘sfRenderWindow_create’ makes pointer from integer without a cast [-Wint-conversion]
+   14 | sfRenderWindow *full = sfRenderWindow_create(sfVideoMode_getDesktopMode(), "full", sfDefaultStyle, sfFullscreen, NULL);
+      |                                                                                                    ^~~~~~~~~~~~
+      |                                                                                                    |
+      |                                                                                                    int
+~/csfml-2.6/include/SFML/Graphics/RenderWindow.h:55:136: note: expected ‘const sfContextSettings *’ but argument is of type ‘int’
+   55 | CSFML_GRAPHICS_API sfRenderWindow* sfRenderWindow_create(sfVideoMode mode, const char* title, sfUint32 style, const sfContextSettings* settings);
+      |                                                                                                               ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_apres_inc2.c:14:24: error: too many arguments to function ‘sfRenderWindow_create’; expected 4, have 5
+   14 | sfRenderWindow *full = sfRenderWindow_create(sfVideoMode_getDesktopMode(), "full", sfDefaultStyle, sfFullscreen, NULL);
+      |                        ^~~~~~~~~~~~~~~~~~~~~                                                                     ~~~~
+~/csfml-2.6/include/SFML/Graphics/RenderWindow.h:55:36: note: declared here
+   55 | CSFML_GRAPHICS_API sfRenderWindow* sfRenderWindow_create(sfVideoMode mode, const char* title, sfUint32 style, const sfContextSettings* settings);
+      |                                    ^~~~~~~~~~~~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_apres_inc2.c:14:17: warning: unused variable ‘full’ [-Wunused-variable]
+   14 | sfRenderWindow *full = sfRenderWindow_create(sfVideoMode_getDesktopMode(), "full", sfDefaultStyle, sfFullscreen, NULL);
+      |                 ^~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.1_apres_inc2.c:13:17: warning: unused variable ‘win’ [-Wunused-variable]
+   13 | sfRenderWindow *win = sfRenderWindow_create(mode, "my_hunter", sfResize | sfClose, sfWindowed, NULL);
+      |                 ^~~
+
+=== 4.2 avant  natif rc=0
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_avant.c:2:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+
+--- croisé rc=1
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_avant_inc3.c:6:8: error: unknown type name ‘sfBool’; did you mean ‘_Bool’?
+    6 | extern sfBool paused; extern const sfTexture *tileset;
+      |        ^~~~~~
+      |        _Bool
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_avant_inc3.c: In function ‘block’:
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_avant_inc3.c:18:32: error: ‘sfMouseButtonEvent’ has no member named ‘x’
+   18 |         shoot(event.mouseButton.x, event.mouseButton.y);
+      |                                ^
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_avant_inc3.c:18:53: error: ‘sfMouseButtonEvent’ has no member named ‘y’
+   18 |         shoot(event.mouseButton.x, event.mouseButton.y);
+      |                                                     ^
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_avant_inc3.c:20:26: error: ‘sfSizeEvent’ has no member named ‘width’
+   20 |         resize(event.size.width, event.size.height);
+      |                          ^
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_avant_inc3.c:20:44: error: ‘sfSizeEvent’ has no member named ‘height’
+   20 |         resize(event.size.width, event.size.height);
+      |                                            ^
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_avant_inc3.c:21:23: error: ‘sfEvtLostFocus’ undeclared (first use in this function)
+   21 |     if (event.type == sfEvtLostFocus)
+      |                       ^~~~~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_avant_inc3.c:21:23: note: each undeclared identifier is reported only once for each function it appears in
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_avant_inc3.c:22:18: error: ‘sfTrue’ undeclared (first use in this function); did you mean ‘sfTime’?
+   22 |         paused = sfTrue;
+      |                  ^~~~~~
+      |                  sfTime
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_avant_inc3.c:23:60: error: ‘sfKeyReturn’ undeclared (first use in this function)
+   23 |     if (event.type == sfEvtKeyPressed && event.key.code == sfKeyReturn)
+      |                                                            ^~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_avant_inc3.c:25:23: error: ‘sfEvtMouseWheelMoved’ undeclared (first use in this function); did you mean ‘sfEvtMouseMoved’?
+   25 |     if (event.type == sfEvtMouseWheelMoved)
+      |                       ^~~~~~~~~~~~~~~~~~~~
+      |                       sfEvtMouseMoved
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_avant_inc3.c:26:19: error: ‘sfEvent’ has no member named ‘mouseWheel’
+   26 |         zoom(event.mouseWheel.delta);
+      |                   ^
+
+=== 4.2 apres  natif rc=0
+
+--- croisé rc=1
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_apres_inc2.c:2:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_apres_inc2.c: In function ‘block’:
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_apres_inc2.c:18:32: error: ‘sfMouseButtonEvent’ has no member named ‘position’
+   18 |         shoot(event.mouseButton.position.x, event.mouseButton.position.y);
+      |                                ^
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_apres_inc2.c:18:62: error: ‘sfMouseButtonEvent’ has no member named ‘position’
+   18 |         shoot(event.mouseButton.position.x, event.mouseButton.position.y);
+      |                                                              ^
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_apres_inc2.c:20:26: error: ‘sfSizeEvent’ has no member named ‘size’
+   20 |         resize(event.size.size.x, event.size.size.y);
+      |                          ^
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_apres_inc2.c:20:45: error: ‘sfSizeEvent’ has no member named ‘size’
+   20 |         resize(event.size.size.x, event.size.size.y);
+      |                                             ^
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_apres_inc2.c:21:23: error: ‘sfEvtFocusLost’ undeclared (first use in this function)
+   21 |     if (event.type == sfEvtFocusLost)
+      |                       ^~~~~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.2_apres_inc2.c:21:23: note: each undeclared identifier is reported only once for each function it appears in
+
+=== 4.3 avant  natif rc=0
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_avant.c:2:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+
+--- croisé rc=1
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_avant_inc3.c:6:8: error: unknown type name ‘sfBool’; did you mean ‘_Bool’?
+    6 | extern sfBool paused; extern const sfTexture *tileset;
+      |        ^~~~~~
+      |        _Bool
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_avant_inc3.c: In function ‘block’:
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_avant_inc3.c:14:17: error: too few arguments to function ‘sfSprite_create’; expected 1, have 0
+   14 | sfSprite *spr = sfSprite_create();
+      |                 ^~~~~~~~~~~~~~~
+In file included from ~/csfml-3.0/include/CSFML/Graphics.h:47,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_avant_inc3.c:2:
+~/csfml-3.0/include/CSFML/Graphics/Sprite.h:48:30: note: declared here
+   48 | CSFML_GRAPHICS_API sfSprite* sfSprite_create(const sfTexture* texture);
+      |                              ^~~~~~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_avant_inc3.c:15:31: error: ‘sfTrue’ undeclared (first use in this function); did you mean ‘sfTime’?
+   15 | sfSprite_setTexture(spr, tex, sfTrue);
+      |                               ^~~~~~
+      |                               sfTime
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_avant_inc3.c:15:31: note: each undeclared identifier is reported only once for each function it appears in
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_avant_inc3.c:16:18: warning: missing braces around initializer [-Wmissing-braces]
+   16 | sfIntRect rect = {0, 0, 110, 110};
+      |                  ^
+      |                   {   } {       }
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_avant_inc3.c:17:5: error: ‘sfIntRect’ has no member named ‘left’
+   17 | rect.left += 110;
+      |     ^
+
+=== 4.3 apres  natif rc=0
+
+--- croisé rc=1
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_apres_inc2.c:2:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_apres_inc2.c: In function ‘block’:
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_apres_inc2.c:16:17: error: too many arguments to function ‘sfSprite_create’; expected 0, have 1
+   16 | sfSprite *spr = sfSprite_create(tex);          /* NULL interdit : assert */
+      |                 ^~~~~~~~~~~~~~~ ~~~
+In file included from ~/csfml-2.6/include/SFML/Graphics.h:49:
+~/csfml-2.6/include/SFML/Graphics/Sprite.h:46:30: note: declared here
+   46 | CSFML_GRAPHICS_API sfSprite* sfSprite_create(void);
+      |                              ^~~~~~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_apres_inc2.c:17:1: warning: braces around scalar initializer
+   17 | sfIntRect rect = {{0, 0}, {110, 110}};
+      | ^~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_apres_inc2.c:17:1: note: (near initialization for ‘rect.left’)
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_apres_inc2.c:17:23: warning: excess elements in scalar initializer
+   17 | sfIntRect rect = {{0, 0}, {110, 110}};
+      |                       ^
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_apres_inc2.c:17:23: note: (near initialization for ‘rect.left’)
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_apres_inc2.c:17:1: warning: braces around scalar initializer
+   17 | sfIntRect rect = {{0, 0}, {110, 110}};
+      | ^~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_apres_inc2.c:17:1: note: (near initialization for ‘rect.top’)
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_apres_inc2.c:17:33: warning: excess elements in scalar initializer
+   17 | sfIntRect rect = {{0, 0}, {110, 110}};
+      |                                 ^~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_apres_inc2.c:17:33: note: (near initialization for ‘rect.top’)
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_apres_inc2.c:17:1: warning: missing initializer for field ‘width’ of ‘sfIntRect’ [-Wmissing-field-initializers]
+   17 | sfIntRect rect = {{0, 0}, {110, 110}};
+      | ^~~~~~~~~
+In file included from ~/csfml-2.6/include/SFML/Graphics/CircleShape.h:33,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:34:
+~/csfml-2.6/include/SFML/Graphics/Rect.h:52:9: note: ‘width’ declared here
+   52 |     int width;
+      |         ^~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.3_apres_inc2.c:18:5: error: ‘sfIntRect’ has no member named ‘position’
+   18 | rect.position.x += 110;
+      |     ^
+
+=== 4.4 avant  natif rc=0
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.4_avant.c:2:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+
+--- croisé rc=1
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.4_avant_inc3.c:6:8: error: unknown type name ‘sfBool’; did you mean ‘_Bool’?
+    6 | extern sfBool paused; extern const sfTexture *tileset;
+      |        ^~~~~~
+      |        _Bool
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.4_avant_inc3.c: In function ‘block’:
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.4_avant_inc3.c:14:47: error: ‘sfMouseButtonEvent’ has no member named ‘x’
+   14 | if (sfFloatRect_contains(&b, event.mouseButton.x, event.mouseButton.y))
+      |                                               ^
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.4_avant_inc3.c:14:68: error: ‘sfMouseButtonEvent’ has no member named ‘y’
+   14 | if (sfFloatRect_contains(&b, event.mouseButton.x, event.mouseButton.y))
+      |                                                                    ^
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.4_avant_inc3.c:14:5: error: too many arguments to function ‘sfFloatRect_contains’; expected 2, have 3
+   14 | if (sfFloatRect_contains(&b, event.mouseButton.x, event.mouseButton.y))
+      |     ^~~~~~~~~~~~~~~~~~~~                          ~~~~~~~~~~~~~~~~~~~
+In file included from ~/csfml-3.0/include/CSFML/Graphics/CircleShape.h:33,
+                 from ~/csfml-3.0/include/CSFML/Graphics.h:32,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.4_avant_inc3.c:2:
+~/csfml-3.0/include/CSFML/Graphics/Rect.h:60:25: note: declared here
+   60 | CSFML_GRAPHICS_API bool sfFloatRect_contains(const sfFloatRect* rect, sfVector2f point);
+      |                         ^~~~~~~~~~~~~~~~~~~~
+
+=== 4.4 apres  natif rc=0
+
+--- croisé rc=1
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.4_apres_inc2.c:2:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.4_apres_inc2.c: In function ‘block’:
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.4_apres_inc2.c:14:70: error: ‘sfMouseButtonEvent’ has no member named ‘position’
+   14 | sfVector2f p = sfRenderWindow_mapPixelToCoords(win, event.mouseButton.position, NULL);
+      |                                                                      ^
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.4_apres_inc2.c:15:30: error: incompatible type for argument 2 of ‘sfFloatRect_contains’
+   15 | if (sfFloatRect_contains(&b, p))
+      |                              ^
+      |                              |
+      |                              sfVector2f
+In file included from ~/csfml-2.6/include/SFML/Graphics/CircleShape.h:33,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:34:
+~/csfml-2.6/include/SFML/Graphics/Rect.h:66:79: note: expected ‘float’ but argument is of type ‘sfVector2f’
+   66 | CSFML_GRAPHICS_API sfBool sfFloatRect_contains(const sfFloatRect* rect, float x, float y);
+      |                                                                         ~~~~~~^
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.4_apres_inc2.c:15:5: error: too few arguments to function ‘sfFloatRect_contains’; expected 3, have 2
+   15 | if (sfFloatRect_contains(&b, p))
+      |     ^~~~~~~~~~~~~~~~~~~~
+~/csfml-2.6/include/SFML/Graphics/Rect.h:66:27: note: declared here
+   66 | CSFML_GRAPHICS_API sfBool sfFloatRect_contains(const sfFloatRect* rect, float x, float y);
+      |                           ^~~~~~~~~~~~~~~~~~~~
+
+=== 4.5 avant  natif rc=0
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.5_avant.c:2:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+
+--- croisé rc=1
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.5_avant_inc3.c:6:8: error: unknown type name ‘sfBool’; did you mean ‘_Bool’?
+    6 | extern sfBool paused; extern const sfTexture *tileset;
+      |        ^~~~~~
+      |        _Bool
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.5_avant_inc3.c: In function ‘block’:
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.5_avant_inc3.c:14:15: error: too few arguments to function ‘sfText_create’; expected 1, have 0
+   14 | sfText *txt = sfText_create();
+      |               ^~~~~~~~~~~~~
+In file included from ~/csfml-3.0/include/CSFML/Graphics.h:48,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.5_avant_inc3.c:2:
+~/csfml-3.0/include/CSFML/Graphics/Text.h:62:28: note: declared here
+   62 | CSFML_GRAPHICS_API sfText* sfText_create(const sfFont* font);
+      |                            ^~~~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.5_avant_inc3.c:17:1: error: implicit declaration of function ‘sfText_setColor’; did you mean ‘sfText_setFillColor’? [-Wimplicit-function-declaration]
+   17 | sfText_setColor(txt, sfWhite);
+      | ^~~~~~~~~~~~~~~
+      | sfText_setFillColor
+
+=== 4.5 apres  natif rc=0
+
+--- croisé rc=1
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.5_apres_inc2.c:2:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.5_apres_inc2.c: In function ‘block’:
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.5_apres_inc2.c:16:15: error: too many arguments to function ‘sfText_create’; expected 0, have 1
+   16 | sfText *txt = sfText_create(font);              /* NULL interdit : assert */
+      |               ^~~~~~~~~~~~~ ~~~~
+In file included from ~/csfml-2.6/include/SFML/Graphics.h:50:
+~/csfml-2.6/include/SFML/Graphics/Text.h:59:28: note: declared here
+   59 | CSFML_GRAPHICS_API sfText* sfText_create(void);
+      |                            ^~~~~~~~~~~~~
+
+=== 4.6 avant  natif rc=0
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.6_avant.c:2:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+
+--- croisé rc=1
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.6_avant_inc3.c:6:8: error: unknown type name ‘sfBool’; did you mean ‘_Bool’?
+    6 | extern sfBool paused; extern const sfTexture *tileset;
+      |        ^~~~~~
+      |        _Bool
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.6_avant_inc3.c: In function ‘block’:
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.6_avant_inc3.c:14:16: error: too few arguments to function ‘sfSound_create’; expected 1, have 0
+   14 | sfSound *snd = sfSound_create();
+      |                ^~~~~~~~~~~~~~
+In file included from ~/csfml-3.0/include/CSFML/Audio.h:33,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.6_avant_inc3.c:3:
+~/csfml-3.0/include/CSFML/Audio/Sound.h:48:26: note: declared here
+   48 | CSFML_AUDIO_API sfSound* sfSound_create(const sfSoundBuffer* buffer);
+      |                          ^~~~~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.6_avant_inc3.c:18:1: error: implicit declaration of function ‘sfMusic_setLoop’; did you mean ‘sfMusic_setCone’? [-Wimplicit-function-declaration]
+   18 | sfMusic_setLoop(mus, sfTrue);
+      | ^~~~~~~~~~~~~~~
+      | sfMusic_setCone
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.6_avant_inc3.c:18:22: error: ‘sfTrue’ undeclared (first use in this function); did you mean ‘sfTime’?
+   18 | sfMusic_setLoop(mus, sfTrue);
+      |                      ^~~~~~
+      |                      sfTime
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.6_avant_inc3.c:18:22: note: each undeclared identifier is reported only once for each function it appears in
+
+=== 4.6 apres  natif rc=0
+
+--- croisé rc=1
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.6_apres_inc2.c:2:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.6_apres_inc2.c: In function ‘block’:
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.6_apres_inc2.c:16:16: error: too many arguments to function ‘sfSound_create’; expected 0, have 1
+   16 | sfSound *snd = sfSound_create(buf);             /* NULL interdit : assert */
+      |                ^~~~~~~~~~~~~~ ~~~
+In file included from ~/csfml-2.6/include/SFML/Audio.h:35,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.6_apres_inc2.c:3:
+~/csfml-2.6/include/SFML/Audio/Sound.h:44:26: note: declared here
+   44 | CSFML_AUDIO_API sfSound* sfSound_create(void);
+      |                          ^~~~~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.6_apres_inc2.c:21:1: error: implicit declaration of function ‘sfMusic_setLooping’; did you mean ‘sfMusic_setLoop’? [-Wimplicit-function-declaration]
+   21 | sfMusic_setLooping(mus, true);
+      | ^~~~~~~~~~~~~~~~~~
+      | sfMusic_setLoop
+
+=== 4.7 avant  natif rc=0
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_avant.c:2:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+
+--- croisé rc=1
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_avant_inc3.c:6:8: error: unknown type name ‘sfBool’; did you mean ‘_Bool’?
+    6 | extern sfBool paused; extern const sfTexture *tileset;
+      |        ^~~~~~
+      |        _Bool
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_avant_inc3.c: In function ‘block’:
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_avant_inc3.c:13:31: error: incompatible type for argument 1 of ‘sfImage_create’
+   13 | sfImage *img = sfImage_create(64, 64);
+      |                               ^~
+      |                               |
+      |                               int
+In file included from ~/csfml-3.0/include/CSFML/Graphics.h:38,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_avant_inc3.c:2:
+~/csfml-3.0/include/CSFML/Graphics/Image.h:52:55: note: expected ‘sfVector2u’ but argument is of type ‘int’
+   52 | CSFML_GRAPHICS_API sfImage* sfImage_create(sfVector2u size);
+      |                                            ~~~~~~~~~~~^~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_avant_inc3.c:13:16: error: too many arguments to function ‘sfImage_create’; expected 1, have 2
+   13 | sfImage *img = sfImage_create(64, 64);
+      |                ^~~~~~~~~~~~~~     ~~
+~/csfml-3.0/include/CSFML/Graphics/Image.h:52:29: note: declared here
+   52 | CSFML_GRAPHICS_API sfImage* sfImage_create(sfVector2u size);
+      |                             ^~~~~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_avant_inc3.c:14:23: error: incompatible type for argument 2 of ‘sfImage_setPixel’
+   14 | sfImage_setPixel(img, 10, 20, sfRed);
+      |                       ^~
+      |                       |
+      |                       int
+~/csfml-3.0/include/CSFML/Graphics/Image.h:242:69: note: expected ‘sfVector2u’ but argument is of type ‘int’
+  242 | CSFML_GRAPHICS_API void sfImage_setPixel(sfImage* image, sfVector2u coords, sfColor color);
+      |                                                          ~~~~~~~~~~~^~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_avant_inc3.c:14:27: error: incompatible type for argument 3 of ‘sfImage_setPixel’
+   14 | sfImage_setPixel(img, 10, 20, sfRed);
+      |                           ^~
+      |                           |
+      |                           int
+~/csfml-3.0/include/CSFML/Graphics/Image.h:242:85: note: expected ‘sfColor’ but argument is of type ‘int’
+  242 | CSFML_GRAPHICS_API void sfImage_setPixel(sfImage* image, sfVector2u coords, sfColor color);
+      |                                                                             ~~~~~~~~^~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_avant_inc3.c:14:1: error: too many arguments to function ‘sfImage_setPixel’; expected 3, have 4
+   14 | sfImage_setPixel(img, 10, 20, sfRed);
+      | ^~~~~~~~~~~~~~~~              ~~~~~
+~/csfml-3.0/include/CSFML/Graphics/Image.h:242:25: note: declared here
+  242 | CSFML_GRAPHICS_API void sfImage_setPixel(sfImage* image, sfVector2u coords, sfColor color);
+      |                         ^~~~~~~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_avant_inc3.c:15:33: error: incompatible type for argument 1 of ‘sfTexture_create’
+   15 | sfTexture *t = sfTexture_create(64, 64);
+      |                                 ^~
+      |                                 |
+      |                                 int
+In file included from ~/csfml-3.0/include/CSFML/Graphics.h:49:
+~/csfml-3.0/include/CSFML/Graphics/Texture.h:49:59: note: expected ‘sfVector2u’ but argument is of type ‘int’
+   49 | CSFML_GRAPHICS_API sfTexture* sfTexture_create(sfVector2u size);
+      |                                                ~~~~~~~~~~~^~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_avant_inc3.c:15:16: error: too many arguments to function ‘sfTexture_create’; expected 1, have 2
+   15 | sfTexture *t = sfTexture_create(64, 64);
+      |                ^~~~~~~~~~~~~~~~     ~~
+~/csfml-3.0/include/CSFML/Graphics/Texture.h:49:31: note: declared here
+   49 | CSFML_GRAPHICS_API sfTexture* sfTexture_create(sfVector2u size);
+      |                               ^~~~~~~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_avant_inc3.c:16:35: error: incompatible type for argument 3 of ‘sfTexture_updateFromImage’
+   16 | sfTexture_updateFromImage(t, img, 0, 0);
+      |                                   ^
+      |                                   |
+      |                                   int
+~/csfml-3.0/include/CSFML/Graphics/Texture.h:263:104: note: expected ‘sfVector2u’ but argument is of type ‘int’
+  263 | CSFML_GRAPHICS_API void sfTexture_updateFromImage(sfTexture* texture, const sfImage* image, sfVector2u offset);
+      |                                                                                             ~~~~~~~~~~~^~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_avant_inc3.c:16:1: error: too many arguments to function ‘sfTexture_updateFromImage’; expected 3, have 4
+   16 | sfTexture_updateFromImage(t, img, 0, 0);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~            ~
+~/csfml-3.0/include/CSFML/Graphics/Texture.h:263:25: note: declared here
+  263 | CSFML_GRAPHICS_API void sfTexture_updateFromImage(sfTexture* texture, const sfImage* image, sfVector2u offset);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_avant_inc3.c:17:29: error: incompatible type for argument 2 of ‘sfRenderWindow_setIcon’
+   17 | sfRenderWindow_setIcon(win, 64, 64, sfImage_getPixelsPtr(img));
+      |                             ^~
+      |                             |
+      |                             int
+In file included from ~/csfml-3.0/include/CSFML/Graphics.h:44:
+~/csfml-3.0/include/CSFML/Graphics/RenderWindow.h:267:89: note: expected ‘sfVector2u’ but argument is of type ‘int’
+  267 | CSFML_GRAPHICS_API void sfRenderWindow_setIcon(sfRenderWindow* renderWindow, sfVector2u size, const uint8_t* pixels);
+      |                                                                              ~~~~~~~~~~~^~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_avant_inc3.c:17:33: error: passing argument 3 of ‘sfRenderWindow_setIcon’ makes pointer from integer without a cast [-Wint-conversion]
+   17 | sfRenderWindow_setIcon(win, 64, 64, sfImage_getPixelsPtr(img));
+      |                                 ^~
+      |                                 |
+      |                                 int
+~/csfml-3.0/include/CSFML/Graphics/RenderWindow.h:267:110: note: expected ‘const uint8_t *’ {aka ‘const unsigned char *’} but argument is of type ‘int’
+  267 | CSFML_GRAPHICS_API void sfRenderWindow_setIcon(sfRenderWindow* renderWindow, sfVector2u size, const uint8_t* pixels);
+      |                                                                                               ~~~~~~~~~~~~~~~^~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_avant_inc3.c:17:1: error: too many arguments to function ‘sfRenderWindow_setIcon’; expected 3, have 4
+   17 | sfRenderWindow_setIcon(win, 64, 64, sfImage_getPixelsPtr(img));
+      | ^~~~~~~~~~~~~~~~~~~~~~              ~~~~~~~~~~~~~~~~~~~~~~~~~
+~/csfml-3.0/include/CSFML/Graphics/RenderWindow.h:267:25: note: declared here
+  267 | CSFML_GRAPHICS_API void sfRenderWindow_setIcon(sfRenderWindow* renderWindow, sfVector2u size, const uint8_t* pixels);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~
+
+=== 4.7 apres  natif rc=0
+
+--- croisé rc=1
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_apres_inc2.c:2:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_apres_inc2.c: In function ‘block’:
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_apres_inc2.c:13:43: error: incompatible type for argument 1 of ‘sfImage_create’
+   13 | sfImage *img = sfImage_create((sfVector2u){64, 64});
+      |                                           ^~~~~~~~
+      |                                           |
+      |                                           sfVector2u
+In file included from ~/csfml-2.6/include/SFML/Graphics.h:40:
+~/csfml-2.6/include/SFML/Graphics/Image.h:52:57: note: expected ‘unsigned int’ but argument is of type ‘sfVector2u’
+   52 | CSFML_GRAPHICS_API sfImage* sfImage_create(unsigned int width, unsigned int height);
+      |                                            ~~~~~~~~~~~~~^~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_apres_inc2.c:13:16: error: too few arguments to function ‘sfImage_create’; expected 2, have 1
+   13 | sfImage *img = sfImage_create((sfVector2u){64, 64});
+      |                ^~~~~~~~~~~~~~
+~/csfml-2.6/include/SFML/Graphics/Image.h:52:29: note: declared here
+   52 | CSFML_GRAPHICS_API sfImage* sfImage_create(unsigned int width, unsigned int height);
+      |                             ^~~~~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_apres_inc2.c:14:35: error: incompatible type for argument 2 of ‘sfImage_setPixel’
+   14 | sfImage_setPixel(img, (sfVector2u){10, 20}, sfRed);
+      |                                   ^~~~~~~~
+      |                                   |
+      |                                   sfVector2u
+~/csfml-2.6/include/SFML/Graphics/Image.h:244:71: note: expected ‘unsigned int’ but argument is of type ‘sfVector2u’
+  244 | CSFML_GRAPHICS_API void sfImage_setPixel(sfImage* image, unsigned int x, unsigned int y, sfColor color);
+      |                                                          ~~~~~~~~~~~~~^
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_apres_inc2.c:14:45: error: incompatible type for argument 3 of ‘sfImage_setPixel’
+   14 | sfImage_setPixel(img, (sfVector2u){10, 20}, sfRed);
+      |                                             ^~~~~
+      |                                             |
+      |                                             sfColor
+~/csfml-2.6/include/SFML/Graphics/Image.h:244:87: note: expected ‘unsigned int’ but argument is of type ‘sfColor’
+  244 | CSFML_GRAPHICS_API void sfImage_setPixel(sfImage* image, unsigned int x, unsigned int y, sfColor color);
+      |                                                                          ~~~~~~~~~~~~~^
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_apres_inc2.c:14:1: error: too few arguments to function ‘sfImage_setPixel’; expected 4, have 3
+   14 | sfImage_setPixel(img, (sfVector2u){10, 20}, sfRed);
+      | ^~~~~~~~~~~~~~~~
+~/csfml-2.6/include/SFML/Graphics/Image.h:244:25: note: declared here
+  244 | CSFML_GRAPHICS_API void sfImage_setPixel(sfImage* image, unsigned int x, unsigned int y, sfColor color);
+      |                         ^~~~~~~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_apres_inc2.c:15:45: error: incompatible type for argument 1 of ‘sfTexture_create’
+   15 | sfTexture *t = sfTexture_create((sfVector2u){64, 64});
+      |                                             ^~~~~~~~
+      |                                             |
+      |                                             sfVector2u
+In file included from ~/csfml-2.6/include/SFML/Graphics.h:51:
+~/csfml-2.6/include/SFML/Graphics/Texture.h:58:61: note: expected ‘unsigned int’ but argument is of type ‘sfVector2u’
+   58 | CSFML_GRAPHICS_API sfTexture* sfTexture_create(unsigned int width, unsigned int height);
+      |                                                ~~~~~~~~~~~~~^~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_apres_inc2.c:15:16: error: too few arguments to function ‘sfTexture_create’; expected 2, have 1
+   15 | sfTexture *t = sfTexture_create((sfVector2u){64, 64});
+      |                ^~~~~~~~~~~~~~~~
+~/csfml-2.6/include/SFML/Graphics/Texture.h:58:31: note: declared here
+   58 | CSFML_GRAPHICS_API sfTexture* sfTexture_create(unsigned int width, unsigned int height);
+      |                               ^~~~~~~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_apres_inc2.c:16:47: error: incompatible type for argument 3 of ‘sfTexture_updateFromImage’
+   16 | sfTexture_updateFromImage(t, img, (sfVector2u){0, 0});
+      |                                               ^~~~~~
+      |                                               |
+      |                                               sfVector2u
+~/csfml-2.6/include/SFML/Graphics/Texture.h:240:106: note: expected ‘unsigned int’ but argument is of type ‘sfVector2u’
+  240 | CSFML_GRAPHICS_API void sfTexture_updateFromImage(sfTexture* texture, const sfImage* image, unsigned int x, unsigned int y);
+      |                                                                                             ~~~~~~~~~~~~~^
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_apres_inc2.c:16:1: error: too few arguments to function ‘sfTexture_updateFromImage’; expected 4, have 3
+   16 | sfTexture_updateFromImage(t, img, (sfVector2u){0, 0});
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~
+~/csfml-2.6/include/SFML/Graphics/Texture.h:240:25: note: declared here
+  240 | CSFML_GRAPHICS_API void sfTexture_updateFromImage(sfTexture* texture, const sfImage* image, unsigned int x, unsigned int y);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_apres_inc2.c:17:41: error: incompatible type for argument 2 of ‘sfRenderWindow_setIcon’
+   17 | sfRenderWindow_setIcon(win, (sfVector2u){64, 64}, sfImage_getPixelsPtr(img));
+      |                                         ^~~~~~~~
+      |                                         |
+      |                                         sfVector2u
+In file included from ~/csfml-2.6/include/SFML/Graphics.h:46:
+~/csfml-2.6/include/SFML/Graphics/RenderWindow.h:210:91: note: expected ‘unsigned int’ but argument is of type ‘sfVector2u’
+  210 | CSFML_GRAPHICS_API void sfRenderWindow_setIcon(sfRenderWindow* renderWindow, unsigned int width, unsigned int height, const sfUint8* pixels);
+      |                                                                              ~~~~~~~~~~~~~^~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_apres_inc2.c:17:51: error: passing argument 3 of ‘sfRenderWindow_setIcon’ makes integer from pointer without a cast [-Wint-conversion]
+   17 | sfRenderWindow_setIcon(win, (sfVector2u){64, 64}, sfImage_getPixelsPtr(img));
+      |                                                   ^~~~~~~~~~~~~~~~~~~~~~~~~
+      |                                                   |
+      |                                                   const sfUint8 * {aka const unsigned char *}
+~/csfml-2.6/include/SFML/Graphics/RenderWindow.h:210:111: note: expected ‘unsigned int’ but argument is of type ‘const sfUint8 *’ {aka ‘const unsigned char *’}
+  210 | CSFML_GRAPHICS_API void sfRenderWindow_setIcon(sfRenderWindow* renderWindow, unsigned int width, unsigned int height, const sfUint8* pixels);
+      |                                                                                                  ~~~~~~~~~~~~~^~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.7_apres_inc2.c:17:1: error: too few arguments to function ‘sfRenderWindow_setIcon’; expected 4, have 3
+   17 | sfRenderWindow_setIcon(win, (sfVector2u){64, 64}, sfImage_getPixelsPtr(img));
+      | ^~~~~~~~~~~~~~~~~~~~~~
+~/csfml-2.6/include/SFML/Graphics/RenderWindow.h:210:25: note: declared here
+  210 | CSFML_GRAPHICS_API void sfRenderWindow_setIcon(sfRenderWindow* renderWindow, unsigned int width, unsigned int height, const sfUint8* pixels);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~
+
+=== 4.8 avant  natif rc=0
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.8_avant.c:2:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+
+--- croisé rc=1
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.8_avant_inc3.c:6:8: error: unknown type name ‘sfBool’; did you mean ‘_Bool’?
+    6 | extern sfBool paused; extern const sfTexture *tileset;
+      |        ^~~~~~
+      |        _Bool
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.8_avant_inc3.c: In function ‘block’:
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.8_avant_inc3.c:14:36: error: ‘sfQuads’ undeclared (first use in this function)
+   14 | sfVertexArray_setPrimitiveType(va, sfQuads);
+      |                                    ^~~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.8_avant_inc3.c:14:36: note: each undeclared identifier is reported only once for each function it appears in
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.8_avant_inc3.c:16:21: error: called object ‘sfRenderStates_default’ is not a function or function pointer
+   16 | sfRenderStates st = sfRenderStates_default();
+      |                     ^~~~~~~~~~~~~~~~~~~~~~
+In file included from ~/csfml-3.0/include/CSFML/Graphics.h:42,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.8_avant_inc3.c:2:
+~/csfml-3.0/include/CSFML/Graphics/RenderStates.h:57:41: note: declared here
+   57 | CSFML_GRAPHICS_API const sfRenderStates sfRenderStates_default;
+      |                                         ^~~~~~~~~~~~~~~~~~~~~~
+
+=== 4.8 apres  natif rc=0
+
+--- croisé rc=1
+In file included from ~/csfml-2.6/include/SFML/Window/Window.h:32,
+                 from ~/csfml-2.6/include/SFML/Window/Context.h:33,
+                 from ~/csfml-2.6/include/SFML/Window.h:34,
+                 from ~/csfml-2.6/include/SFML/Graphics.h:32,
+                 from ~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.8_apres_inc2.c:2:
+~/csfml-2.6/include/SFML/Window/Event.h:133:1: warning: type is deprecated [-Wdeprecated-declarations]
+  133 | } sfMouseWheelEvent;
+      | ^
+~/csfml-2.6/include/SFML/Window/Event.h:127:9: note: declared here
+  127 | typedef struct CSFML_DEPRECATED
+      |         ^~~~~~
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.8_apres_inc2.c: In function ‘block’:
+~/Documents/dev/lib_csfml/tests/p1-migration/gen/s4.8_apres_inc2.c:16:21: error: invalid initializer
+   16 | sfRenderStates st = sfRenderStates_default;    /* variable, plus de () */
+      |                     ^~~~~~~~~~~~~~~~~~~~~~
+
