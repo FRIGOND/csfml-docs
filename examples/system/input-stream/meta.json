@@ -1,0 +1,6 @@
+{
+  "title": "Flux d'entrée personnalisé",
+  "summary": "Lire sfml_logo.png via une structure sfInputStream (callbacks read/seek/tell/getSize) et sfImage_createFromStream.",
+  "functions": ["sfImage_createFromStream", "sfImage_getSize", "sfImage_destroy"],
+  "assets": ["sfml_logo.png"]
+}

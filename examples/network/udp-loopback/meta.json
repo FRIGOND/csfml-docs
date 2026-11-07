@@ -1,0 +1,6 @@
+{
+  "title": "UDP en boucle locale",
+  "summary": "Deux sockets UDP dans le même programme : liaison sur un port libre, envoi et réception sur 127.0.0.1.",
+  "functions": ["sfUdpSocket_create", "sfUdpSocket_setBlocking", "sfUdpSocket_anyPort", "sfUdpSocket_bind", "sfUdpSocket_getLocalPort", "sfUdpSocket_send", "sfUdpSocket_receive", "sfSleep", "sfMilliseconds", "sfUdpSocket_destroy"],
+  "assets": []
+}

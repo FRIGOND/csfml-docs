@@ -1,0 +1,6 @@
+{
+  "title": "Jouer un son",
+  "summary": "Charger un sfSoundBuffer, le jouer avec sfSound et attendre la fin ; le buffer reste vivant tant que le son existe.",
+  "functions": ["sfSoundBuffer_createFromFile", "sfSound_create", "sfSound_setBuffer", "sfSoundBuffer_getDuration", "sfTime_asMilliseconds", "sfSoundBuffer_getSampleRate", "sfSoundBuffer_getChannelCount", "sfSound_play", "sfSound_getStatus", "sfSleep", "sfMilliseconds", "sfSound_stop", "sfSound_destroy", "sfSoundBuffer_destroy"],
+  "assets": ["doodle_pop.ogg"]
+}

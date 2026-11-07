@@ -1,0 +1,6 @@
+{
+  "title": "Vecteurs",
+  "summary": "Les structures sfVector2f/2i/2u/3f se passent par valeur ; sans fonctions mathématiques, on calcule à la main.",
+  "functions": [],
+  "assets": []
+}

@@ -1,0 +1,6 @@
+{
+  "title": "Son spatialisé",
+  "summary": "Placer l'auditeur (sfListener) et un son dans l'espace 3D, avec distance minimale et atténuation.",
+  "functions": ["sfSoundBuffer_createFromFile", "sfSound_create", "sfSound_setBuffer", "sfListener_setGlobalVolume", "sfListener_setPosition", "sfListener_setDirection", "sfListener_getPosition", "sfListener_getGlobalVolume", "sfSound_setRelativeToListener", "sfSound_setMinDistance", "sfSound_setAttenuation", "sfSound_setPosition", "sfSound_getPosition", "sfSound_getMinDistance", "sfSound_play", "sfSleep", "sfMilliseconds", "sfSound_stop", "sfSound_destroy", "sfSoundBuffer_destroy"],
+  "assets": ["doodle_pop.ogg"]
+}

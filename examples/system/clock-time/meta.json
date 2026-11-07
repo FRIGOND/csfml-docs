@@ -1,0 +1,6 @@
+{
+  "title": "Horloge et temps",
+  "summary": "Mesurer un intervalle avec sfClock, convertir les sfTime et faire une pause avec sfSleep ; restart renvoie le temps écoulé.",
+  "functions": ["sfSeconds", "sfMilliseconds", "sfMicroseconds", "sfTime_asSeconds", "sfTime_asMilliseconds", "sfTime_asMicroseconds", "sfClock_create", "sfSleep", "sfClock_restart", "sfClock_getElapsedTime", "sfClock_destroy"],
+  "assets": []
+}

@@ -1,0 +1,6 @@
+{
+  "title": "Requête HTTP sans réseau",
+  "summary": "Construire une sfHttpRequest (méthode, URI, champs, corps) et un sfHttp sans jamais envoyer la requête.",
+  "functions": ["sfHttpRequest_create", "sfHttp_create", "sfHttpRequest_setMethod", "sfHttpRequest_setUri", "sfHttpRequest_setHttpVersion", "sfHttpRequest_setField", "sfHttpRequest_setBody", "sfHttp_setHost", "sfHttpRequest_destroy", "sfHttp_destroy"],
+  "assets": []
+}

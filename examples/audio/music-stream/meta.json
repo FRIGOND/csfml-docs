@@ -1,0 +1,6 @@
+{
+  "title": "Musique en streaming",
+  "summary": "Jouer une sfMusic : volume, boucle, pause, décalage de lecture et arrêt.",
+  "functions": ["sfMusic_createFromFile", "sfMusic_getDuration", "sfTime_asMilliseconds", "sfMusic_setVolume", "sfMusic_setLooping", "sfMusic_setLoop", "sfMusic_play", "sfSleep", "sfMilliseconds", "sfMusic_getStatus", "sfMusic_getPlayingOffset", "sfMusic_getVolume", "sfMusic_pause", "sfMusic_setPlayingOffset", "sfMusic_stop", "sfMusic_isLooping", "sfMusic_getLoop", "sfMusic_destroy"],
+  "assets": ["doodle_pop.ogg"]
+}

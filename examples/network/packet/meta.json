@@ -1,0 +1,6 @@
+{
+  "title": "Paquet réseau",
+  "summary": "Écrire un entier, un flottant, une chaîne et un booléen dans un sfPacket, les relire et vérifier le round-trip.",
+  "functions": ["sfPacket_create", "sfPacket_writeInt32", "sfPacket_writeFloat", "sfPacket_writeString", "sfPacket_writeBool", "sfPacket_getDataSize", "sfPacket_readInt32", "sfPacket_readFloat", "sfPacket_readString", "sfPacket_readBool", "sfPacket_endOfPacket", "sfPacket_destroy"],
+  "assets": []
+}

@@ -1,0 +1,6 @@
+{
+  "title": "Audio sans périphérique",
+  "summary": "Charger et jouer sans carte son ni serveur audio : les objets sont créés, le programme ne plante pas.",
+  "functions": ["sfSoundBuffer_createFromFile", "sfMusic_createFromFile", "sfMusic_play", "sfMusic_getStatus", "sfSoundRecorder_isAvailable", "sfMusic_destroy", "sfSoundBuffer_destroy"],
+  "assets": ["doodle_pop.ogg"]
+}

@@ -1,0 +1,6 @@
+{
+  "title": "Capture audio",
+  "summary": "Tester sfSoundRecorder_isAvailable puis enregistrer 200 ms dans un sfSoundBufferRecorder.",
+  "functions": ["sfSoundRecorder_isAvailable", "sfSoundBufferRecorder_create", "sfSoundBufferRecorder_start", "sfSleep", "sfMilliseconds", "sfSoundBufferRecorder_stop", "sfSoundBufferRecorder_getBuffer", "sfSoundBuffer_getSampleCount", "sfSoundBuffer_getSampleRate", "sfSoundBufferRecorder_destroy"],
+  "assets": []
+}

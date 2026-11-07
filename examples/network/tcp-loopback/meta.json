@@ -1,0 +1,6 @@
+{
+  "title": "TCP en boucle locale",
+  "summary": "Listener non bloquant sur un port libre, client connecté, accept (socket à détruire) et échange d'un message.",
+  "functions": ["sfTcpListener_create", "sfTcpSocket_create", "sfTcpListener_setBlocking", "sfTcpListener_anyPort", "sfTcpListener_listen", "sfTcpListener_getLocalPort", "sfTcpSocket_connect", "sfTcpListener_accept", "sfTcpSocket_send", "sfTcpSocket_setBlocking", "sfTcpSocket_receive", "sfSleep", "sfMilliseconds", "sfTcpSocket_destroy", "sfTcpListener_destroy"],
+  "assets": []
+}
